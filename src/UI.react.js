@@ -23,6 +23,10 @@ export class UI extends React.Component {
         return this.props.reconciler 
     }
 
+    get db () {
+        return d.db(this.getReconciler().conn)
+    }
+
     // Returns the query result that the instance is being rendered with
     get value () {
         return this.props.value
@@ -43,8 +47,9 @@ export class UI extends React.Component {
     }
 
     shouldComponentUpdate (nextProps, nextState) {
-        const isActive = (nextProps.isActive === false) ? false : true
-        return isActive
+        return true
+        // const isActive = (nextProps.isActive === false) ? false : true
+        // return isActive
     }
 }
 

@@ -143,19 +143,19 @@ export class Reconciler {
     }
 
     // Applies the specified mutation or enqueues it on the js event loop.
-    put (mutationId, payload) {
+    put (mutationId, ...payload) {
         // @TODO This implementation should be replaced with a proper event log.
         // That would make it easy to observe, replay and extend mutations.
 
         if (this._isDispatching == true) {
-            setImmediate(() => this.put(mutationId, payload))
+            setImmediate(() => this.put(mutationId, ...payload))
         } else {
             this._isDispatching = true
             if (mutationId in this.mutate) {
                 const beforeMutation = Date.now()
                 console.log(`[${beforeMutation}] ${mutationId} with payload `, payload)
                 
-                this.mutate[mutationId](this, payload)
+                this.mutate[mutationId](this, ...payload)
                 
                 const afterMutation = Date.now()
                 const delta = Math.abs(afterMutation - beforeMutation)

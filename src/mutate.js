@@ -4,6 +4,19 @@
  *
  * @flow
  */
-"use strict"
+"use strict";
 
-const mutate = {}
+import d             from "@clockworks/datascript";
+
+import { Mutations } from "./constants";
+
+
+const mutate = {};
+
+mutate[Mutations.SUBMIT_STATUS] = (target, text) => {
+    console.log("submitting ", text)
+    d.transact(target.conn, [[":db/add", 42, ":text", text]])
+}
+
+
+export default mutate;

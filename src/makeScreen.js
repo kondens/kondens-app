@@ -2,7 +2,7 @@
 "use strict"
 
 import React    from "react"
-import { UI }   from "../UI.react"
+import { UI }   from "./UI.react"
 
 export const makeScreen = (Component) => {
     return class extends UI {
