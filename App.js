@@ -19,6 +19,8 @@ import mutate           from "./src/mutate";
 import { Routes,
          Colors }       from "./src/constants";
 
+import { dummyData }    from "./src/dummyData";
+
 
 export default class App extends UI {
     static query () {
@@ -42,12 +44,7 @@ export default class App extends UI {
         d.reset_conn(this.reconciler.conn, initialState())
 
         // Use this to change defaults during testing and development
-        // d.transact(this.reconciler.conn, [
-        //     { 
-        //         "db/ident": ":ui",
-        //         "ui/navigationState": Navigator.router.getStateForAction(Navigator.router.getActionForPathAndParams(Routes.STATUS))
-        //     }
-        // ])
+        d.transact(this.reconciler.conn, dummyData)
     }
 
     componentWillMount () {
