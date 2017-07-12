@@ -43,3 +43,7 @@ android/keystores/debug.keystore
 
 #EXPO
 .expo/
+
+#Sublime
+*.sublime-project
+*.sublime-workspace
