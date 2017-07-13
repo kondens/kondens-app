@@ -2,12 +2,13 @@
 
 import d                from "@clockworks/datascript";
 
-const time = (date) => new Date(date).getTime()
+import moment       from "moment";
 
 export const dummyData = [
     {
         "db/ident": ":user-data",
         "user/staff": -2,
+        
     },
     {
         ":db/id": -1,

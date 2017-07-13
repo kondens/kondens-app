@@ -21,6 +21,9 @@ import { Routes,
 
 import { dummyData }    from "./src/dummyData";
 
+import "moment/locale/de";
+import Moment           from "moment";
+
 
 export default class App extends UI {
     static query () {
@@ -39,6 +42,8 @@ export default class App extends UI {
 
         global.d = d
         global.reconciler = this.reconciler
+
+        Moment.locale("de");
         
         console.log("Loading initial state...")
         d.reset_conn(this.reconciler.conn, initialState())
