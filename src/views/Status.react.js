@@ -7,26 +7,9 @@ import { View,
          Text }         from "react-native";
 
 import { UI }           from "../UI.react";
-import { Mutations }    from "../constants"
+import { Mutations }    from "../constants";
 
-const snapsForName = (db, name) => d.q(`[:find [?snap]
-                                         :in $ ?name
-                                         :where [?staff "staff/name" ?name]
-                                                [?snap "snapshot/staff" ?staff]]`, 
-                                        db, name);
-
-const tasks = (db) => d.map((datom) => d.get(datom, "v"), d.datoms(db, ":avet", "task/id"));
-
-const currentSnapForTask = (db, taskId) => {
-    const snaps = d.q(`[:find ?time ?snap
-                        :in $ ?task-id
-                        :where [?task "task/id" ?task-id]
-                               [?task "task/snapshot" ?snap]
-                               [?snap "snapshot/date" ?date]
-                               [?date "date/timestamp" ?time]]`,
-                        db, taskId)
-    return d.second(d.first(d.sortBy(d.first, (a, b) => (b - a), snaps)))
-}
+import Moment           from "moment";
 
 const currentSnaps = (db) => d.map((task) => currentSnapForTask(db, task), tasks(db))
 
