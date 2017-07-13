@@ -13,12 +13,20 @@ export const Routes = {
 
 export const Mutations = {
     SUBMIT_STATUS: "!status/submit",
+    
+    NAVIGATION_DISPATCH: "!navigation/dispatch",
+}
+
+export const Completeness = {
+    WIP: "WIP",
+    DONE: "DONE",
+    CANCELLED: "CANCELLED",
 }
 
 export const STR = {
     VIEW: {
         STATUS: {
-            TITLE: "Status"
+            TITLE: "Status Report"
         }
     }
 }

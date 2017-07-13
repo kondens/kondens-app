@@ -4,11 +4,13 @@ import d                from "@clockworks/datascript";
 
 import moment       from "moment";
 
+import { Completeness }    from "./constants";
+
 export const dummyData = [
     {
         "db/ident": ":user-data",
         "user/staff": -2,
-        
+
     },
     {
         ":db/id": -1,
@@ -25,7 +27,8 @@ export const dummyData = [
             "snapshot/title": "Nikos Architektur-Analyse",
             "snapshot/start": {"date/timestamp": moment("2017-08-11").format("x")},
             "snapshot/end": {"date/timestamp": moment("2017-08-20").format("x")},
-            "snapshot/staff": -1
+            "snapshot/staff": -1,
+            "snapshot/completeness": Completeness.DONE,
         }],
     },
     {
@@ -37,6 +40,7 @@ export const dummyData = [
                 "snapshot/start": {"date/timestamp": moment("2017-08-11").format("x")},
                 "snapshot/end": {"date/timestamp": moment("2017-08-30").format("x")},
                 "snapshot/staff": -1,
+                "snapshot/completeness": Completeness.WIP,
             },
             {
                 "snapshot/date": {"date/timestamp": moment("2017-08-22").format("x")},
@@ -44,6 +48,7 @@ export const dummyData = [
                 "snapshot/start": {"date/timestamp": moment("2017-08-11").format("x")},
                 "snapshot/end": {"date/timestamp": moment("2017-09-05").format("x")},
                 "snapshot/staff": -2,
+                "snapshot/completeness": Completeness.WIP,
             }]
     },
 ];
