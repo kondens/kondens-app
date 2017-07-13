@@ -15,9 +15,11 @@ import { DEFAULT }  from "./constants"
 // Think of read operations as computed datascript attributes.
 const read = {}
 
+const readFn = (key, db, eid) => read[key](key, db, eid);
+
 // By default reads are pull queries on datascript entities.
 // e.g. with key ["db/ident", ":user-data"]: d.pull(db, q, ["db/ident", ":user-data"])
-read[DEFAULT] = ({db}, key, subQuery) => d.pull(db, subQuery, key);
+read[DEFAULT] = ({db}, key, subQuery) => d.pull(db, subQuery, key, readFn);
 
 const taskIds = (db) => d.map((datom) => d.get(datom, "v"), d.datoms(db, ":avet", "task/id"));
 
