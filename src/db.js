@@ -19,7 +19,7 @@ export const schema = {
 
     "date/timestamp":           {":db/unique": ":db.unique/identity"},
 
-    // "staff/id":                 {":db/unique": ":db.unique/identity"},
+    //"staff/id":                 {":db/unique": ":db.unique/identity"},
     "staff/name":               {":db/cardinality": ":db.cardinality/one"},
 
     "task/id":                  {":db/unique": ":db.unique/identity"},
@@ -32,7 +32,6 @@ export const schema = {
         ":db/cardinality": ":db.cardinality/one",
         ":db/valueType": ":db.type/ref",
     },
-    "snapshot/title":             {":db/cardinality": ":db.cardinality/one"},
     "snapshot/start":             {
         ":db/cardinality": ":db.cardinality/one",
         ":db/valueType": ":db.type/ref",
@@ -45,6 +44,7 @@ export const schema = {
         ":db/cardinality": ":db.cardinality/one",
         ":db/valueType": ":db.type/ref",
     },
+    "snapshot/title":             {":db/cardinality": ":db.cardinality/one"},
     "snapshot/type":              {":db/cardinality": ":db.cardinality/one"},
     "snapshot/completeness":      {":db/cardinality": ":db.cardinality/one"}, //:wip :complete :cancelled
     "snapshot/rag":               {":db/cardinality": ":db.cardinality/one"}, //:red :amber :green
