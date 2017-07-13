@@ -78,45 +78,61 @@ const Task = ({title, end}) => {
     return (
         <View>
             <Text>{ title }</Text>
-            <Text>Start: { Moment(start, "x").format("DD. MMMM YYYY") } ({ Moment(start, "x").fromNow() })</Text>
-            <Text>Ende: { Moment(end, "x").format("DD. MMMM YYYY") } ({ Moment(end, "x").fromNow() })</Text>
+            <Text>Dieser Task endet am { Moment(end, "x").format("DD. MMMM YYYY") } ({ Moment(end, "x").fromNow() })</Text>
         </View>
     )
 }
 
-class Status extends UI {
+export class Status extends UI {
     static query () {
         return d.vector(
             d.hashMap(
-                d.vector("db/ident", ":user-data"), `[ {"user/staff" [ "staff/name" ] } ]`,
-            ),
-            d.hashMap("user/tasks", d.vector("db/ident", ":user-data")))
-    }
+                d.vector("db/ident", ":user-data"), `[ {"user/staff" [ "staff/name" ]}
+                                                       {(read "user/currentSnaps") [ { "snapshot/date" [ * ] }
+                                                                                     { "snapshot/start" [ * ] }
+                                                                                     { "snapshot/end" [ * ] }
+                                                                                     * ] } ]` ))}
 
     render () {
         const { value, params } = this.props;
-        const name = d.getIn(value, [d.vector("db/ident", ":user-data"), "user/staff", "staff/name"]);
-        const tasks = d.get(value, "user/tasks", d.vector())
+
+        const userIdent = d.vector("db/ident", ":user-data")
+        const name = d.getIn(value, [userIdent, "user/staff", "staff/name"]);
+
+        const tasks = d.getIn(value, [userIdent, "user/currentSnaps"]);
+
+        const wipTasks = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.WIP), tasks);
+        const doneTasks = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.DONE), tasks);
+        const cancelledTasks = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.CANCELLED), tasks);
 
         const text = d.q(`[:find ?text . :where [42 ":text" ?text]]`, this.db)
         return (
-            <View>
-                <Text>{name}</Text>
-                <Text>{ text }</Text>
-                <TouchableOpacity onPress = { e => this.getReconciler().put(Mutations.SUBMIT_STATUS, "nice, nichma namespaced") }>
-                    <Text>KLICKMICH</Text>
-                </TouchableOpacity>
-                <View>
+            <View style = { styles.container }>
+                <View style = { styles.header }>
+                    <Text>Status Report von {name} am { Moment().format("DD.MM.YY") }</Text>
+                    <Text>{text}</Text>
+                </View>
+                <View style = { styles.body }>
                     { d.intoArray(d.map((task) => (
                         <Task key   = { d.get(task, ":db/id") }
                               title = { d.get(task, "snapshot/title") }
                               start = { d.getIn(task, ["snapshot/start", "date/timestamp"]) }
                               end   = { d.getIn(task, ["snapshot/end", "date/timestamp"]) } />
-                    ), tasks)) }
+                    ), wipTasks)) }
                 </View>
+                {/*
+                <TouchableOpacity style = { styles.footer }>
+                    <Text style = { styles.submit }>SUBMIT</Text>
+                </TouchableOpacity>*/}
             </View>
         )
     }
 }
+
+/*
+<Text>{ text }</Text>
+<TouchableOpacity  }>
+    <Text>KLICKMICH</Text>
+</TouchableOpacity>*/
 
 export default Status;
