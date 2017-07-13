@@ -1,16 +1,25 @@
 // @flow
 "use strict"
 
-import React    from "react"
-import { UI }   from "./UI.react"
+import React    from "react";
+
+import { RouteDefinitions } from "./route";
 
 export const makeScreen = (Component) => {
-    return class extends UI {
-        static query = Component.query
-
+    return class extends React.Component {
         render () {
-            const { screenProps } = this.props
-            return <Component {...screenProps} />
+            const { navigation, screenProps } = this.props
+            const route = navigation.state
+            const { reconciler } = screenProps
+
+            const viewProps = Object.assign({}, screenProps, RouteDefinitions[route.routeName].props, {
+                value:      reconciler.readComponent(Component, route.params),
+                params:     route.params,
+                isActive:   true,
+            })
+
+            return <Component navigation = { navigation }
+                              {...viewProps} />
         }
     }
 }

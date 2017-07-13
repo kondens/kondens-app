@@ -118,22 +118,12 @@ export default class App extends UI {
             )
         } else {
             const navigationProps = addNavigationHelpers({
-                dispatch: (action) => dispatchNavigation(this.reconciler, action),
+                dispatch: (action) => this.reconciler.put(Mutations.NAVIGATION_DISPATCH, action),
                 state: this.navigationStateToJs(navigationState),
             })
 
-            const { routes, index } = navigationProps.state
-            const Component = Navigator.router.getComponentForState(navigationProps.state)
-
-            const route = routes[index]
-
-            const screenProps = Object.assign({}, RouteDefinitions[route.routeName].screenProps, {
-                reconciler: this.reconciler,
-                value: this.reconciler.readComponent(Component, routes[index].params),
-                params: routes[index].params,
-                // isActive: sceneProps.scene.isActive,
-                // {...props}
-            })
+            // This gets passed to _every_ screen
+            const screenProps = { reconciler: this.reconciler }
 
             return (
                 <View style={ styles.container }>
