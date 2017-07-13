@@ -17,7 +17,8 @@ import { Reconciler }   from "./src/reconciler";
 import read             from "./src/read";
 import mutate           from "./src/mutate";
 import { Routes,
-         Colors }       from "./src/constants";
+         Colors,
+         Mutations }       from "./src/constants";
 
 import { dummyData }    from "./src/dummyData";
 

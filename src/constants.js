@@ -1,10 +1,17 @@
 "use strict";
 
 export const Colors = {
-    accent:             "#FF7C04",
+    accent:             "#e91e63",
     background:         "#F8F8F8",
-    headerTint:         "#FF7C04",
+    headerTint:         "#D73964",
     headerBackground:   "#FFFFFF",
+    accentNeutral:      "#607D8B",
+}
+
+export const Font = {
+    h1Size:     24,
+    h1Weight:   "600",
+    bodySize:   16,
 }
 
 export const Routes = {
