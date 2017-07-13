@@ -9,20 +9,21 @@ import { Routes }    from "./constants"
 
 export const schema = {
     // We need indents to specify named entities
-    "db/ident":                 {":db/unique": ":db.unique/identity"},
+    "db/ident":                   {":db/unique": ":db.unique/identity"},
 
-    "user/staff":            {
+    "user/staff":                 {
         ":db/cardinality": ":db.cardinality/one",
         ":db/valueType": ":db.type/ref",
         ":db/unique": ":db.unique/identity",
     },
+    "user/currentSnaps":          {":db/valueType": ":db.type/derived"},
 
-    "date/timestamp":           {":db/unique": ":db.unique/identity"},
+    "date/timestamp":             {":db/unique": ":db.unique/identity"},
 
     //"staff/id":                 {":db/unique": ":db.unique/identity"},
-    "staff/name":               {":db/cardinality": ":db.cardinality/one"},
+    "staff/name":                 {":db/cardinality": ":db.cardinality/one"},
 
-    "task/id":                  {":db/unique": ":db.unique/identity"},
+    "task/id":                    {":db/unique": ":db.unique/identity"},
     "task/snapshot":              {
         ":db/cardinality": ":db.cardinality/many",
         ":db/valueType": ":db.type/ref"
@@ -46,7 +47,7 @@ export const schema = {
     },
     "snapshot/title":             {":db/cardinality": ":db.cardinality/one"},
     "snapshot/type":              {":db/cardinality": ":db.cardinality/one"},
-    "snapshot/completeness":      {":db/cardinality": ":db.cardinality/one"}, //:wip :complete :cancelled
+    "snapshot/completeness":      {":db/cardinality": ":db.cardinality/one"}, //:wip :done :cancelled
     "snapshot/rag":               {":db/cardinality": ":db.cardinality/one"}, //:red :amber :green
     "snapshot/summary":           {":db/cardinality": ":db.cardinality/many"},
     "snapshot/next":              {":db/cardinality": ":db.cardinality/many"},
