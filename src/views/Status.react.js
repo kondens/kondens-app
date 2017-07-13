@@ -4,14 +4,76 @@ import d                from "@clockworks/datascript";
 import React            from "react";
 import { View,
          TouchableOpacity,
-         Text }         from "react-native";
+         Text,
+         StyleSheet }         from "react-native";
 
 import { UI }           from "../UI.react";
-import { Mutations }    from "../constants";
+import { Mutations,
+         Completeness,
+         Colors,
+         Font }    from "../constants";
 
 import Moment           from "moment";
 
-const Task = ({title, start, end}) => {
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        flexDirection: "column",
+        backgroundColor: Colors.background
+    },
+
+    header: {
+
+    },
+
+    body: {
+        flex: 1,
+    },
+
+    footer: {
+        height: 60,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#fff",
+        // borderTopWidth: 1,
+        // borderTopColor: Colors.accent,
+    },
+    submit: {
+        color: Colors.accentNeutral,
+        fontSize: Font.bodySize,
+        margin: 12,
+    }
+})
+
+export class Submit extends UI {
+    static query () {
+        return d.vector(
+            d.hashMap(
+                d.vector("db/ident", ":user-data"), `[ {"user/staff" [ "staff/name" ]} ]`
+                ))
+    }
+
+    constructor (props) {
+        super(props)
+    }
+
+    componentWillMount() {
+    }
+
+    render () {
+        const { value, params } = this.props;
+
+        const n = d.getIn(value, [d.vector("db/ident", ":user-data"), "user/staff", "staff/name"])
+
+        return (
+            <TouchableOpacity onPress = { e => this.getReconciler().put(Mutations.SUBMIT_STATUS, "nice, nichma namespaced") }>
+                <Text style = { styles.submit }>Fertig {n}</Text>
+            </TouchableOpacity>
+        )
+    }
+}
+
+const Task = ({title, end}) => {
 
     return (
         <View>

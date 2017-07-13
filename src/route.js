@@ -3,6 +3,8 @@
  */
 "use strict";
 
+import React                from "react"
+
 import { StackNavigator }   from "react-navigation";
 
 import { makeScreen }       from "./makeScreen";
@@ -10,13 +12,18 @@ import { Routes,
          STR,
          Colors }           from "./constants";
 
-import Status               from "./views/Status.react";
+import { Status,
+         Submit }           from "./views/Status.react";
 
 
 export const RouteDefinitions = {
     [Routes.STATUS]: {
         screen: makeScreen(Status),
-        navigationOptions: { title: STR.VIEW.STATUS.TITLE },
+        navigationOptions: ({navigation, screenProps}) => {
+            return ({ 
+                title: STR.VIEW.STATUS.TITLE,
+                headerRight: React.createElement(makeScreen(Submit), {navigation: navigation, screenProps: screenProps}),
+            })}
     }
 };
 
