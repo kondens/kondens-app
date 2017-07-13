@@ -51,24 +51,16 @@ const currentSnapsForName = (db, name) => d.intersection(d.set(allSnapsForName(d
 
 const currentSnapsForStaff = (db, staff) => d.intersection(d.set(allSnapsForStaff(db, staff)), d.set(currentSnaps(db)));
 
-const taskIdForSnapId = (db, snapId) => d.q(`[:find ?taskId .
+const taskForSnapId = (db, snapId) => d.q(`[:find ?task .
                                               :in $ ?snapId
-                                              :where [?task "task/snapshot" ?snapId]
-                                                     [?task "task/id" ?taskId]]`,
+                                              :where [?task "task/snapshot" ?snapId]]`,
                                             db, snapId);
 
-read["user/tasks"] = ({db}, key, ident) => {
-    const staff = d.get(d.entity(db, d.vector("db/ident", ":user-data")), "user/staff")["eid"];
+read["user/currentSnaps"] = (key, db, eid) => {
+    const staff = d.getIn(d.entity(db, eid), ["user/staff", d.DB_ID]);
     const snapIds = currentSnapsForStaff(db, staff);
 
-    //const taskIds = d.map((snapId) => taskIdForSnapId(db, snapId), snapIds);
-    const tasks = d.pull_many(db, `[ { "snapshot/date" [ * ] }
-                                     { "snapshot/start" [ * ] }
-                                     { "snapshot/end" [ * ] }
-                                     * ]`, snapIds);
-
-    //return d.zipmap(taskIds, tasks);
-    return d.into(d.vector(), tasks)
+    return d.into(d.vector(), snapIds)
 }
 
 export default read;
