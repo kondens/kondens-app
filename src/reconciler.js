@@ -96,8 +96,8 @@ export class Reconciler {
                 
                 return d.updateIn(result, [key], v => {
                     const result = this.read[op](env, key, subQuery)
-                    
-                    if (d.isAssociative(result)) {
+
+                    if (d.isMap(result)) {
                         return d.merge(v, result)
                     } else {
                         return result
