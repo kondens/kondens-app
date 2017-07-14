@@ -36,13 +36,13 @@ const currentSnapForTask = (db, taskId) => {
 
 const currentSnaps = (db) => d.map((task) => currentSnapForTask(db, task), taskIds(db));
 
-const allSnapsForName = (db, name) => d.q(`[:find [?snap]
+const allSnapsForName = (db, name) => d.q(`[:find [?snap ...]
                                             :in $ ?name
                                             :where [?staff "staff/name" ?name]
                                                    [?snap "snapshot/staff" ?staff]]`, 
                                         db, name);
 
-const allSnapsForStaff = (db, staff) => d.q(`[:find [?snap]
+const allSnapsForStaff = (db, staff) => d.q(`[:find [?snap ...]
                                               :in $ ?staff
                                               :where [?snap "snapshot/staff" ?staff]]`,
                                             db, staff);
