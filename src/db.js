@@ -11,6 +11,9 @@ export const schema = {
     // We need indents to specify named entities
     "db/ident":                   {":db/unique": ":db.unique/identity"},
 
+    "ui/navigationState":         {":db/cardinality": ":db.cardinality/one"},
+    "ui/isStatusSubmitEnabled":   {":db/cardinality": ":db.cardinality/one"},
+
     "user/staff":                 {
         ":db/cardinality": ":db.cardinality/one",
         ":db/valueType": ":db.type/ref",
