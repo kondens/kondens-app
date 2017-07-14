@@ -47,7 +47,7 @@ export const schema = {
     },
     "snapshot/title":             {":db/cardinality": ":db.cardinality/one"},
     "snapshot/type":              {":db/cardinality": ":db.cardinality/one"},
-    "snapshot/completeness":      {":db/cardinality": ":db.cardinality/one"}, //:wip :done :cancelled
+    "snapshot/completeness":      {":db/cardinality": ":db.cardinality/one"}, //Completeness.x
     "snapshot/rag":               {":db/cardinality": ":db.cardinality/one"}, //:red :amber :green
     "snapshot/summary":           {":db/cardinality": ":db.cardinality/many"},
     "snapshot/next":              {":db/cardinality": ":db.cardinality/many"},

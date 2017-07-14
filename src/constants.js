@@ -35,6 +35,13 @@ export const Completeness = {
     WIP: "WIP",
     DONE: "DONE",
     CANCELLED: "CANCELLED",
+    NOT_STARTED: "NOT_STARTED",
+}
+
+export const RAG = {
+    RED: "RED",
+    AMBER: "AMBER",
+    GREEN: "GREEN",
 }
 
 export const STR = {
