@@ -51,6 +51,28 @@ export const dummyData = [
                 "snapshot/completeness": Completeness.WIP,
             }]
     },
+    {
+        "task/id": 3,
+        "task/snapshot": [{
+            "snapshot/date": {"date/timestamp": moment("2017-08-05").format("x")},
+            "snapshot/title": "Sales-Umbau",
+            "snapshot/start": {"date/timestamp": moment("2017-06-25").format("x")},
+            "snapshot/end": {"date/timestamp": moment("2017-10-01").format("x")},
+            "snapshot/staff": -2,
+            "snapshot/completeness": Completeness.WIP,
+        }],
+    },
+    {
+        "task/id": 4,
+        "task/snapshot": [{
+            "snapshot/date": {"date/timestamp": moment("2017-08-05").format("x")},
+            "snapshot/title": "Stakeholder-Analyse",
+            "snapshot/start": {"date/timestamp": moment("2017-07-01").format("x")},
+            "snapshot/end": {"date/timestamp": moment("2017-08-01").format("x")},
+            "snapshot/staff": -2,
+            "snapshot/completeness": Completeness.WIP,
+        }],
+    },
 ];
 
 export default dummyData
