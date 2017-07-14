@@ -257,9 +257,17 @@ const Task = ({title, start, end}) => {
     ]
 
     return (
-        <View>
-            <Text>{ title }</Text>
-            <Text>Dieser Task endet am { Moment(end, "x").format("DD. MMMM YYYY") } ({ Moment(end, "x").fromNow() })</Text>
+        <View style = { taskStyles.shadowContainer }>
+            <Swipeout autoClose = { true }
+                      right     = { swipeRight }
+                      left      = { swipeLeft }>
+                <View style = { taskStyles.container }>
+                        <Text style = { taskStyles.title }>{ title.toUpperCase() }</Text>
+                        {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
+                        <ProgressBar start = { start } end = { end } at = { Moment().format("x") } />
+                        <RAG />
+                </View>
+            </Swipeout>
         </View>
     )
 }
