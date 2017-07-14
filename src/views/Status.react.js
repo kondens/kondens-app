@@ -5,29 +5,45 @@ import React            from "react";
 import { View,
          TouchableOpacity,
          Text,
-         StyleSheet }         from "react-native";
+         StyleSheet,
+         Platform,
+         ScrollView }   from "react-native";
 
 import { UI }           from "../UI.react";
 import { Mutations,
          Completeness,
          Colors,
-         Font }    from "../constants";
+         Fonts }        from "../constants";
 
 import Moment           from "moment";
+
+import { FontAwesome }  from '@expo/vector-icons';
+
+import Swipeout         from "react-native-swipeout";
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         flexDirection: "column",
-        backgroundColor: Colors.background
+        backgroundColor: Colors.background,
+        padding: 6
     },
+    scrollContainer: {
 
+    },
     header: {
-
     },
-
     body: {
         flex: 1,
+    },
+    name: {
+        fontSize: Fonts.h3Size,
+        color: Colors.body,
+    },
+    date: {
+        fontSize: Fonts.h1Size,
+        fontWeight: Fonts.h1Weight,
+        color: Colors.accent,
     },
 
     footer: {
@@ -40,34 +56,125 @@ const styles = StyleSheet.create({
     },
     submit: {
         color: Colors.accentNeutral,
-        fontSize: Font.bodySize,
+        fontSize: Fonts.bodySize,
         margin: 12,
-    }
+    },
+    disabled: {
+        color: Colors.disabled,
+        fontSize: Fonts.bodySize,
+        margin: 12,
+    },
+})
+
+const taskStyles = StyleSheet.create({
+    shadowContainer: {
+        marginVertical: 9,
+        marginHorizontal: 6,
+        shadowOpacity: (Platform.OS == "ios") ? 0.18 : 0,
+        shadowRadius: 3,
+        shadowOffset: {
+            height: 2,
+            width: 3,
+        },
+    },
+    container: {
+        flexDirection: "column",
+        backgroundColor: "#FFF",
+        padding: 6,
+    },
+    title: {
+        fontSize: Fonts.bodySize,
+        fontWeight: Fonts.h2Weight,
+        color: Colors.body,
+        marginBottom: 6,
+    },
+})
+
+const progressBarStyles = StyleSheet.create({
+    container: {
+        marginBottom: 12,
+    },
+    barContainer: {
+        flex: 1,
+        flexDirection: "row",
+        borderRadius: 100,
+    },
+    bar: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        minHeight: 22,
+        paddingHorizontal: 14,
+        borderRadius: 100,
+        overflow: "hidden",
+    },
+    labelContainer: {
+        position: "absolute",
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: "transparent",
+        marginHorizontal: 6,
+    },
+    beforeBegin: {
+       color: Colors.body,
+       fontSize: Fonts.bodySize, 
+    },
+    label: {
+        flex: 1,
+        color: Colors.body,
+        fontSize: Fonts.bodySize,
+    },
+    start: {
+        textAlign: "left",
+    },
+    end: {
+        textAlign: "right",
+    },
+    remaining: {
+        textAlign: "center",
+    },
+})
+
+const ragStyles = StyleSheet.create({
+    container: {
+        flexDirection: "row",
+        justifyContent: "space-around",
+        marginHorizontal: 30,
+    },
+    button: {
+        borderRadius: 100,
+        paddingVertical: 6,
+        paddingHorizontal: 12,
+        width: 80,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    buttonLabel: {
+        color: "#FFF",
+        fontSize: Fonts.bodySize,
+    },
 })
 
 export class Submit extends UI {
     static query () {
         return d.vector(
             d.hashMap(
-                d.vector("db/ident", ":user-data"), `[ {"user/staff" [ "staff/name" ]} ]`
-                ))
+                d.vector("db/ident", ":ui"), `[ "ui/isStatusSubmitEnabled" ]`
+            ))
     }
 
     constructor (props) {
         super(props)
     }
 
-    componentWillMount() {
-    }
-
     render () {
         const { value, params } = this.props;
-
-        const n = d.getIn(value, [d.vector("db/ident", ":user-data"), "user/staff", "staff/name"])
+        const uiIndent = d.vector("db/ident", ":ui");
+        const isEnabled = d.getIn(value, [uiIndent, "ui/isStatusSubmitEnabled"], false);
 
         return (
-            <TouchableOpacity onPress = { e => this.getReconciler().put(Mutations.SUBMIT_STATUS, "nice, nichma namespaced") }>
-                <Text style = { styles.submit }>Fertig {n}</Text>
+            <TouchableOpacity disabled = { !isEnabled }
+                              onPress = { e => this.getReconciler().put(Mutations.SUBMIT_STATUS, "nice, nichma namespaced") }>
+                <Text style = { isEnabled ? styles.submit : styles.disabled }>Fertig</Text>
             </TouchableOpacity>
         )
     }
