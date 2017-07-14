@@ -180,7 +180,81 @@ export class Submit extends UI {
     }
 }
 
-const Task = ({title, end}) => {
+const ProgressBar = ({start, end, at}) => {
+    let progress = 0;
+    if (at > start) {
+        progress = (at-start) / (end-start);
+    }
+
+    if (progress > 0) {
+        return (
+            <View style={ progressBarStyles.container }>
+                <View style={ progressBarStyles.barContainer }>
+                    <View style={ [ progressBarStyles.bar, 
+                                    { backgroundColor: "#C8E6C9" }, 
+                                    { flex: progress } ] } />
+                    { (at < end) && <View style={ [progressBarStyles.bar, {flex: 1-progress}] } /> }
+                </View>
+                <View style={ progressBarStyles.labelContainer }>
+                    <Text style={ [progressBarStyles.label, progressBarStyles.start] }>
+                        { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } (endet { Moment(end, "x").fromNow() })
+                    </Text>
+                {/*
+                    <Text style={ [progressBarStyles.label, progressBarStyles.start] }>
+                        { Moment(start, "x").format("DD.MM.YY") } 
+                    </Text>
+                    <Text style={ [progressBarStyles.label, progressBarStyles.remaining] }>
+                        ({ Moment(end, "x").fromNow() })
+                    </Text>
+                    <Text style={ [progressBarStyles.label, progressBarStyles.end] }>
+                        { Moment(end, "x").format("DD.MM.YY") }
+                    </Text>*/}
+                </View>
+            </View>
+        )
+    } else {
+        return (
+            <View style={ progressBarStyles.container }>
+                <Text style = { progressBarStyles.beforeBegin }>
+                    Task beginnt am { Moment(start, "x").format("DD.MM.YY") } ({ Moment(start, "x").fromNow() })
+                </Text>
+            </View>
+        )
+    }
+}
+
+const RAG = () => (
+    <View style = { ragStyles.container }>
+        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#76C47D"}] }>
+            <FontAwesome name = "thumbs-up" size = {24} color = "#FFF" />
+        </TouchableOpacity>
+        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#FFC107"}] }>
+            <FontAwesome name = "bell" size = {24} color = "#FFF" />
+        </TouchableOpacity>
+        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#EF5350"}] }>
+            <FontAwesome name = "exclamation-triangle" size = {24} color = "#FFF" />
+        </TouchableOpacity>
+    </View>
+)
+
+const Task = ({title, start, end}) => {
+    const swipeRight = [
+        {
+            backgroundColor: "#FF8A65",
+            component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+                            <FontAwesome name = "trash-o" size = {38} color = "#FFF" />
+                        </View>
+        }
+    ]
+
+    const swipeLeft = [
+        {
+            backgroundColor: "#76C47D",
+            component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+                            <FontAwesome name = "check" size = {38} color = "#FFF" />
+                        </View>
+        }
+    ]
 
     return (
         <View>
@@ -200,6 +274,7 @@ export class Status extends UI {
                                                                                      { "snapshot/end" [ * ] }
                                                                                      * ] } ]` ))}
 
+
     render () {
         const { value, params } = this.props;
 
@@ -214,19 +289,21 @@ export class Status extends UI {
 
         const text = d.q(`[:find ?text . :where [42 ":text" ?text]]`, this.db)
         return (
-            <View style = { styles.container }>
-                <View style = { styles.header }>
-                    <Text>Status Report von {name} am { Moment().format("DD.MM.YY") }</Text>
-                    <Text>{text}</Text>
-                </View>
-                <View style = { styles.body }>
-                    { d.intoArray(d.map((task) => (
-                        <Task key   = { d.get(task, ":db/id") }
-                              title = { d.get(task, "snapshot/title") }
-                              start = { d.getIn(task, ["snapshot/start", "date/timestamp"]) }
-                              end   = { d.getIn(task, ["snapshot/end", "date/timestamp"]) } />
-                    ), wipTasks)) }
-                </View>
+            <View style = { styles.container }>
+                <ScrollView style = { styles.scrollContainer}>
+                    <View style = { styles.header }>
+                        <Text style = { styles.name }>{name}</Text>
+                        <Text style = { styles.date }>{ Moment().format("DD.MM.YY") }</Text>
+                    </View>
+                    <View style = { styles.body }>
+                        { d.intoArray(d.map((task) => (
+                                <Task key   = { d.get(task, ":db/id") }
+                                      title = { d.get(task, "snapshot/title") }
+                                      start = { d.getIn(task, ["snapshot/start", "date/timestamp"]) }
+                                      end   = { d.getIn(task, ["snapshot/end", "date/timestamp"]) } />
+                        ), wipTasks)) }
+                    </View>
+                </ScrollView>
                 {/*
                 <TouchableOpacity style = { styles.footer }>
                     <Text style = { styles.submit }>SUBMIT</Text>
