@@ -159,6 +159,7 @@ const ragStyles = StyleSheet.create({
         paddingVertical: 6,
         paddingHorizontal: 12,
         width: 80,
+        height: 36,
         alignItems: "center",
         justifyContent: "center",
     },
@@ -217,14 +218,14 @@ const addSnap = (reconciler) => {
 }
 
 const ActionBtn = ({reconciler}) => (
-    <ActionButton buttonColor={Colors.accent} title="Achievements" bgColor="rgba(0,0,0,0.3)" degrees={135}>
+    <ActionButton buttonColor={Colors.accent} title="Weitere Achievements" bgColor="rgba(0,0,0,0.3)" degrees={135}>
         <ActionButton.Item buttonColor='#76C47D' onPress={() => console.log("notes tapped!")}>
             <FontAwesome color = "#FFF" name = "trophy" size = {20} />
         </ActionButton.Item>
-        <ActionButton.Item buttonColor='#FF8A65' title="Risks" onPress={() => {addSnap(reconciler)}}>
+        <ActionButton.Item buttonColor='#FF8A65' title="Weitere Risks" onPress={() => {addSnap(reconciler)}}>
             <FontAwesome color = "#FFF" name = "exclamation-circle" size = {20} />
         </ActionButton.Item>
-        <ActionButton.Item buttonColor='#EF5350' title="Issues" onPress={() => {reconciler.put(Mutations.CREATE_STATUS)}}>
+        <ActionButton.Item buttonColor='#EF5350' title="Weitere Issues" onPress={() => {reconciler.put(Mutations.CREATE_STATUS)}}>
             <FontAwesome color = "#FFF" name = "exclamation-triangle" size = {20} />
         </ActionButton.Item>
     </ActionButton>
@@ -327,21 +328,23 @@ class Task extends UI {
             <Ripple style = { taskStyles.shadowContainer }
                     rippleOpacity = { 1.0 }
                     rippleDuration = { 300 }
-                    ref = { (ref) => { this.rippleTarget = ref } }
-                    onEnd = { () => this.setState({taskBG: "#FFC107",
-                                                   isColored: true}) }>
+                    ref = { ref => { this.rippleTarget = ref } }
+                    onEnd = { rag => {  rag ? reconciler.put(Mutations.UPDATE_STATUS, snapId, ["snapshot/rag", rag]) :
+                                              reconciler.put(Mutations.RESET_STATUS, snapId, "snapshot/rag") } }>
                 <Swipeout autoClose = { true }
                           right     = { swipeRight }
                           left      = { swipeLeft }>
                     <View style = { [taskStyles.container, { backgroundColor: this.state.taskBG }] }>
                             <Text style = { [taskStyles.title, this.state.isColored && {color: "#FFF"}] }>{ title.toUpperCase() }</Text>
                             {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
-                            <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { this.state.isColored } />
+                            <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { rag } />
                             <RAG reconciler = { reconciler }
-                                 makeRipple = { (e, color) => { e.persist()
-                                                                UIManager.measure(findNodeHandle(this.rippleTarget), 
-                                                                                  (x, y, width, height, px, py) => 
-                                                                                    { this.rippleTarget.startRipple(e, color, px, py, width, height) }) }}/>
+                                 snapId     = { snapId }
+                                 rag        = { rag }
+                                 makeRipple = { (e, color, rag, inverse) => { e.persist()
+                                                                              UIManager.measure(findNodeHandle(this.rippleTarget), 
+                                                                                                (x, y, width, height, px, py) => 
+                                                                                                { this.rippleTarget.startRipple(e, color, px, py, width, height, rag, inverse) }) }}/>
                     </View>
                 </Swipeout>
             </Ripple>
