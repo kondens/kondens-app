@@ -227,12 +227,12 @@ const ProgressBar = ({start, end, at, isLight}) => {
             <View style={ progressBarStyles.container }>
                 <View style={ progressBarStyles.barContainer }>
                     <View style={ [ progressBarStyles.bar, 
-                                    { backgroundColor: "#C8E6C9" }, 
+                                    isLight ? { backgroundColor: "#76C47D" } : { backgroundColor: "#C8E6C9" }, 
                                     { flex: progress } ] } />
                     { (at < end) && <View style={ [progressBarStyles.bar, {flex: 1-progress}] } /> }
                 </View>
                 <View style={ progressBarStyles.labelContainer }>
-                    <Text style={ [progressBarStyles.label, progressBarStyles.start] }>
+                    <Text style={ [progressBarStyles.label, progressBarStyles.start, isLight && {color: "#FFF"}] }>
                         { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } (endet { Moment(end, "x").fromNow() })
                     </Text>
                 {/*
@@ -251,7 +251,7 @@ const ProgressBar = ({start, end, at, isLight}) => {
     } else {
         return (
             <View style={ progressBarStyles.container }>
-                <Text style = { progressBarStyles.beforeBegin }>
+                <Text style = { [progressBarStyles.beforeBegin, isLight && {color: "#FFF"} ] }>
                     Task beginnt am { Moment(start, "x").format("DD.MM.YY") } ({ Moment(start, "x").fromNow() })
                 </Text>
             </View>
@@ -259,53 +259,80 @@ const ProgressBar = ({start, end, at, isLight}) => {
     }
 }
 
-const RAG = () => (
+const RAG = ({makeRipple, reconciler}) => (
     <View style = { ragStyles.container }>
-        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#76C47D"}] }>
+        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#76C47D"}] }
+                        onPress = { e => { makeRipple(e, "#76C47D"); 
+                                           reconciler.put(Mutations.SUBMIT_RAG, RAGs.GREEN); } }>
             <FontAwesome name = "thumbs-up" size = {24} color = "#FFF" />
         </TouchableOpacity>
-        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#FFC107"}] }>
+        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#FFC107"}] }
+                        onPress = { e => { makeRipple(e, "#FFC107");
+                                           reconciler.put(Mutations.SUBMIT_RAG, RAGs.AMBER); } }>
             <FontAwesome name = "bell" size = {24} color = "#FFF" />
         </TouchableOpacity>
-        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#EF5350"}] }>
+        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#EF5350"}] }
+                        onPress = { e => { makeRipple(e, "#EF5350"); 
+                                           reconciler.put(Mutations.SUBMIT_RAG, RAGs.RED); } }>
             <FontAwesome name = "exclamation-triangle" size = {24} color = "#FFF" />
         </TouchableOpacity>
     </View>
 )
 
-const Task = ({title, start, end}) => {
-    const swipeRight = [
-        {
-            backgroundColor: "#FF8A65",
-            component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                            <FontAwesome name = "trash-o" size = {38} color = "#FFF" />
-                        </View>
-        }
-    ]
+class Task extends UI {
+    constructor (props) {
+        super(props);
+        this.rippleTarget = undefined;
+        this.state = {taskBG: "#FFF",
+                      isColored: false};
+    }
 
-    const swipeLeft = [
-        {
-            backgroundColor: "#76C47D",
-            component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                            <FontAwesome name = "check" size = {38} color = "#FFF" />
-                        </View>
-        }
-    ]
+    render () {
+        const { title, start, end, reconciler } = this.props
 
-    return (
-        <View style = { taskStyles.shadowContainer }>
-            <Swipeout autoClose = { true }
-                      right     = { swipeRight }
-                      left      = { swipeLeft }>
-                <View style = { taskStyles.container }>
-                        <Text style = { taskStyles.title }>{ title.toUpperCase() }</Text>
-                        {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
-                        <ProgressBar start = { start } end = { end } at = { Moment().format("x") } />
-                        <RAG />
-                </View>
-            </Swipeout>
-        </View>
-    )
+        const swipeRight = [
+            {
+                backgroundColor: "#FF8A65",
+                component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+                                <FontAwesome name = "trash-o" size = {38} color = "#FFF" />
+                            </View>
+            }
+        ]
+
+        const swipeLeft = [
+            {
+                backgroundColor: "#76C47D",
+                component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+                                <FontAwesome name = "check" size = {38} color = "#FFF" />
+                            </View>
+            }
+        ]
+
+        //@TODO: swipe/scroll etc. https://github.com/dancormier/react-native-swipeout/wiki
+        return (
+            <Ripple style = { taskStyles.shadowContainer }
+                    rippleOpacity = { 1.0 }
+                    rippleDuration = { 300 }
+                    ref = { (ref) => { this.rippleTarget = ref } }
+                    onEnd = { () => this.setState({taskBG: "#FFC107",
+                                                   isColored: true}) }>
+                <Swipeout autoClose = { true }
+                          right     = { swipeRight }
+                          left      = { swipeLeft }>
+                    <View style = { [taskStyles.container, { backgroundColor: this.state.taskBG }] }>
+                            <Text style = { [taskStyles.title, this.state.isColored && {color: "#FFF"}] }>{ title.toUpperCase() }</Text>
+                            {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
+                            <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { this.state.isColored } />
+                            <RAG reconciler = { reconciler }
+                                 makeRipple = { (e, color) => { e.persist()
+                                                                UIManager.measure(findNodeHandle(this.rippleTarget), 
+                                                                                  (x, y, width, height, px, py) => 
+                                                                                    { this.rippleTarget.startRipple(e, color, px, py, width, height) }) }}/>
+                    </View>
+                </Swipeout>
+            </Ripple>
+        )
+    }
 }
 
 export class Status extends UI {
