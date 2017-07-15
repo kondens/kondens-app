@@ -58,6 +58,19 @@ mutate[Mutations.CREATE_STATUS] = (target) => {
         d.transact(target.conn, snapsToCopy);
 }
 
+mutate[Mutations.UPDATE_STATUS] = (target, snapId, [field, value]) => {
+    d.transact(target.conn, [[":db/add", snapId, field, value]])
+}
+
+mutate[Mutations.RESET_STATUS] = (target, snapId, field) => {
+    d.transact(target.conn, [[":db.fn/retractAttribute", snapId, field]])
+}
+
+// mutate[Mutations.SUBMIT_RAG] = (target, rag) => {
+//     console.log("submitting ", rag)
+//     d.transact(target.conn, [[":db/add", 42, ":text", rag]])
+// }
+
 mutate[Mutations.SUBMIT_STATUS] = (target, user) => {
 
 }
