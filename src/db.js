@@ -48,6 +48,7 @@ export const schema = {
         ":db/cardinality": ":db.cardinality/one",
         ":db/valueType": ":db.type/ref",
     },
+    "snapshot/isInCreation":        {":db/cardinality": ":db.cardinality/one"},
     "snapshot/title":             {":db/cardinality": ":db.cardinality/one"},
     "snapshot/type":              {":db/cardinality": ":db.cardinality/one"},
     "snapshot/completeness":      {":db/cardinality": ":db.cardinality/one"}, //Completeness.x

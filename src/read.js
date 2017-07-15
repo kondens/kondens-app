@@ -47,9 +47,17 @@ const allSnapsForStaff = (db, staff) => d.q(`[:find [?snap ...]
                                               :where [?snap "snapshot/staff" ?staff]]`,
                                             db, staff);
 
+const wipSnapsForStaff = (db, staff) => d.q(`[:find [?snap ...]
+                                              :in $ ?staff
+                                              :where [?snap "snapshot/staff" ?staff]
+                                                     [?snap "snapshot/wip" true]]`,
+                                            db, staff);
+
 const currentSnapsForName = (db, name) => d.intersection(d.set(allSnapsForName(db, name)), d.set(currentSnaps(db)));
 
 const currentSnapsForStaff = (db, staff) => d.intersection(d.set(allSnapsForStaff(db, staff)), d.set(currentSnaps(db)));
+
+const currentWipSnapsForStaff = (db, staff) => d.intersection(d.set(wipSnapsForStaff(db, staff)), d.set(currentSnaps(db)));
 
 const taskForSnapId = (db, snapId) => d.q(`[:find ?task .
                                               :in $ ?snapId
