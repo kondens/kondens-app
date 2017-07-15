@@ -3,6 +3,7 @@
 import d                from "@clockworks/datascript";
 import React            from "react";
 import { StyleSheet, 
+         AppState,
          Text,
          ActivityIndicator, 
          View } from "react-native";
@@ -58,7 +59,7 @@ export default class App extends UI {
         // AppState.addEventListener('memoryWarning', this.onMemoryWarning);
 
         // // Handle App State Transitions
-        // AppState.addEventListener('change', this.onAppStateChange)
+        AppState.addEventListener('change', this.onAppStateChange)
 
         // // Handle the Back Button on Android
         // if (Platform.OS === "android") {
@@ -92,6 +93,15 @@ export default class App extends UI {
 
         // this.keyboardShowListener.remove()
         // this.keyboardHideListener.remove()
+    }
+
+    onAppStateChange = (currentState) => {
+        if (currentState == "background") {
+            // this.reconciler.put(SystemActions.ENTER_BACKGROUND, {})
+        } else if (currentState == "active") {
+            // this.reconciler.put(SystemActions.ENTER_FOREGROUND, {})
+            this.reconciler.put(Mutations.CREATE_STATUS)
+        }
     }
 
     // We have to memoize the navigation state js object,
