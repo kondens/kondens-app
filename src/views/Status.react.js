@@ -339,7 +339,7 @@ export class Status extends UI {
     static query () {
         return d.vector(
             d.hashMap(
-                d.vector("db/ident", ":user-data"), `[ {"user/staff" [ "staff/name" ]}
+                d.vector("db/ident", ":user-data"), `[ {"user/staff" [ "staff/name" :db/id ]}
                                                        {(read "user/currentSnaps") [ { "snapshot/date" [ * ] }
                                                                                      { "snapshot/start" [ * ] }
                                                                                      { "snapshot/end" [ * ] }
@@ -351,6 +351,7 @@ export class Status extends UI {
 
         const userIdent = d.vector("db/ident", ":user-data")
         const name = d.getIn(value, [userIdent, "user/staff", "staff/name"]);
+        const staffId = d.getIn(value, [userIdent, "user/staff", d.DB_ID]);
 
         const tasks = d.getIn(value, [userIdent, "user/currentSnaps"]);
 
@@ -363,22 +364,20 @@ export class Status extends UI {
             <View style = { styles.container }>
                 <ScrollView style = { styles.scrollContainer}>
                     <View style = { styles.header }>
-                        <Text style = { styles.name }>{name}</Text>
+                        <Text style = { styles.name }>{name}, {staffId}</Text>
                         <Text style = { styles.date }>{ Moment().format("DD.MM.YY") }</Text>
                     </View>
                     <View style = { styles.body }>
                         { d.intoArray(d.map((task) => (
-                                <Task key   = { d.get(task, ":db/id") }
+                                <Task key   = { d.get(task, d.DB_ID) }
                                       title = { d.get(task, "snapshot/title") }
                                       start = { d.getIn(task, ["snapshot/start", "date/timestamp"]) }
-                                      end   = { d.getIn(task, ["snapshot/end", "date/timestamp"]) } />
+                                      end   = { d.getIn(task, ["snapshot/end", "date/timestamp"]) }
+                                      reconciler = { this.getReconciler() } />
                         ), wipTasks)) }
                     </View>
                 </ScrollView>
-                {/*
-                <TouchableOpacity style = { styles.footer }>
-                    <Text style = { styles.submit }>SUBMIT</Text>
-                </TouchableOpacity>*/}
+                <ActionBtn reconciler = { this.getReconciler() } />
             </View>
         )
     }
@@ -386,7 +385,7 @@ export class Status extends UI {
 
 /*
 <Text>{ text }</Text>
-<TouchableOpacity  }>
+<TouchableOpacity>
     <Text>KLICKMICH</Text>
 </TouchableOpacity>*/
 
