@@ -26,8 +26,11 @@ export const Routes = {
 }
 
 export const Mutations = {
+    CREATE_STATUS: "!status/create",
     SUBMIT_STATUS: "!status/submit",
-    
+
+    ADD_SNAP: "!status/add-snap",
+
     NAVIGATION_DISPATCH: "!navigation/dispatch",
 }
 
@@ -35,10 +38,10 @@ export const Completeness = {
     WIP: "WIP",
     DONE: "DONE",
     CANCELLED: "CANCELLED",
-    NOT_STARTED: "NOT_STARTED",
+    // NOT_STARTED: "NOT_STARTED",
 }
 
-export const RAG = {
+export const RAGs = {
     RED: "RED",
     AMBER: "AMBER",
     GREEN: "GREEN",
