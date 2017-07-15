@@ -19,7 +19,7 @@
     "preset": "jest-expo"
   },
   "dependencies": {
-    "@clockworks/datascript": "git+ssh://git@bitbucket.org/clockworksde/datascript.git#derived-attributes",
+    "@clockworks/datascript": "git+ssh://git@bitbucket.org/clockworksde/datascript.git",
     "expo": "^18.0.3",
     "moment": "^2.18.1",
     "react": "16.0.0-alpha.12",
