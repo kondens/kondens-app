@@ -405,28 +405,29 @@ export class Status extends UI {
         const name = d.getIn(value, [userIdent, "user/staff", "staff/name"]);
         const staffId = d.getIn(value, [userIdent, "user/staff", d.DB_ID]);
 
-        const tasks = d.getIn(value, [userIdent, "user/currentSnaps"]);
-
-        const wipTasks = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.WIP), tasks);
-        const doneTasks = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.DONE), tasks);
-        const cancelledTasks = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.CANCELLED), tasks);
+        const snaps = d.getIn(value, [userIdent, "user/currentSnaps"]);
+        const wipSnaps = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.WIP), snaps);
+        // const doneSnaps = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.DONE), snaps);
+        // const cancelledSnaps = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.CANCELLED), snaps);
 
         const text = d.q(`[:find ?text . :where [42 ":text" ?text]]`, this.db)
         return (
             <View style = { styles.container }>
                 <ScrollView style = { styles.scrollContainer}>
                     <View style = { styles.header }>
-                        <Text style = { styles.name }>{name}, {staffId}</Text>
+                        <Text style = { styles.name }>{name}</Text>
                         <Text style = { styles.date }>{ Moment().format("DD.MM.YY") }</Text>
                     </View>
                     <View style = { styles.body }>
-                        { d.intoArray(d.map((task) => (
-                                <Task key   = { d.get(task, d.DB_ID) }
-                                      title = { d.get(task, "snapshot/title") }
-                                      start = { d.getIn(task, ["snapshot/start", "date/timestamp"]) }
-                                      end   = { d.getIn(task, ["snapshot/end", "date/timestamp"]) }
+                        { d.intoArray(d.map((snap) => (
+                                <Task key   = { d.get(snap, d.DB_ID) }
+                                      rag   = { d.get(snap, "snapshot/rag", false) }
+                                      snapId= { d.get(snap, d.DB_ID) }
+                                      title = { d.get(snap, "snapshot/title") }
+                                      start = { d.getIn(snap, ["snapshot/start", "date/timestamp"]) }
+                                      end   = { d.getIn(snap, ["snapshot/end", "date/timestamp"]) }
                                       reconciler = { this.getReconciler() } />
-                        ), wipTasks)) }
+                        ), wipSnaps)) }
                     </View>
                 </ScrollView>
                 <ActionBtn reconciler = { this.getReconciler() } />
