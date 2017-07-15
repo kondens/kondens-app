@@ -54,7 +54,8 @@ mutate[Mutations.CREATE_STATUS] = (target) => {
                                                                         "snapshot/isInCreation", true), snaps),
                                    snaps => d.map(snap => d.dissoc(snap, d.DB_ID, "snapshot/rag"), snaps));
 
-    d.transact(target.conn, snapsToCopy);
+    if (!d.isEmpty(snapsToCopy))
+        d.transact(target.conn, snapsToCopy);
 }
 
 mutate[Mutations.SUBMIT_STATUS] = (target, user) => {
