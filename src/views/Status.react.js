@@ -7,19 +7,26 @@ import { View,
          Text,
          StyleSheet,
          Platform,
-         ScrollView }   from "react-native";
+         ScrollView,
+         findNodeHandle,
+         UIManager }   from "react-native";
 
 import { UI }           from "../UI.react";
 import { Mutations,
          Completeness,
          Colors,
-         Fonts }        from "../constants";
+         Fonts,
+         RAGs }        from "../constants";
 
 import Moment           from "moment";
 
 import { FontAwesome }  from '@expo/vector-icons';
 
 import Swipeout         from "react-native-swipeout";
+
+import Ripple           from "react-native-material-ripple";
+import ActionButton     from "react-native-action-button";
+
 
 const styles = StyleSheet.create({
     container: {
@@ -173,14 +180,43 @@ export class Submit extends UI {
 
         return (
             <TouchableOpacity disabled = { !isEnabled }
-                              onPress = { e => this.getReconciler().put(Mutations.SUBMIT_STATUS, "nice, nichma namespaced") }>
+                              onPress = { e => this.getReconciler().put(Mutations.SUBMIT_RAG, "nice, nichma namespaced") }>
                 <Text style = { isEnabled ? styles.submit : styles.disabled }>Fertig</Text>
             </TouchableOpacity>
         )
     }
 }
 
-const ProgressBar = ({start, end, at}) => {
+
+const addSnap = (reconciler) => {
+    const snap = { date: Moment("2017-08-11").format("x"),
+                   start: Moment("2017-07-21").format("x"),
+                   end: Moment("2017-07-30").format("x"),
+                   wip: true,
+                   title: "Creational Snap",
+                   completeness: Completeness.WIP,
+                   rag: RAGs.GREEN,
+                  //@TODO: further attributes
+                  };
+
+    reconciler.put(Mutations.ADD_SNAP, 1, 3, snap);
+}
+
+const ActionBtn = ({reconciler}) => (
+    <ActionButton buttonColor={Colors.accent} title="Achievements" bgColor="rgba(0,0,0,0.3)" degrees={135}>
+        <ActionButton.Item buttonColor='#76C47D' onPress={() => console.log("notes tapped!")}>
+            <FontAwesome color = "#FFF" name = "trophy" size = {20} />
+        </ActionButton.Item>
+        <ActionButton.Item buttonColor='#FF8A65' title="Risks" onPress={() => {addSnap(reconciler)}}>
+            <FontAwesome color = "#FFF" name = "exclamation-circle" size = {20} />
+        </ActionButton.Item>
+        <ActionButton.Item buttonColor='#EF5350' title="Issues" onPress={() => {reconciler.put(Mutations.CREATE_STATUS)}}>
+            <FontAwesome color = "#FFF" name = "exclamation-triangle" size = {20} />
+        </ActionButton.Item>
+    </ActionButton>
+);
+
+const ProgressBar = ({start, end, at, isLight}) => {
     let progress = 0;
     if (at > start) {
         progress = (at-start) / (end-start);
