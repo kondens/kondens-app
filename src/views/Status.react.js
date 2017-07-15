@@ -242,7 +242,7 @@ const ProgressBar = ({start, end, at, isLight}) => {
             <View style={ progressBarStyles.container }>
                 <View style={ progressBarStyles.barContainer }>
                     <View style={ [ progressBarStyles.bar, 
-                                    isLight ? { backgroundColor: "#76C47D" } : { backgroundColor: "#C8E6C9" }, 
+                                    isLight ? { backgroundColor: "transparent" } : { backgroundColor: "#C8E6C9" }, 
                                     { flex: progress } ] } />
                     { (at < end) && <View style={ [progressBarStyles.bar, {flex: 1-progress}] } /> }
                 </View>
@@ -274,36 +274,68 @@ const ProgressBar = ({start, end, at, isLight}) => {
     }
 }
 
-const RAG = ({makeRipple, reconciler}) => (
-    <View style = { ragStyles.container }>
-        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#76C47D"}] }
-                        onPress = { e => { makeRipple(e, "#76C47D"); 
-                                           reconciler.put(Mutations.SUBMIT_RAG, RAGs.GREEN); } }>
-            <FontAwesome name = "thumbs-up" size = {24} color = "#FFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#FFC107"}] }
-                        onPress = { e => { makeRipple(e, "#FFC107");
-                                           reconciler.put(Mutations.SUBMIT_RAG, RAGs.AMBER); } }>
-            <FontAwesome name = "bell" size = {24} color = "#FFF" />
-        </TouchableOpacity>
-        <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#EF5350"}] }
-                        onPress = { e => { makeRipple(e, "#EF5350"); 
-                                           reconciler.put(Mutations.SUBMIT_RAG, RAGs.RED); } }>
-            <FontAwesome name = "exclamation-triangle" size = {24} color = "#FFF" />
-        </TouchableOpacity>
-    </View>
-)
+const RAG = ({makeRipple, reconciler, snapId, rag}) => {
+    if (!rag) {
+        return (
+            <View style = { ragStyles.container }>
+                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#76C47D"}] }
+                                onPress = { e => { makeRipple(e, "#76C47D", RAGs.GREEN, false); } }>
+                    <FontAwesome name = "thumbs-up" size = {24} color = "#FFF" />
+                </TouchableOpacity>
+                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#FFC107"}] }
+                                onPress = { e => { makeRipple(e, "#FFC107", RAGs.AMBER, false); } }>
+                    <FontAwesome name = "bell" size = {24} color = "#FFF" />
+                </TouchableOpacity>
+                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#EF5350"}] }
+                                onPress = { e => { makeRipple(e, "#EF5350", RAGs.RED, false); } }>
+                    <FontAwesome name = "exclamation-triangle" size = {24} color = "#FFF" />
+                </TouchableOpacity>
+            </View>
+        )
+    } else {
+        let ragSymbol = {
+            [RAGs.GREEN]: "thumbs-up",
+            [RAGs.AMBER]: "bell",
+            [RAGs.RED]: "exclamation-triangle",   
+        }
+
+        let ragColor = {
+            [RAGs.GREEN]: "#76C47D",
+            [RAGs.AMBER]: "#FFC107",
+            [RAGs.RED]: "#EF5350",
+        }
+
+        return (
+            <View style = { ragStyles.container }>
+                <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton ] }>
+                    <Text style = { ragStyles.buttonLabel }>Risk?</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton, {width: 50} ] }
+                                onPress = { e => { makeRipple(e, "#FFF", rag, true)} }>
+                    <FontAwesome name = { ragSymbol[rag] } size = {24} color = "#FFF" />
+                </TouchableOpacity> 
+                <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton ] }>
+                    <Text style = { ragStyles.buttonLabel }>Issue?</Text>
+                </TouchableOpacity>
+            </View>
+        )
+    }
+}
 
 class Task extends UI {
     constructor (props) {
         super(props);
         this.rippleTarget = undefined;
-        this.state = {taskBG: "#FFF",
-                      isColored: false};
     }
 
     render () {
-        const { title, start, end, reconciler } = this.props
+        const { title, start, end, reconciler, snapId, rag } = this.props
+
+        let ragColor = {
+            [RAGs.GREEN]: "#76C47D",
+            [RAGs.AMBER]: "#FFC107",
+            [RAGs.RED]: "#EF5350",
+        }
 
         const swipeRight = [
             {
@@ -334,8 +366,8 @@ class Task extends UI {
                 <Swipeout autoClose = { true }
                           right     = { swipeRight }
                           left      = { swipeLeft }>
-                    <View style = { [taskStyles.container, { backgroundColor: this.state.taskBG }] }>
-                            <Text style = { [taskStyles.title, this.state.isColored && {color: "#FFF"}] }>{ title.toUpperCase() }</Text>
+                    <View style = { [taskStyles.container, rag && {backgroundColor: ragColor[rag]}] }>
+                            <Text style = { [taskStyles.title, rag && {color: "#FFF"}] }>{ title.toUpperCase() }</Text>
                             {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
                             <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { rag } />
                             <RAG reconciler = { reconciler }
@@ -362,6 +394,9 @@ export class Status extends UI {
                                                                                      { "snapshot/end" [ * ] }
                                                                                      * ] } ]` ))}
 
+    constructor (props) {
+        super(props);
+    }
 
     render () {
         const { value, params } = this.props;
