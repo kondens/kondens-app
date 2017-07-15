@@ -27,6 +27,8 @@ export const Routes = {
 
 export const Mutations = {
     CREATE_STATUS: "!status/create",
+    UPDATE_STATUS: "!status/update",
+    RESET_STATUS:  "!status/reset",
     SUBMIT_STATUS: "!status/submit",
 
     ADD_SNAP: "!status/add-snap",

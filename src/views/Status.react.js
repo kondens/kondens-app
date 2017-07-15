@@ -9,7 +9,8 @@ import { View,
          Platform,
          ScrollView,
          findNodeHandle,
-         UIManager }   from "react-native";
+         UIManager,
+         Alert }   from "react-native";
 
 import { UI }           from "../UI.react";
 import { Mutations,
@@ -61,13 +62,19 @@ const styles = StyleSheet.create({
         // borderTopWidth: 1,
         // borderTopColor: Colors.accent,
     },
-    submit: {
-        color: Colors.accentNeutral,
-        fontSize: Fonts.bodySize,
-        margin: 12,
+    submitButton: {
+        // backgroundColor: Colors.accentNeutral,
+        // margin: 12,
+        // borderRadius: 100,
+        // paddingVertical: 6,
+        // paddingHorizontal: 12,
+        // width: 80,
+        // height: 36,
+        // alignItems: "center",
+        // justifyContent: "center",
     },
-    disabled: {
-        color: Colors.disabled,
+    submitText: {
+        color: Colors.accent,
         fontSize: Fonts.bodySize,
         margin: 12,
     },
@@ -159,13 +166,18 @@ const ragStyles = StyleSheet.create({
         color: "#FFF",
         fontSize: Fonts.bodySize,
     },
+    invertedButton: {
+        borderWidth: 1,
+        backgroundColor: "transparent",
+        borderColor: "#FFF",
+    }
 })
 
 export class Submit extends UI {
     static query () {
         return d.vector(
             d.hashMap(
-                d.vector("db/ident", ":ui"), `[ "ui/isStatusSubmitEnabled" ]`
+                d.vector("db/ident", ":user-data"), `[ (read "user/isStatusComplete") ]`
             ))
     }
 
@@ -175,13 +187,15 @@ export class Submit extends UI {
 
     render () {
         const { value, params } = this.props;
-        const uiIndent = d.vector("db/ident", ":ui");
-        const isEnabled = d.getIn(value, [uiIndent, "ui/isStatusSubmitEnabled"], false);
+        const uiIndent = d.vector("db/ident", ":user-data");
+        const isEnabled = d.getIn(value, [uiIndent, "user/isStatusComplete"], false);
 
         return (
             <TouchableOpacity disabled = { !isEnabled }
-                              onPress = { e => this.getReconciler().put(Mutations.SUBMIT_RAG, "nice, nichma namespaced") }>
-                <Text style = { isEnabled ? styles.submit : styles.disabled }>Fertig</Text>
+                              style    = { isEnabled && styles.submitButton }
+                              onPress  = { e => { Alert.alert("Demo-Ende", "Hier gehts bald weiter!",
+                                                              [{text: "Cool!", onPress: () => {}}]) } }>
+                <Text style = { [styles.submitText, !isEnabled && {color: Colors.disabled}] }>Fertig</Text>
             </TouchableOpacity>
         )
     }

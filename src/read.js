@@ -21,6 +21,7 @@ const readFn = (key, db, eid) => read[key](key, db, eid);
 // e.g. with key ["db/ident", ":user-data"]: d.pull(db, q, ["db/ident", ":user-data"])
 read[DEFAULT] = ({db}, key, subQuery) => d.pull(db, subQuery, key, readFn);
 
+
 const taskIds = (db) => d.map((datom) => d.get(datom, "v"), d.datoms(db, ":avet", "task/id"));
 
 const currentSnapForTask = (db, taskId) => {
@@ -69,6 +70,13 @@ read["user/currentSnaps"] = (key, db, eid) => {
     const snapIds = currentSnapsForStaff(db, staff);
 
     return d.into(d.vector(), snapIds)
+}
+
+read["user/isStatusComplete"] = (key, db, eid) => {
+    const currentSnaps = read["user/currentSnaps"](key, db, eid);
+    const snapRags = d.pull_many(db, `[ "snapshot/rag" ]`, currentSnaps);
+
+    return d.count(snapRags) == d.count(currentSnaps);
 }
 
 export default read;

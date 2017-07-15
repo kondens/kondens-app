@@ -12,7 +12,6 @@ export const schema = {
     "db/ident":                   {":db/unique": ":db.unique/identity"},
 
     "ui/navigationState":         {":db/cardinality": ":db.cardinality/one"},
-    "ui/isStatusSubmitEnabled":   {":db/cardinality": ":db.cardinality/one"},
 
     "user/staff":                 {
         ":db/cardinality": ":db.cardinality/one",
@@ -20,6 +19,7 @@ export const schema = {
         ":db/unique": ":db.unique/identity",
     },
     "user/currentSnaps":          {":db/valueType": ":db.type/derived"},
+    "user/isStatusComplete":      {":db/valueType": ":db.type/derived"},
 
     "date/timestamp":             {":db/unique": ":db.unique/identity"},
 

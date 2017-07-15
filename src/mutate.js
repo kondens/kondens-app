@@ -21,10 +21,6 @@ import Moment           from "moment";
 
 const mutate = {};
 
-mutate[Mutations.SUBMIT_RAG] = (target, rag) => {
-    console.log("submitting ", rag)
-    d.transact(target.conn, [[":db/add", 42, ":text", rag]])
-}
 
 mutate[Mutations.ADD_SNAP] = (target, taskId, staff, snapshot) => {
     const task = d.q(`[:find ?task . :in $ ?taskId :where [?task "task/id" ?taskId]]`, d.db(target.conn), taskId);
@@ -56,7 +52,7 @@ mutate[Mutations.CREATE_STATUS] = (target) => {
                                    snaps => d.map(snap => d.assoc(snap, "snapshot/date", d.hashMap("date/timestamp", Moment().format("x")), 
                                                                         "task/_snapshot", d.getIn(snap, ["task/_snapshot", 0, d.DB_ID]),
                                                                         "snapshot/isInCreation", true), snaps),
-                                   snaps => d.map(snap => d.dissoc(snap, d.DB_ID), snaps))
+                                   snaps => d.map(snap => d.dissoc(snap, d.DB_ID, "snapshot/rag"), snaps));
 
     d.transact(target.conn, snapsToCopy);
 }
