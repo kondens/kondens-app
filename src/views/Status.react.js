@@ -111,14 +111,14 @@ const progressBarStyles = StyleSheet.create({
     barContainer: {
         flex: 1,
         flexDirection: "row",
-        borderRadius: 100,
+        borderRadius: 50,
     },
     bar: {
         flexDirection: "row",
         justifyContent: "space-between",
         minHeight: 22,
         paddingHorizontal: 14,
-        borderRadius: 100,
+        borderRadius: 50,
         overflow: "hidden",
     },
     labelContainer: {
@@ -155,7 +155,7 @@ const ragStyles = StyleSheet.create({
         marginHorizontal: 30,
     },
     button: {
-        borderRadius: 100,
+        borderRadius: 50,
         paddingVertical: 6,
         paddingHorizontal: 12,
         width: 80,
