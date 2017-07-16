@@ -15,6 +15,8 @@ import { Routes,
 import { Status,
          Submit }           from "./views/Status.react";
 
+import  Report         from "./views/Report.react";
+
 
 export const RouteDefinitions = {
     [Routes.STATUS]: {
@@ -23,6 +25,14 @@ export const RouteDefinitions = {
             return ({ 
                 title: STR.VIEW.STATUS.TITLE,
                 headerRight: React.createElement(makeScreen(Submit), {navigation: navigation, screenProps: screenProps}),
+            })}
+    },
+    [Routes.REPORT]: {
+        screen: Report,
+        navigationOptions: ({navigation, screenProps}) => {
+            return ({ 
+                title: STR.VIEW.REPORT.TITLE,
+                //headerRight: React.createElement(makeScreen(Submit), {navigation: navigation, screenProps: screenProps}),
             })}
     }
 };

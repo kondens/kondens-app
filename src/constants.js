@@ -23,6 +23,7 @@ export const Fonts = {
 
 export const Routes = {
     STATUS: "routes/status",
+    REPORT: "routes/report",
 }
 
 export const Mutations = {
@@ -52,7 +53,10 @@ export const RAGs = {
 export const STR = {
     VIEW: {
         STATUS: {
-            TITLE: "Status Report"
-        }
+            TITLE: "Task Status"
+        },
+        REPORT: {
+            TITLE: "Report",
+        },
     }
 }
