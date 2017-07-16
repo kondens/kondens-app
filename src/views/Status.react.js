@@ -25,7 +25,7 @@ import { FontAwesome }  from '@expo/vector-icons';
 
 import Swipeout         from "react-native-swipeout";
 
-import Ripple           from "react-native-material-ripple";
+import Ripple           from "../components/Ripple";
 import ActionButton     from "react-native-action-button";
 
 
