@@ -12,7 +12,7 @@ export const makeScreen = (Component) => {
             const route = navigation.state
             const { reconciler } = screenProps
 
-            const viewProps = Object.assign({}, screenProps, RouteDefinitions[route.routeName].props, {
+            const viewProps = Object.assign({}, screenProps, {
                 value:      reconciler.readComponent(Component, route.params),
                 params:     route.params,
                 isActive:   true,
