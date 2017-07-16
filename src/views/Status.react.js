@@ -219,13 +219,13 @@ const addSnap = (reconciler) => {
 
 const ActionBtn = ({reconciler}) => (
     <ActionButton buttonColor={Colors.accent} title="Weitere Achievements" bgColor="rgba(0,0,0,0.3)" degrees={135}>
-        <ActionButton.Item buttonColor='#76C47D' onPress={() => console.log("notes tapped!")}>
+        <ActionButton.Item textStyle = { {color: Colors.body, fontSize: Fonts.bodySize} } buttonColor='#76C47D' onPress={() => console.log("notes tapped!")}>
             <FontAwesome color = "#FFF" name = "trophy" size = {20} />
         </ActionButton.Item>
-        <ActionButton.Item buttonColor='#FF8A65' title="Weitere Risks" onPress={() => {addSnap(reconciler)}}>
+        <ActionButton.Item textStyle = { {color: Colors.body, fontSize: Fonts.bodySize} } buttonColor='#FF8A65' title="Weitere Risks" onPress={() => {addSnap(reconciler)}}>
             <FontAwesome color = "#FFF" name = "exclamation-circle" size = {20} />
         </ActionButton.Item>
-        <ActionButton.Item buttonColor='#EF5350' title="Weitere Issues" onPress={() => {reconciler.put(Mutations.CREATE_STATUS)}}>
+        <ActionButton.Item textStyle = { {color: Colors.body, fontSize: Fonts.bodySize} } buttonColor='#EF5350' title="Weitere Issues" onPress={() => {reconciler.put(Mutations.CREATE_STATUS)}}>
             <FontAwesome color = "#FFF" name = "exclamation-triangle" size = {20} />
         </ActionButton.Item>
     </ActionButton>
