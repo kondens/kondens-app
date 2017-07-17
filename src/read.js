@@ -81,4 +81,6 @@ read["user/isStatusComplete"] = (key, db, eid) => {
     return d.count(snapRags) == d.count(currentSnaps);
 }
 
+read["task/newestSnapshot"] = (key, db, eid) => d.vector(currentSnapForTask(db, eid));
+
 export default read;
