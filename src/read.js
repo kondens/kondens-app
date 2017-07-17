@@ -24,18 +24,20 @@ read[DEFAULT] = ({db}, key, subQuery) => d.pull(db, subQuery, key, readFn);
 
 const taskIds = (db) => d.map((datom) => d.get(datom, "v"), d.datoms(db, ":avet", "task/id"));
 
-const currentSnapForTask = (db, taskId) => {
+const currentSnapForTask = (db, task) => {
     const snaps = d.q(`[:find ?time ?snap
-                        :in $ ?task-id
-                        :where [?task "task/id" ?task-id]
-                               [?task "task/snapshot" ?snap]
+                        :in $ ?task
+                        :where [?task "task/snapshot" ?snap]
                                [?snap "snapshot/date" ?date]
                                [?date "date/timestamp" ?time]]`,
-                        db, taskId)
-    return d.second(d.first(d.sortBy(d.first, (a, b) => (b - a), snaps)));
+                        db, task)
+
+    return d.second(d.first(d.sortBy(d.first, (a, b) => (b - a), snaps)))
 }
 
-const currentSnaps = (db) => d.map((task) => currentSnapForTask(db, task), taskIds(db));
+const currentSnapForTaskId = (db, taskId) => currentSnapForTask(db, d.vector("task/id", taskId))
+
+const currentSnaps = (db) => d.map((task) => currentSnapForTaskId(db, task), taskIds(db));
 
 const allSnapsForName = (db, name) => d.q(`[:find [?snap ...]
                                             :in $ ?name
