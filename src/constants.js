@@ -39,9 +39,22 @@ export const Mutations = {
     RESET_STATUS:  "!status/reset",
     SUBMIT_STATUS: "!status/submit",
 
+    INCLUDE_REPORTABLE: "!report/include-reportable",
+    EXCLUDE_REPORTABLE: "!report/exclude-reportable",
+    SHOW_EXCLUDED_REPORTABLES: "!report/show-reportables",
+    HIDE_EXCLUDED_REPORTABLES: "!report/hide-reportables",
+
     ADD_SNAP: "!status/add-snap",
 
     NAVIGATION_DISPATCH: "!navigation/dispatch",
+}
+
+export const ReportType = {
+    ACHIEVEMENT: "achievement",
+    RISK: "risk",
+    ISSUE: "issue",
+    NEXT: "next",
+    DECISION: "decision",
 }
 
 export const Completeness = {
