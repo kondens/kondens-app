@@ -12,6 +12,7 @@ export const schema = {
     "db/ident":                   {":db/unique": ":db.unique/identity"},
 
     "ui/navigationState":         {":db/cardinality": ":db.cardinality/one"},
+    "ui/showExcludedReportables": {":db/cardinality": ":db.cardinality/one"},
 
     "user/staff":                 {
         ":db/cardinality": ":db.cardinality/one",
@@ -27,7 +28,9 @@ export const schema = {
     "staff/name":                 {":db/cardinality": ":db.cardinality/one"},
 
     "task/id":                    {":db/unique": ":db.unique/identity"},
-    "task/children":              {":db/cardinality": ":db.cardinality/many"},
+    "task/children":              {":db/cardinality": ":db.cardinality/many",
+                                   ":db/valueType": ":db.type/ref"},
+    "task/newestSnapshot":        {":db/valueType": ":db.type/derived"},
     "task/snapshot":              {
         ":db/cardinality": ":db.cardinality/many",
         ":db/valueType": ":db.type/ref"
@@ -51,7 +54,7 @@ export const schema = {
     },
     "snapshot/isInCreation":      {":db/cardinality": ":db.cardinality/one"},
     "snapshot/title":             {":db/cardinality": ":db.cardinality/one"},
-    "snapshot/type":              {":db/cardinality": ":db.cardinality/one"},
+    // "snapshot/type":              {":db/cardinality": ":db.cardinality/one"},
     "snapshot/completeness":      {":db/cardinality": ":db.cardinality/one"}, //Completeness.x
     "snapshot/rag":               {":db/cardinality": ":db.cardinality/one"}, //:red :amber :green
     "snapshot/achievement":       {":db/cardinality": ":db.cardinality/many",
@@ -65,19 +68,31 @@ export const schema = {
     "snapshot/decision":          {":db/cardinality": ":db.cardinality/many",
                                    ":db/valueType": ":db.type/ref"},
 
+    "reportable/isExcluded":      {":db/cardinality": ":db.cardinality/one"},
+
     "risk/title":                 {":db/cardinality": ":db.cardinality/one"},
+    "risk/reporter":              {":db/cardinality": ":db.cardinality/one",
+                                   ":db/valueType": ":db.type/ref"},
     "risk/severity":              {":db/cardinality": ":db.cardinality/one"}, 
     "risk/mitigation":            {":db/cardinality": ":db.cardinality/one"}, 
 
     "issue/title":                {":db/cardinality": ":db.cardinality/one"},
+    "issue/reporter":             {":db/cardinality": ":db.cardinality/one",
+                                   ":db/valueType": ":db.type/ref"},
     "issue/severity":             {":db/cardinality": ":db.cardinality/one"}, 
     "issue/mitigation":           {":db/cardinality": ":db.cardinality/one"},
 
     "achievement/title":          {":db/cardinality": ":db.cardinality/one"}, 
+    "achievement/reporter":       {":db/cardinality": ":db.cardinality/one",
+                                   ":db/valueType": ":db.type/ref"},   
 
     "next/title":                 {":db/cardinality": ":db.cardinality/one"}, 
+    "next/reporter":              {":db/cardinality": ":db.cardinality/one",
+                                   ":db/valueType": ":db.type/ref"},  
 
     "decision/title":             {":db/cardinality": ":db.cardinality/one"},
+    "decision/reporter":          {":db/cardinality": ":db.cardinality/one",
+                                   ":db/valueType": ":db.type/ref"}, 
 
 
 }
