@@ -77,6 +77,13 @@ mutate[Mutations.SUBMIT_STATUS] = (target, user) => {
 
 }
 
+mutate[Mutations.INCLUDE_REPORTABLE] = (target, reportableId) => d.transact(target.conn, [[":db.fn/retractAttribute", reportableId, "reportable/isExcluded"]]);
+
+mutate[Mutations.EXCLUDE_REPORTABLE] = (target, reportableId) => d.transact(target.conn, [[":db/add", reportableId, "reportable/isExcluded", true]]);
+
+mutate[Mutations.SHOW_EXCLUDED_REPORTABLES] = target => d.transact(target.conn, [[":db/add", d.vector("db/ident", ":ui"), "ui/showExcludedReportables", true]]);
+
+mutate[Mutations.HIDE_EXCLUDED_REPORTABLES] = target => d.transact(target.conn, [[":db.fn/retractAttribute", d.vector("db/ident", ":ui"), "ui/showExcludedReportables"]]);
 
 const dispatchNavigation = (db, action) => {
     const ui = d.vector("db/ident", ":ui")
