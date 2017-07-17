@@ -6,7 +6,8 @@ import { View,
          StyleSheet,
          Text,
          TouchableOpacity,
-         Platform }            from "react-native";
+         Platform,
+         Animated }            from "react-native";
 
 import { makeScreen }       from "../makeScreen";
 
@@ -18,7 +19,8 @@ import { Mutations,
          Completeness,
          Colors,
          Fonts,
-         RAGs }             from "../constants";
+         RAGs,
+         ReportType }             from "../constants";
 
 import Moment               from "moment";
 
@@ -142,94 +144,270 @@ const AddButton = () => (
     </TouchableOpacity>
 )
 
-const Editor = (type, items) => {
-    const bgColor = {
-        ["ach"]: "#76C47D",
+const AnimatedFontAwesome = Animated.createAnimatedComponent(FontAwesome)
+
+class AnimatedExcluder extends UI {
+    constructor(props) {
+        super(props);
+        if (this.props.isExcluded) {
+            this.state = {spinValue: new Animated.Value(1)};
+        } else {
+            this.state = {spinValue: new Animated.Value(0)};
+        }
+        
     }
 
-    const showHiddenItems = true;
+    startRotation () {
+        if (this.state.spinValue._value > 0) {
+            Animated.spring(this.state.spinValue, { toValue: 0 }).start()
+        } else {
+            Animated.spring(this.state.spinValue, { toValue: 1 }).start();
+        }
+    }
+
+    render () {
+        const spin = this.state.spinValue.interpolate({
+          inputRange: [0, 1],
+          outputRange: ['0deg', '135deg']
+        })
+
+        return <AnimatedFontAwesome style = { {transform: [{rotate: spin}]} } 
+                                     name = {this.props.name} 
+                                    color = "#FFF" 
+                                     size = {20} />
+    }
+}
+
+const Item = ({title, color, reconciler, itemId, isExcluded}) => {
+    let excluderRef = null;
+
+    return (
+        <TouchableOpacity style = { [styles.editorItem, { backgroundColor: color }, isExcluded && { backgroundColor: color + "77" }] }>
+            <Text style = { styles.editorItemLabel }>{title}</Text>
+            <TouchableOpacity style   = { styles.editorItemHide }
+                              onPress = { (e) => {  isExcluded ? reconciler.put(Mutations.INCLUDE_REPORTABLE, itemId) :
+                                                                 reconciler.put(Mutations.EXCLUDE_REPORTABLE, itemId)
+                                                    excluderRef.startRotation(); } }>
+                <AnimatedExcluder name = "plus"
+                                  ref  = { ref => { excluderRef = ref } }
+                                  isExcluded = { isExcluded }/>
+            </TouchableOpacity>
+        </TouchableOpacity> 
+    )
+}
+
+const Editor = ({type, items, showExcludedReportables, reconciler}) => {
+    const bgColor = {
+        [ReportType.ACHIEVEMENT]: Colors.achievement,
+        [ReportType.ISSUE]: Colors.issue,
+        [ReportType.NEXT]: Colors.next,
+        [ReportType.DECISION]: Colors.decision,
+        [ReportType.RISK]: Colors.risk,
+    }
 
     return (
         <View style = { styles.editorContainer}>
             <View style = { styles.editor }>
-                <TouchableOpacity style = { [styles.editorItem, { backgroundColor: bgColor["ach"] }] }>
-                    <Text style = { styles.editorItemLabel }>Item 1</Text>
-                    <TouchableOpacity style = { styles.editorItemHide }><FontAwesome name = "ban" color = "#FFF" size = {20} /></TouchableOpacity>
-                </TouchableOpacity>
-                <TouchableOpacity style = { [styles.editorItem, { backgroundColor: bgColor["ach"] }] }>
-                    <Text style = { styles.editorItemLabel }>Item 2</Text>
-                    <TouchableOpacity style = { styles.editorItemHide }><FontAwesome name = "ban" color = "#FFF" size = {20} /></TouchableOpacity>
-                </TouchableOpacity>
-                <TouchableOpacity style = { [styles.editorItem, { backgroundColor: bgColor["ach"] }] }>
-                    <Text style = { styles.editorItemLabel }>Item 3</Text>
-                    <TouchableOpacity style = { styles.editorItemHide }><FontAwesome name = "ban" color = "#FFF" size = {20} /></TouchableOpacity>
-                </TouchableOpacity>
+                { d.isEmpty(items) ? <Text style = { styles.info }>Noch keine Items</Text> :
+                    d.intoArray(d.map((item) => {
+                        if (showExcludedReportables || !d.get(item, "reportable/isExcluded")) {
+                            return <Item key        = { d.get(item, d.DB_ID) }
+                                         itemId     = { d.get(item, d.DB_ID) }
+                                         title      = { d.get(item, type + "/title") }
+                                         color      = { bgColor[type] }
+                                         reconciler = { reconciler }
+                                         isExcluded = { d.get(item, "reportable/isExcluded") } />
+                        }
+                    }, items))
+                }
             </View>
             <View style = { styles.editorFooter }>
-                <TouchableOpacity style = { styles.hiddenItemsButton }>
-                    { showHiddenItems ? <FontAwesome name = "eye"       color = { Colors.accent } size = {32} /> :
-                                        <FontAwesome name = "eye-slash" color = { Colors.lowlight } size = {32} />}
-                    
-                    { /* <Text style = { {color: Colors.lowlight, fontSize: Fonts.bodySize} }>alle zeigen</Text> */ }
-                </TouchableOpacity>
+                { showExcludedReportables ? 
+                      <TouchableOpacity style   = { styles.hiddenItemsButton }
+                                        onPress = { () => { reconciler.put(Mutations.HIDE_EXCLUDED_REPORTABLES) } }>
+                          <FontAwesome name = "eye"       color = { Colors.accent } size = {32} />
+                      </TouchableOpacity> 
+                  :
+                      <TouchableOpacity style   = { styles.hiddenItemsButton }
+                                        onPress = { () => { reconciler.put(Mutations.SHOW_EXCLUDED_REPORTABLES) } }>
+                          <FontAwesome name = "eye-slash"       color = { Colors.accent } size = {32} />
+                      </TouchableOpacity> }
             </View>
+        </View>
+    )
+}
+
+const ReportViewMaker = ({task, type, title, titleColor, showExcludedReportables, reconciler}) => {
+    const ownerPart = d.getIn(task, ["task/newestSnapshot", 0]);
+    const taskOwner = d.getIn(ownerPart, ["snapshot/staff", d.DB_ID]);
+    const taskTitle = d.get(ownerPart, "snapshot/title");
+    const highlevelItems = d.get(ownerPart, "snapshot/" + type);
+
+    const workerPart = d.get(task, "task/children");
+    const lowlevelItems = d.pipeline(workerPart,
+                                            tasks => d.map(task => d.getIn(task, ["task/newestSnapshot", 0, "snapshot/" + type]), tasks),
+                                            d.flatten,
+                                            tasks => d.filter(d.identity, tasks));
+
+    const allItems = d.concat(highlevelItems, lowlevelItems);
+
+    return (
+        <View style = { styles.container }>
+            <ReportHeader title    = { title }
+                          taskTitle = { taskTitle }
+                          titleColor = { titleColor } />
+            <Editor items = { allItems }
+                    type = { type }
+                    showExcludedReportables = { showExcludedReportables }
+                    reconciler = { reconciler }/>
+            <AddButton />
         </View>
     )
 }
 
 
 class AchievementsView extends UI {
-    static query () {
+    static query ({taskIdent}) {
         return d.vector(
+            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
             d.hashMap(
-                d.vector("db/ident", ":user-data"), `[ {"user/staff" [ "staff/name" :db/id ]}
-                                                       {(read "user/currentSnaps") [ { "snapshot/date" [ * ] }
-                                                                                     { "snapshot/start" [ * ] }
-                                                                                     { "snapshot/end" [ * ] }
-                                                                                     * ] } ]` ))}
-    constructor (props) {
-        super(props);
+                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                                                                "snapshot/staff"
+                                                                { "snapshot/achievement" [ "achievement/title"
+                                                                                           :db/id
+                                                                                           "achievement/reporter"
+                                                                                           "reportable/isExcluded" ] } ] } 
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/achievement" [ "achievement/title"
+                                                                                                              :db/id
+                                                                                                              "achievement/reporter"
+                                                                                                              "reportable/isExcluded" ] } ] }]}]`
+            )
+        )
     }
 
     render () {
-        const { navigation, screenProps, value, params } = this.props
-
-        const taskName = "Workstream 1" // for now hardcoded, later prop of Report
-
-        return (
-            <View style = { styles.container }>
-                <ReportHeader title    = {navigation.state.routeName}
-                              taskName = {taskName} />
-                <Editor />
-                <AddButton />
-            </View>
-        )
+        return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
+                                type  = { ReportType.ACHIEVEMENT }
+                                title = { this.props.navigation.state.routeName }
+                                titleColor = { Colors.achievement }
+                                showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
+                                reconciler = { this.getReconciler() } />
     }
 }
 
-// const AchievementsView = (props) => (<View style = { styles.container }></View>)
-
 class DecisionsView extends UI {
+    static query ({taskIdent}) {
+        return d.vector(
+            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
+            d.hashMap(
+                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                                                                "snapshot/staff"
+                                                                { "snapshot/decision" [ "decision/title"
+                                                                                        :db/id
+                                                                                        "decision/reporter"
+                                                                                        "reportable/isExcluded" ] } ] } 
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/decision" [ "decision/title"
+                                                                                                           :db/id
+                                                                                                           "decision/reporter"
+                                                                                                           "reportable/isExcluded" ] } ] }]}]`
+            )
+        )
+    }
+
     render () {
-        return <View></View>
+        return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
+                                type  = { ReportType.DECISION }
+                                title = { this.props.navigation.state.routeName }
+                                titleColor = { Colors.decision }
+                                showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
+                                reconciler = { this.getReconciler() } />
     }
 }
 
 class NextView extends UI {
+    static query ({taskIdent}) {
+        return d.vector(
+            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
+            d.hashMap(
+                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                                                                "snapshot/staff"
+                                                                { "snapshot/next" [ "next/title"
+                                                                                        :db/id
+                                                                                        "next/reporter"
+                                                                                        "reportable/isExcluded" ] } ] } 
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/next" [ "next/title"
+                                                                                                           :db/id
+                                                                                                           "next/reporter"
+                                                                                                           "reportable/isExcluded" ] } ] }]}]`
+            )
+        )
+    }
+
     render () {
-        return <View></View>
+        return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
+                                type  = { ReportType.NEXT }
+                                title = { this.props.navigation.state.routeName }
+                                titleColor = { Colors.next }
+                                showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
+                                reconciler = { this.getReconciler() } />
     }
 }
 
 class RisksView extends UI {
+    static query ({taskIdent}) {
+        return d.vector(
+            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
+            d.hashMap(
+                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                                                                "snapshot/staff"
+                                                                { "snapshot/risk" [ "risk/title"
+                                                                                        :db/id
+                                                                                        "risk/reporter"
+                                                                                        "reportable/isExcluded" ] } ] } 
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/risk" [ "risk/title"
+                                                                                                           :db/id
+                                                                                                           "risk/reporter"
+                                                                                                           "reportable/isExcluded" ] } ] }]}]`
+            )
+        )
+    }
+
     render () {
-        return <View></View>
+        return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
+                                type  = { ReportType.RISK }
+                                title = { this.props.navigation.state.routeName }
+                                titleColor = { Colors.risk }
+                                showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
+                                reconciler = { this.getReconciler() } />
     }
 }
 
 class IssuesView extends UI {
+    static query ({taskIdent}) {
+        return d.vector(
+            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
+            d.hashMap(
+                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                                                                "snapshot/staff"
+                                                                { "snapshot/issue" [ "issue/title"
+                                                                                        :db/id
+                                                                                        "issue/reporter"
+                                                                                        "reportable/isExcluded" ] } ] } 
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/issue" [ "issue/title"
+                                                                                                           :db/id
+                                                                                                           "issue/reporter"
+                                                                                                           "reportable/isExcluded" ] } ] }]}]`
+            )
+        )
+    }
+
     render () {
-        return <View></View>
+        return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
+                                type  = { ReportType.ISSUE }
+                                title = { this.props.navigation.state.routeName }
+                                titleColor = { Colors.issue }
+                                showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
+                                reconciler = { this.getReconciler() } />
     }
 }
 
@@ -242,20 +420,20 @@ const tabBarLabel = (title, color) => options => <Text style = { [styles.tabBarL
 
 const RouteConfig = {
     Achievements:   { screen: makeScreen(AchievementsView),
-                      navigationOptions: { tabBarIcon: tabBarIcon("trophy", "#76C47D"),
-                                          tabBarLabel: tabBarLabel("Achievements", "#76C47D") } },
+                      navigationOptions: { tabBarIcon: tabBarIcon("trophy", Colors.achievement),
+                                          tabBarLabel: tabBarLabel("Achievements", Colors.achievement) } },
     Decisions:      { screen: makeScreen(DecisionsView),
                       navigationOptions: { tabBarIcon: tabBarIcon("road", Colors.accentNeutral),
                                           tabBarLabel: tabBarLabel("Decisions", Colors.accentNeutral) } },
-    Next:           { screen: makeScreen(NextView),
+    ["Next Steps"]: { screen: makeScreen(NextView),
                       navigationOptions: { tabBarIcon: tabBarIcon("chevron-circle-right", Colors.accentNeutral),
                                           tabBarLabel: tabBarLabel("Next Steps", Colors.accentNeutral) } },
     Risks:          { screen: makeScreen(RisksView),
-                      navigationOptions: { tabBarIcon: tabBarIcon("exclamation-triangle", "#EF5350"),
-                                          tabBarLabel: tabBarLabel("Risks", "#EF5350") } },
+                      navigationOptions: { tabBarIcon: tabBarIcon("exclamation-triangle", Colors.risk),
+                                          tabBarLabel: tabBarLabel("Risks", Colors.risk) } },
     Issues:         { screen: makeScreen(IssuesView),
-                      navigationOptions: { tabBarIcon: tabBarIcon("exclamation-circle", "#FF8A65"),
-                                          tabBarLabel: tabBarLabel("Issues", "#FF8A65") } },
+                      navigationOptions: { tabBarIcon: tabBarIcon("exclamation-circle", Colors.issue),
+                                          tabBarLabel: tabBarLabel("Issues", Colors.issue) } },
 }
 
 const TabNavigatorConfig = {
@@ -283,6 +461,9 @@ class Report extends React.Component {
     }
 
     render () {
+        //@TODO: handle query-relevant param setting for each sub-component more gracefully
+        this.state.navigation.routes.forEach((element, index, array) => { element["params"] = this.props.navigation.state.params})
+
         const navigationProps = addNavigationHelpers({
             state: this.state.navigation,
             dispatch: this.dispatchNavigation,
