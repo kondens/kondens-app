@@ -9,6 +9,13 @@ export const Colors = {
     disabled:           "#BBB",
     lowlight:           "#BBB",
     body:               "#808080",
+
+    risk: "#FF8A65",
+    issue: "#EF5350",
+    amber: "#FFC107",
+    next: "#607D8B",
+    achievement: "#76C47D",
+    decision: "#607D8B",
 }
 
 export const Fonts = {
