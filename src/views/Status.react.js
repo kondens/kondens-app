@@ -17,7 +17,8 @@ import { Mutations,
          Completeness,
          Colors,
          Fonts,
-         RAGs }        from "../constants";
+         RAGs,
+         Routes, }        from "../constants";
 
 import Moment           from "moment";
 
@@ -219,13 +220,24 @@ const addSnap = (reconciler) => {
 
 const ActionBtn = ({reconciler}) => (
     <ActionButton buttonColor={Colors.accent} title="Weitere Achievements" bgColor="rgba(0,0,0,0.3)" degrees={135}>
-        <ActionButton.Item textStyle = { {color: Colors.body, fontSize: Fonts.bodySize} } buttonColor='#76C47D' onPress={() => console.log("notes tapped!")}>
+        <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
+                           buttonColor = { Colors.achievement }
+                           onPress     = {() => {reconciler.put(Mutations.NAVIGATION_DISPATCH, {
+                                                                        routeName: Routes.REPORT,
+                                                                        params: {taskIdent: d.vector("task/id", 5)} 
+                                                                    })}}>
             <FontAwesome color = "#FFF" name = "trophy" size = {20} />
         </ActionButton.Item>
-        <ActionButton.Item textStyle = { {color: Colors.body, fontSize: Fonts.bodySize} } buttonColor='#FF8A65' title="Weitere Risks" onPress={() => {addSnap(reconciler)}}>
+        <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
+                           buttonColor = { Colors.risk }
+                           title       = "Weitere Risks" 
+                           onPress     = {() => {addSnap(reconciler)}}>
             <FontAwesome color = "#FFF" name = "exclamation-circle" size = {20} />
         </ActionButton.Item>
-        <ActionButton.Item textStyle = { {color: Colors.body, fontSize: Fonts.bodySize} } buttonColor='#EF5350' title="Weitere Issues" onPress={() => {reconciler.put(Mutations.CREATE_STATUS)}}>
+        <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
+                           buttonColor = { Colors.issue } 
+                           title       = "Weitere Issues" 
+                           onPress     = {() => {reconciler.put(Mutations.CREATE_STATUS)}}>
             <FontAwesome color = "#FFF" name = "exclamation-triangle" size = {20} />
         </ActionButton.Item>
     </ActionButton>
@@ -278,16 +290,16 @@ const RAG = ({makeRipple, reconciler, snapId, rag}) => {
     if (!rag) {
         return (
             <View style = { ragStyles.container }>
-                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#76C47D"}] }
-                                onPress = { e => { makeRipple(e, "#76C47D", RAGs.GREEN, false); } }>
+                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: Colors.achievement}] }
+                                onPress = { e => { makeRipple(e, Colors.achievement, RAGs.GREEN, false); } }>
                     <FontAwesome name = "thumbs-up" size = {24} color = "#FFF" />
                 </TouchableOpacity>
                 <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#FFC107"}] }
                                 onPress = { e => { makeRipple(e, "#FFC107", RAGs.AMBER, false); } }>
                     <FontAwesome name = "bell" size = {24} color = "#FFF" />
                 </TouchableOpacity>
-                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#EF5350"}] }
-                                onPress = { e => { makeRipple(e, "#EF5350", RAGs.RED, false); } }>
+                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: Colors.issue}] }
+                                onPress = { e => { makeRipple(e, Colors.issue, RAGs.RED, false); } }>
                     <FontAwesome name = "exclamation-triangle" size = {24} color = "#FFF" />
                 </TouchableOpacity>
             </View>
@@ -300,9 +312,9 @@ const RAG = ({makeRipple, reconciler, snapId, rag}) => {
         }
 
         let ragColor = {
-            [RAGs.GREEN]: "#76C47D",
-            [RAGs.AMBER]: "#FFC107",
-            [RAGs.RED]: "#EF5350",
+            [RAGs.GREEN]: Colors.achievement,
+            [RAGs.AMBER]: Colors.amber,
+            [RAGs.RED]: Colors.issue,
         }
 
         return (
@@ -332,14 +344,14 @@ class Task extends UI {
         const { title, start, end, reconciler, snapId, rag } = this.props
 
         let ragColor = {
-            [RAGs.GREEN]: "#76C47D",
-            [RAGs.AMBER]: "#FFC107",
-            [RAGs.RED]: "#EF5350",
+            [RAGs.GREEN]: Colors.achievement,
+            [RAGs.AMBER]: Colors.amber,
+            [RAGs.RED]: Colors.issue,
         }
 
         const swipeRight = [
             {
-                backgroundColor: "#FF8A65",
+                backgroundColor: Colors.risk,
                 component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
                                 <FontAwesome name = "trash-o" size = {38} color = "#FFF" />
                             </View>
@@ -348,7 +360,7 @@ class Task extends UI {
 
         const swipeLeft = [
             {
-                backgroundColor: "#76C47D",
+                backgroundColor: Colors.achievement,
                 component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
                                 <FontAwesome name = "check" size = {38} color = "#FFF" />
                             </View>

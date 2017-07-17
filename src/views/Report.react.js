@@ -129,10 +129,10 @@ const styles = StyleSheet.create({
     }
 })
 
-const ReportHeader = ({title, taskName}) => (
+const ReportHeader = ({title, taskTitle, titleColor}) => (
     <View style = { styles.header }>
-        <Text style = { styles.info }>{taskName}, { Moment().format("DD.MM.YY") }</Text>
-        <Text style = { styles.title }>{title}</Text>
+        <Text style = { styles.info }>{taskTitle}, { Moment().format("DD.MM.YY") }</Text>
+        <Text style = { [styles.title, {color: titleColor}] }>{title}</Text>
     </View>
 )
 
