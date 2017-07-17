@@ -26,6 +26,7 @@ export const dummyData = [
         "staff/name": "Christian",
     },
     {
+        ":db/id": -11,
         "task/id": 1,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-10").format("x")},
@@ -34,6 +35,7 @@ export const dummyData = [
             "snapshot/end": {"date/timestamp": moment("2017-08-20").format("x")},
             "snapshot/staff": -1,
             "snapshot/completeness": Completeness.DONE,
+            "snapshot/achievement": [{"achievement/title": "Sales-Analyse abgeschlossen.", "achievement/reporter": -1}],
             "snapshot/rag": RAGs.GREEN,
         }],
     },
@@ -55,10 +57,13 @@ export const dummyData = [
                 "snapshot/start": {"date/timestamp": moment("2017-08-11").format("x")},
                 "snapshot/end": {"date/timestamp": moment("2017-09-05").format("x")},
                 "snapshot/staff": -2,
-                "snapshot/completeness": Completeness.WIP,
+                "snapshot/achievement": [{"achievement/title": "Jetzt-Maltes Sales-Pitch abgeschlossen.", "achievement/reporter": -2},
+                                         {"achievement/title": "Text", "achievement/reporter": -2}],
+                "snapshot/completeness": Completeness.DONE,
             }]
     },
     {
+        ":db/id": -13,
         "task/id": 3,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-12").format("x")},
@@ -68,11 +73,12 @@ export const dummyData = [
             "snapshot/staff": -2,
             "snapshot/completeness": Completeness.WIP,
             "snapshot/rag": RAGs.GREEN,
-            "snapshot/risk": [{"risk/title": "SAP-Vertragslage schwierig"}],
-            "snapshot/issue":[{"issue/title": "Terminfindungsschwierigkeiten"}],
+            "snapshot/risk": [{"risk/title": "SAP-Vertragslage schwierig", "risk/reporter": -2}],
+            "snapshot/issue":[{"issue/title": "Terminfindungsschwierigkeiten", "issue/reporter": -2}],
         }],
     },
     {
+        ":db/id": -14,
         "task/id": 4,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-13").format("x")},
@@ -82,14 +88,14 @@ export const dummyData = [
             "snapshot/staff": -2,
             "snapshot/completeness": Completeness.WIP,
             "snapshot/rag": RAGs.AMBER,
-            "snapshot/risk": [{ "risk/title": "Stakeholder alle krank"},
-                              { "risk/title": "CEO von Lobby beeinflusst"}],
-            "snapshot/issue":[{"issue/title": "CFO verweigert Kooperation"}],
+            "snapshot/risk": [{ "risk/title": "Stakeholder alle krank", "risk/reporter": -2},
+                              { "risk/title": "CEO von Lobby beeinflusst", "risk/reporter": -2}],
+            "snapshot/issue":[{"issue/title": "CFO verweigert Kooperation", "issue/reporter": -2}],
         }],
     },
     {
         "task/id": 5,
-        "task/children": [4, 3, 1],
+        "task/children": [-11, -5, -13, -14],
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-10").format("x")},
             "snapshot/title": "Workstream I",
@@ -98,8 +104,9 @@ export const dummyData = [
             "snapshot/staff": -3,
             "snapshot/completeness": Completeness.WIP,
             //These have been reported form lower levels->generelles!
-            "snapshot/risk": [{"risk/title": "3 MA gehen in den Urlaub"}],
-            "snapshot/achievement": [{"achievement/title": "Internes Sales-Team wird mit ausgebildet"}],
+            "snapshot/risk": [{"risk/title": "3 MA gehen in den Urlaub", "risk/reporter": -2}],
+            "snapshot/achievement": [{"achievement/title": "Internes Sales-Team wird mit ausgebildet", "achievement/reporter": -1},
+                                     {"achievement/title": "Wichtige Sicherheitslücke geschlossen", "achievement/reporter": -1}],
         }],
     },
     // {

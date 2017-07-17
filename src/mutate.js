@@ -14,6 +14,8 @@ import { Mutations,
 
 import { Navigator } from "./route";
 
+import { NavigationActions } from "react-navigation";
+
 import read from "./read";
 
 import Moment           from "moment";
