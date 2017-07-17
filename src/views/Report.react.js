@@ -47,17 +47,17 @@ const styles = StyleSheet.create({
         color: Colors.accent,
     },
     editorContainer: {
-        margin: 6,
-        padding: 6,
+        margin: 3,
+        // padding: 6,
         flex: 1,
         flexDirection: "column",
-        backgroundColor: "#FFF",
-        shadowOpacity: (Platform.OS == "ios") ? 0.1 : 0,
-        shadowRadius: 3,
-        shadowOffset: {
-            height: 2,
-            width: 3,
-        },
+        // backgroundColor: "#FFF",
+        // shadowOpacity: (Platform.OS == "ios") ? 0.2 : 0,
+        // shadowRadius: 3,
+        // shadowOffset: {
+        //     height: 2,
+        //     width: 3,
+        // },
     },
     editor: {
         flex: 1,
@@ -66,14 +66,14 @@ const styles = StyleSheet.create({
         height: 50,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#FFF",
+        // backgroundColor: "#FFF",
     },
     editorItem: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
         borderRadius: 4,
-        marginHorizontal: 12,
+        // marginHorizontal: 12,
         marginTop: 6,
     },
     editorItemLabel: {
@@ -98,7 +98,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         // borderWidth: 1,
         borderColor: Colors.accent,
-        backgroundColor: "#FFF"
+        // backgroundColor: "#FFF"
     },
     tabBarLabel: {
         fontSize: 11,
