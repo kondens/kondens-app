@@ -38,6 +38,9 @@ const styles = StyleSheet.create({
     },
     header: {
     },
+    headerInfo: {
+        flexDirection: "column",
+    },
     body: {
         flex: 1,
     },
@@ -140,13 +143,50 @@ const styles = StyleSheet.create({
     addButtonLabel: {
         color: "#FFF",
         fontSize: 24,
-    }
+    },
+    ragContainer : {
+        position: "absolute",
+        right: 6,
+        top: 3,
+        flexDirection: "row",
+        height: 36,
+    },
+    ragItem : {
+        // paddingVertical: 6,
+        paddingHorizontal: 6,
+        alignItems: "center",
+        justifyContent: "center",
+        borderRadius: 4,
+        marginLeft: 6,
+    },
 })
 
-const ReportHeader = ({title, taskTitle, titleColor}) => (
-    <View style = { styles.header }>
-        <Text style = { styles.info }>{taskTitle}, { Moment().format("DD.MM.YY") }</Text>
-        <Text style = { [styles.title, {color: titleColor}] }>{title}</Text>
+const RAG = ({rag, reconciler, taskId}) => (
+    <View style = { styles.ragContainer }>
+        <TouchableOpacity style   = { [styles.ragItem, {backgroundColor: Colors.lowlight}, rag == RAGs.RED && {backgroundColor: Colors.issue}] }
+                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.RED])}}   >
+            <FontAwesome name = { "exclamation-triangle" } size = { 24 } color = "#FFF" />
+        </TouchableOpacity>
+        <TouchableOpacity style   = { [styles.ragItem, {backgroundColor: Colors.lowlight}, rag == RAGs.AMBER && {backgroundColor: Colors.amber}] }
+                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.AMBER]) } } >
+            <FontAwesome name = { "bell" } size = { 24 } color = "#FFF" />
+        </TouchableOpacity>
+        <TouchableOpacity style   = { [styles.ragItem, {backgroundColor: Colors.lowlight}, rag == RAGs.GREEN && {backgroundColor: Colors.achievement}] }
+                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.GREEN]) } } >
+            <FontAwesome name = { "thumbs-up" } size = { 24 } color = "#FFF" />
+        </TouchableOpacity>
+    </View>
+)
+
+const ReportHeader = ({title, taskTitle, titleColor, rag, reconciler, taskId}) => (
+    <View style = { styles.header }>
+        <View style = { styles.headerInfo }>
+            <Text style = { styles.info }>{taskTitle}, { Moment().format("DD.MM.YY") }</Text>
+            <Text style = { [styles.title, {color: titleColor}] }>{title}</Text>
+        </View>
+        <RAG rag        = { rag }
+             taskId     = { taskId }
+             reconciler = { reconciler } />
     </View>
 )
 
@@ -316,10 +356,11 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem}
     )
 }
 
-const ReportViewMaker = ({task, type, title, titleColor, showExcludedReportables, reconciler}) => {
+const ReportViewMaker = ({task, type, title, titleColor, showExcludedReportables, reconciler, isAddingItem, toggleAddItem}) => {
     const ownerPart = d.getIn(task, ["task/newestSnapshot", 0]);
     const taskOwner = d.getIn(ownerPart, ["snapshot/staff", d.DB_ID]);
     const taskTitle = d.get(ownerPart, "snapshot/title");
+    const taskId    = d.get(ownerPart, d.DB_ID);
     const highlevelItems = d.get(ownerPart, "snapshot/" + type);
 
     const workerPart = d.get(task, "task/children");
@@ -356,7 +397,9 @@ class AchievementsView extends UI {
         return d.vector(
             d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
             d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
+                                                               "snapshot/title"
+                                                               "snapshot/rag"
                                                                 "snapshot/staff"
                                                                 { "snapshot/achievement" [ "achievement/title"
                                                                                            :db/id
@@ -394,7 +437,9 @@ class DecisionsView extends UI {
         return d.vector(
             d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
             d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
+                                                               "snapshot/title"
+                                                               "snapshot/rag"
                                                                 "snapshot/staff"
                                                                 { "snapshot/decision" [ "decision/title"
                                                                                         :db/id
@@ -430,7 +475,9 @@ class NextView extends UI {
         return d.vector(
             d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
             d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
+                                                               "snapshot/title"
+                                                               "snapshot/rag"
                                                                 "snapshot/staff"
                                                                 { "snapshot/next" [ "next/title"
                                                                                         :db/id
@@ -466,7 +513,9 @@ class RisksView extends UI {
         return d.vector(
             d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
             d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
+                                                               "snapshot/title"
+                                                               "snapshot/rag"
                                                                 "snapshot/staff"
                                                                 { "snapshot/risk" [ "risk/title"
                                                                                         :db/id
@@ -502,7 +551,9 @@ class IssuesView extends UI {
         return d.vector(
             d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
             d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ "snapshot/title"
+                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
+                                                               "snapshot/title"
+                                                               "snapshot/rag"
                                                                 "snapshot/staff"
                                                                 { "snapshot/issue" [ "issue/title"
                                                                                         :db/id
