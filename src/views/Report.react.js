@@ -619,6 +619,7 @@ const RouteConfig = {
 const TabNavigatorConfig = {
     initialRouteName: "Achievements",
     activeTintColor: Colors.accent,
+    swipeEnabled: true,
     tabBarOptions: {
         // labelStyle: {fontSize: 14},
     }
