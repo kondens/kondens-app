@@ -56,8 +56,9 @@ mutate[Mutations.CREATE_STATUS] = (target) => {
                                                                         "snapshot/isInCreation", true), snaps),
                                    snaps => d.map(snap => d.dissoc(snap, d.DB_ID, "snapshot/rag"), snaps));
 
-    if (!d.isEmpty(snapsToCopy))
+    if (!d.isEmpty(snapsToCopy)) {
         d.transact(target.conn, snapsToCopy);
+    }
 }
 
 mutate[Mutations.UPDATE_STATUS] = (target, snapId, [field, value]) => {
@@ -67,11 +68,6 @@ mutate[Mutations.UPDATE_STATUS] = (target, snapId, [field, value]) => {
 mutate[Mutations.RESET_STATUS] = (target, snapId, field) => {
     d.transact(target.conn, [[":db.fn/retractAttribute", snapId, field]])
 }
-
-// mutate[Mutations.SUBMIT_RAG] = (target, rag) => {
-//     console.log("submitting ", rag)
-//     d.transact(target.conn, [[":db/add", 42, ":text", rag]])
-// }
 
 mutate[Mutations.SUBMIT_STATUS] = (target, user) => {
 

@@ -93,8 +93,6 @@ export const schema = {
     "decision/title":             {":db/cardinality": ":db.cardinality/one"},
     "decision/reporter":          {":db/cardinality": ":db.cardinality/one",
                                    ":db/valueType": ":db.type/ref"}, 
-
-
 }
 
 export const initialState = () => d.db_with(d.empty_db(schema), [

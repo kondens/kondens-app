@@ -75,6 +75,8 @@ read["user/currentSnaps"] = (key, db, eid) => {
 }
 
 read["user/isStatusComplete"] = (key, db, eid) => {
+
+  //@TODO: only wip snaps
     const currentSnaps = read["user/currentSnaps"](key, db, eid);
     const snapRags = d.pull_many(db, `[ "snapshot/rag" ]`, currentSnaps);
 

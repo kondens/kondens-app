@@ -76,12 +76,24 @@ const styles = StyleSheet.create({
         // backgroundColor: "#FFF",
     },
     editorItem: {
+        padding: 6,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "flex-start",
         borderRadius: 4,
         // marginHorizontal: 12,
         marginTop: 6,
+    },
+    editorItemLabel: {
+        // flex: 1,
+        color: "#FFF",
+        backgroundColor: "transparent",
+        fontSize: Fonts.bodySize,
+    },
+    editorItemHide: {
+        // width: 40,
+        paddingLeft: 6,
+        marginLeft: 6
     },
     addingView : {
         height: 32.5,
@@ -92,18 +104,6 @@ const styles = StyleSheet.create({
         marginTop: 6,
         color: Colors.body,
         fontSize: Fonts.bodySize,
-    },
-    editorItemLabel: {
-        flex: 1,
-        padding: 6,
-        color: "#FFF",
-        backgroundColor: "transparent",
-        fontSize: Fonts.bodySize,
-    },
-    editorItemHide: {
-        paddingRight: 6,
-        paddingLeft: 6,
-        marginLeft: 6
     },
     hiddenItemsButton: {
         flexDirection: "column", 

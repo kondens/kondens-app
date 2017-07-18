@@ -323,7 +323,7 @@ const RAG = ({makeRipple, reconciler, snapId, rag}) => {
                     <Text style = { ragStyles.buttonLabel }>Risk?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton, {width: 50} ] }
-                                onPress = { e => { makeRipple(e, "#FFF", rag, true)} }>
+                                onPress = { e => { makeRipple(e, "#FFF", rag, true)} }>{ /* @TODO: set this to ragColor[rag] once reconciler pre-anims is done */}
                     <FontAwesome name = { ragSymbol[rag] } size = {24} color = "#FFF" />
                 </TouchableOpacity> 
                 <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton ] }>
@@ -422,7 +422,6 @@ export class Status extends UI {
         // const doneSnaps = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.DONE), snaps);
         // const cancelledSnaps = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.CANCELLED), snaps);
 
-        const text = d.q(`[:find ?text . :where [42 ":text" ?text]]`, this.db)
         return (
             <View style = { styles.container }>
                 <ScrollView style = { styles.scrollContainer}>
@@ -447,11 +446,5 @@ export class Status extends UI {
         )
     }
 }
-
-/*
-<Text>{ text }</Text>
-<TouchableOpacity>
-    <Text>KLICKMICH</Text>
-</TouchableOpacity>*/
 
 export default Status;
