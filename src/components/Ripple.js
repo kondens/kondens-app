@@ -148,6 +148,11 @@ export default class Ripple extends PureComponent {
       inverse: inverse == true,
     };
 
+
+    if (inverse) {
+      this.props.onEnd(false);
+    }
+
     Animated
       .timing(ripple.progress, {
         toValue: 1,
@@ -159,8 +164,10 @@ export default class Ripple extends PureComponent {
         if (this.mounted) {
           this.setState(({ ripples }) => ({ ripples: ripples.slice(1) }));
         }
-        this.props.onEnd(inverse ? false : rag)
-      });
+        if (!inverse) {
+          this.props.onEnd(rag)
+        }
+      })
 
     this.setState(({ ripples }) => ({ ripples: ripples.concat(ripple) }));
   }
