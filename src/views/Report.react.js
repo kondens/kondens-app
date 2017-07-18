@@ -80,6 +80,16 @@ const styles = StyleSheet.create({
         // marginHorizontal: 12,
         marginTop: 6,
     },
+    addingView : {
+        height: 32.5,
+        borderWidth: 2,
+        padding: 6,
+        flexDirection: "row",
+        borderRadius: 4,
+        marginTop: 6,
+        color: Colors.body,
+        fontSize: Fonts.bodySize,
+    },
     editorItemLabel: {
         flex: 1,
         padding: 6,
@@ -140,8 +150,9 @@ const ReportHeader = ({title, taskTitle, titleColor}) => (
     </View>
 )
 
-const AddButton = () => (
-    <TouchableOpacity style = { styles.addButton }>
+const AddButton = ({onPress}) => (
+    <TouchableOpacity style   = { styles.addButton }
+                      onPress = { onPress }>
         <Text style = { styles.addButtonLabel }>+</Text>
     </TouchableOpacity>
 )
@@ -236,7 +247,30 @@ class Reportable extends UI {
     }
 }
 
-const Editor = ({type, items, showExcludedReportables, reconciler}) => {
+class AddingView extends UI {
+    constructor (props) {
+        super(props);
+
+        this.state = {text: ""};
+    }
+
+    render () {
+        const { reconciler, borderColor } = this.props
+
+        return (
+            <TextInput style            = { [styles.addingView, {borderColor: borderColor}] }
+                       autoFocus        = { true }
+                       onChangeText     = { text => this.setState({text}) }
+                       value            = { this.state.text }
+                       placeholder      = "Neues Item..."
+                       onSubmitEditing  = { () => console.log("erstelle neues Item!") }
+                       returnKeyType    = "done" />  
+        )
+    }
+}
+
+
+const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem}) => {
     const bgColor = {
         [ReportType.ACHIEVEMENT]: Colors.achievement,
         [ReportType.ISSUE]: Colors.issue,
@@ -248,7 +282,7 @@ const Editor = ({type, items, showExcludedReportables, reconciler}) => {
     return (
         <View style = { styles.editorContainer}>
             <View style = { styles.editor }>
-                { d.isEmpty(items) ? <Text style = { styles.info }>Noch keine Items</Text> :
+                { d.isEmpty(items) && !isAddingItem ? <Text style = { styles.info }>Noch keine Items</Text> :
                     d.intoArray(d.map((item) => {
                         if (showExcludedReportables || !d.get(item, "reportable/isExcluded")) {
                             return <Reportable key        = { d.get(item, d.DB_ID) }
@@ -261,6 +295,8 @@ const Editor = ({type, items, showExcludedReportables, reconciler}) => {
                         } else { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut) /*@TODO: better place while still guaranteeing first anim */}
                     }, items))
                 }
+                { isAddingItem && <AddingView reconciler = { reconciler}
+                                              borderColor = { bgColor[type] } />}
             </View>
             <View style = { styles.editorFooter }>
                 { showExcludedReportables ? 
@@ -292,18 +328,24 @@ const ReportViewMaker = ({task, type, title, titleColor, showExcludedReportables
                                             d.flatten,
                                             tasks => d.filter(d.identity, tasks));
 
+    const overallRag = d.get(ownerPart, "snapshot/rag");
+
     const allItems = d.concat(highlevelItems, lowlevelItems);
 
     return (
         <View style = { styles.container }>
-            <ReportHeader title    = { title }
-                          taskTitle = { taskTitle }
-                          titleColor = { titleColor } />
+            <ReportHeader title      = { title }
+                          taskTitle  = { taskTitle }
+                          titleColor = { titleColor }
+                          rag        = { overallRag }
+                          taskId     = { taskId }
+                          reconciler = { reconciler } />
             <Editor items = { allItems }
                     type = { type }
                     showExcludedReportables = { showExcludedReportables }
+                    isAddingItem = { isAddingItem }
                     reconciler = { reconciler }/>
-            <AddButton />
+            <AddButton onPress = { toggleAddItem }/>
         </View>
     )
 }
@@ -328,11 +370,20 @@ class AchievementsView extends UI {
         )
     }
 
+    constructor (props) {
+        super(props)
+        this.state = {isAddingItem: false}
+    }
+
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.ACHIEVEMENT }
                                 title = { this.props.navigation.state.routeName }
                                 titleColor = { Colors.achievement }
+                                isAddingItem = { this.state.isAddingItem }
+                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                          this.setState({isAddingItem: !this.state.isAddingItem});
+                                                        }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
@@ -357,11 +408,18 @@ class DecisionsView extends UI {
         )
     }
 
+    constructor (props) {
+        super(props)
+        this.state = {isAddingItem: false}
+    }
+
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.DECISION }
                                 title = { this.props.navigation.state.routeName }
                                 titleColor = { Colors.decision }
+                                isAddingItem = { this.state.isAddingItem }
+                                toggleAddItem = { () => {this.setState({isAddingItem: !this.state.isAddingItem})}}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
@@ -386,11 +444,18 @@ class NextView extends UI {
         )
     }
 
+    constructor (props) {
+        super(props)
+        this.state = {isAddingItem: false}
+    }
+
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.NEXT }
                                 title = { this.props.navigation.state.routeName }
                                 titleColor = { Colors.next }
+                                isAddingItem = { this.state.isAddingItem }
+                                toggleAddItem = { () => {this.setState({isAddingItem: !this.state.isAddingItem})}}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
@@ -415,11 +480,18 @@ class RisksView extends UI {
         )
     }
 
+    constructor (props) {
+        super(props)
+        this.state = {isAddingItem: false}
+    }
+
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.RISK }
                                 title = { this.props.navigation.state.routeName }
                                 titleColor = { Colors.risk }
+                                isAddingItem = { this.state.isAddingItem }
+                                toggleAddItem = { () => {this.setState({isAddingItem: !this.state.isAddingItem})}}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
@@ -444,11 +516,18 @@ class IssuesView extends UI {
         )
     }
 
+    constructor (props) {
+        super(props)
+        this.state = {isAddingItem: false}
+    }
+
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.ISSUE }
                                 title = { this.props.navigation.state.routeName }
                                 titleColor = { Colors.issue }
+                                isAddingItem = { this.state.isAddingItem }
+                                toggleAddItem = { () => {this.setState({isAddingItem: !this.state.isAddingItem})}}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
