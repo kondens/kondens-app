@@ -65,6 +65,11 @@ mutate[Mutations.UPDATE_STATUS] = (target, snapId, [field, value]) => {
     d.transact(target.conn, [[":db/add", snapId, field, value]])
 }
 
+mutate[Mutations.UPDATE_REPORTABLE] = (target, taskId, [reportable, value]) => {
+    d.transact(target.conn, { ":db/id": taskId,
+                              [reportable]: value})
+}
+
 mutate[Mutations.RESET_STATUS] = (target, snapId, field) => {
     d.transact(target.conn, [[":db.fn/retractAttribute", snapId, field]])
 }

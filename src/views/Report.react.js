@@ -295,7 +295,7 @@ class AddingView extends UI {
     }
 
     render () {
-        const { reconciler, borderColor } = this.props
+        const { reconciler, borderColor, taskId, taskOwner } = this.props
 
         return (
             <TextInput style            = { [styles.addingView, {borderColor: borderColor}] }
@@ -303,14 +303,17 @@ class AddingView extends UI {
                        onChangeText     = { text => this.setState({text}) }
                        value            = { this.state.text }
                        placeholder      = "Neues Item..."
-                       onSubmitEditing  = { () => console.log("erstelle neues Item!") }
+                       onSubmitEditing  = { () => { /*reconciler.put(Mutations.UPDATE_REPORTABLE, 
+                                                                   taskId, //@TODO: should be snapShotID
+                                                                   ["snapshot/achievement", {"achievement/title": this.state.text,
+                                                                                             "achievement/reporter": taskOwner}]) */ } }
                        returnKeyType    = "done" />  
         )
     }
 }
 
 
-const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem}) => {
+const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem, taskId, taskOwner}) => {
     const bgColor = {
         [ReportType.ACHIEVEMENT]: Colors.achievement,
         [ReportType.ISSUE]: Colors.issue,
@@ -335,8 +338,10 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem}
                         } else { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut) /*@TODO: better place while still guaranteeing first anim */}
                     }, items))
                 }
-                { isAddingItem && <AddingView reconciler = { reconciler}
-                                              borderColor = { bgColor[type] } />}
+                { isAddingItem && <AddingView reconciler    = { reconciler}
+                                              borderColor   = { bgColor[type] }
+                                              taskId        = { taskId }
+                                              taskOwner     = { taskOwner } />}
             </View>
             <View style = { styles.editorFooter }>
                 { showExcludedReportables ? 
@@ -381,11 +386,13 @@ const ReportViewMaker = ({task, type, title, titleColor, showExcludedReportables
                           rag        = { overallRag }
                           taskId     = { taskId }
                           reconciler = { reconciler } />
-            <Editor items = { allItems }
-                    type = { type }
+            <Editor items                   = { allItems }
+                    type                    = { type }
                     showExcludedReportables = { showExcludedReportables }
-                    isAddingItem = { isAddingItem }
-                    reconciler = { reconciler }/>
+                    isAddingItem            = { isAddingItem }
+                    reconciler              = { reconciler }
+                    taskId                  = { taskId }
+                    taskOwner               = { taskOwner }/>
             <AddButton onPress = { toggleAddItem }/>
         </View>
     )

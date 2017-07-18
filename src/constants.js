@@ -39,6 +39,8 @@ export const Mutations = {
     RESET_STATUS:  "!status/reset",
     SUBMIT_STATUS: "!status/submit",
 
+    UPDATE_REPORTABLE: "!reportable/update",
+
     INCLUDE_REPORTABLE: "!report/include-reportable",
     EXCLUDE_REPORTABLE: "!report/exclude-reportable",
     SHOW_EXCLUDED_REPORTABLES: "!report/show-reportables",
