@@ -277,7 +277,7 @@ class Reportable extends UI {
                     <Text style = { styles.editorItemLabel }>{title}</Text>
                     <TouchableOpacity style   = { styles.editorItemHide }
                                       onPress = { (e) => { this.handleExclusion() } }>
-                        <AnimatedExcluder name = "plus"
+                        <AnimatedExcluder name = "remove"
                                           ref  = { ref => { this.excluderRef = ref } }
                                           isExcluded = { isExcluded }/>
                     </TouchableOpacity>
