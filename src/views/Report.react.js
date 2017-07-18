@@ -7,7 +7,9 @@ import { View,
          Text,
          TouchableOpacity,
          Platform,
-         Animated }            from "react-native";
+         Animated,
+         LayoutAnimation,
+         TextInput }            from "react-native";
 
 import { makeScreen }       from "../makeScreen";
 
@@ -178,22 +180,60 @@ class AnimatedExcluder extends UI {
     }
 }
 
-const Item = ({title, color, reconciler, itemId, isExcluded}) => {
-    let excluderRef = null;
+class Reportable extends UI {
+    constructor(props) {
+        super(props);
+        if (this.props.isExcluded) {
+            this.state = {fadeValue: new Animated.Value(0.5)};
+        } else {
+            this.state = {fadeValue: new Animated.Value(1)};
+        }
 
-    return (
-        <TouchableOpacity style = { [styles.editorItem, { backgroundColor: color }, isExcluded && { backgroundColor: color + "77" }] }>
-            <Text style = { styles.editorItemLabel }>{title}</Text>
-            <TouchableOpacity style   = { styles.editorItemHide }
-                              onPress = { (e) => {  isExcluded ? reconciler.put(Mutations.INCLUDE_REPORTABLE, itemId) :
-                                                                 reconciler.put(Mutations.EXCLUDE_REPORTABLE, itemId)
-                                                    excluderRef.startRotation(); } }>
-                <AnimatedExcluder name = "plus"
-                                  ref  = { ref => { excluderRef = ref } }
-                                  isExcluded = { isExcluded }/>
-            </TouchableOpacity>
-        </TouchableOpacity> 
-    )
+        this.excluderRef = undefined;
+    }
+
+    startFade (toValue) { Animated.timing(this.state.fadeValue, { toValue: toValue }).start() }
+
+    handleExclusion () {
+        const { isExcluded, itemId, showExcluded} = this.props;
+
+        this.excluderRef.startRotation();
+        if (isExcluded) {
+            reconciler.put(Mutations.INCLUDE_REPORTABLE, itemId);
+            this.startFade(1);
+        } else {
+            reconciler.put(Mutations.EXCLUDE_REPORTABLE, itemId);
+            if (showExcluded) { 
+                this.startFade(0.5); 
+            } else { 
+                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                this.startFade(0); 
+            }
+        } 
+    }
+
+    render () {
+        const { title, color, reconciler, isExcluded } = this.props
+
+        const fade = this.state.fadeValue.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+        })
+
+        return (
+            <Animated.View style = { {opacity: this.state.fadeValue} }>
+                <TouchableOpacity style = { [styles.editorItem, { backgroundColor: color }] }>
+                    <Text style = { styles.editorItemLabel }>{title}</Text>
+                    <TouchableOpacity style   = { styles.editorItemHide }
+                                      onPress = { (e) => { this.handleExclusion() } }>
+                        <AnimatedExcluder name = "plus"
+                                          ref  = { ref => { this.excluderRef = ref } }
+                                          isExcluded = { isExcluded }/>
+                    </TouchableOpacity>
+                </TouchableOpacity> 
+            </Animated.View>
+        )
+    }
 }
 
 const Editor = ({type, items, showExcludedReportables, reconciler}) => {
@@ -211,26 +251,29 @@ const Editor = ({type, items, showExcludedReportables, reconciler}) => {
                 { d.isEmpty(items) ? <Text style = { styles.info }>Noch keine Items</Text> :
                     d.intoArray(d.map((item) => {
                         if (showExcludedReportables || !d.get(item, "reportable/isExcluded")) {
-                            return <Item key        = { d.get(item, d.DB_ID) }
-                                         itemId     = { d.get(item, d.DB_ID) }
-                                         title      = { d.get(item, type + "/title") }
-                                         color      = { bgColor[type] }
-                                         reconciler = { reconciler }
-                                         isExcluded = { d.get(item, "reportable/isExcluded") } />
-                        }
+                            return <Reportable key        = { d.get(item, d.DB_ID) }
+                                               itemId     = { d.get(item, d.DB_ID) }
+                                               title      = { d.get(item, type + "/title") }
+                                               color      = { bgColor[type] }
+                                               reconciler = { reconciler }
+                                               isExcluded = { d.get(item, "reportable/isExcluded") }
+                                               showExcluded = { showExcludedReportables } />
+                        } else { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut) /*@TODO: better place while still guaranteeing first anim */}
                     }, items))
                 }
             </View>
             <View style = { styles.editorFooter }>
                 { showExcludedReportables ? 
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
-                                        onPress = { () => { reconciler.put(Mutations.HIDE_EXCLUDED_REPORTABLES) } }>
-                          <FontAwesome name = "eye"       color = { Colors.accent } size = {32} />
+                                        onPress = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                            reconciler.put(Mutations.HIDE_EXCLUDED_REPORTABLES) } }>
+                          <FontAwesome name = "eye" color = { Colors.accent } size = {32} />
                       </TouchableOpacity> 
                   :
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
-                                        onPress = { () => { reconciler.put(Mutations.SHOW_EXCLUDED_REPORTABLES) } }>
-                          <FontAwesome name = "eye-slash"       color = { Colors.accent } size = {32} />
+                                        onPress = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                            reconciler.put(Mutations.SHOW_EXCLUDED_REPORTABLES) } }>
+                          <FontAwesome name = "eye-slash" color = { Colors.accent } size = {32} />
                       </TouchableOpacity> }
             </View>
         </View>
