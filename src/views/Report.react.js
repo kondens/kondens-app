@@ -1,7 +1,7 @@
 "use strict";
 
-import d                    from "@clockworks/datascript";
-import React                from "react";
+import d                        from "@clockworks/datascript";
+import React                    from "react";
 import { View,
          StyleSheet,
          Text,
@@ -9,24 +9,28 @@ import { View,
          Platform,
          Animated,
          LayoutAnimation,
-         TextInput }            from "react-native";
+         TextInput,
+         KeyboardAvoidingView,
+         ScrollView, } from "react-native";
 
-import { makeScreen }       from "../makeScreen";
+import { makeScreen }           from "../makeScreen";
 
 import { TabNavigator,
-         addNavigationHelpers }     from "react-navigation";
+         addNavigationHelpers } from "react-navigation";
 
-import { UI }               from "../UI.react";
+import { UI }                   from "../UI.react";
 import { Mutations,
          Completeness,
          Colors,
          Fonts,
          RAGs,
-         ReportType }             from "../constants";
+         ReportType }           from "../constants";
 
-import Moment               from "moment";
+import Moment                   from "moment";
 
-import { FontAwesome }      from '@expo/vector-icons';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+
+import { FontAwesome }          from '@expo/vector-icons';
 
 
 const styles = StyleSheet.create({
@@ -332,7 +336,7 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
 
     return (
         <View style = { styles.editorContainer}>
-            <View style = { styles.editor }>
+            <KeyboardAwareScrollView extraHeight = {135} >
                 { d.isEmpty(items) && !isAddingItem ? <Text style = { styles.info }>Noch keine Items</Text> :
                     d.intoArray(d.map((item) => {
                         if (showExcludedReportables || !d.get(item, "reportable/isExcluded")) {
@@ -351,7 +355,7 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
                                               taskId        = { taskId }
                                               taskOwner     = { taskOwner }
                                               toggleAddItem = { toggleAddItem } />}
-            </View>
+            </KeyboardAwareScrollView>
             <View style = { styles.editorFooter }>
                 { showExcludedReportables ? 
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
