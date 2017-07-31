@@ -348,7 +348,7 @@ class Task extends UI {
     constructor(props) {
         super(props);
         this.state = {
-            backgroundColor: undefined,
+            backgroundColor: RagColor[props.rag],
         }
     }
 
