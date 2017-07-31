@@ -273,7 +273,7 @@ const ProgressBar = ({start, end, at, isLight}) => {
             <View style={ progressBarStyles.container }>
                 <View style={ progressBarStyles.labelContainer }>
                     <Text style={ [progressBarStyles.label, progressBarStyles.start, isLight && {color: "#FFF"}] }>
-                        { Moment(start, "x").format("DD. MMMM") } bis { Moment(end, "x").format("DD. MMMM") } (endet { Moment(end, "x").fromNow() })
+                        { Moment(start, "x").format("DD. MMMM") } bis { Moment(end, "x").format("DD. MMMM") } ({ Moment(end, "x").fromNow() })
                     </Text>
                 {/*
                     <Text style={ [progressBarStyles.label, progressBarStyles.start] }>
