@@ -64,6 +64,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     info: {
+        marginLeft: 6,
         fontSize: Fonts.h3Size,
         color: Colors.body,
     },
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
         color: Colors.accent,
     },
     editorContainer: {
-        margin: 3,
+        marginHorizontal: 6,
         // padding: 6,
         flex: 1,
         flexDirection: "column",
@@ -95,24 +96,28 @@ const styles = StyleSheet.create({
         // backgroundColor: "#FFF",
     },
     editorItem: {
-        padding: 6,
+        // padding: 6,
+        marginVertical: 3,
+        marginHorizontal: 6,
+        padding: 12,
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        borderRadius: 4,
-        // marginHorizontal: 12,
-        marginTop: 6,
+        borderRadius: 2,
+        shadowOpacity: (Platform.OS == "ios") ? 0.18 : 0,
+        shadowRadius: 1,
+        shadowOffset: {
+            height: 1,
+            width: 0,
+        },
     },
     editorItemLabel: {
-        // flex: 1,
         color: "#FFF",
         backgroundColor: "transparent",
         fontSize: Fonts.bodySize,
     },
     editorItemHide: {
-        // width: 40,
-        paddingLeft: 6,
-        marginLeft: 6
+        paddingHorizontal: 6,
     },
     addingView : {
         height: 32.5,
@@ -165,8 +170,8 @@ const styles = StyleSheet.create({
     },
     ragContainer : {
         position: "absolute",
-        right: 6,
-        top: 3,
+        right: 12,
+        top: 18,
         flexDirection: "row",
         height: 36,
     },
