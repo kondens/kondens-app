@@ -105,7 +105,7 @@ export const dummyData = [
             "snapshot/completeness": Completeness.WIP,
             //These have been reported form lower levels->generelles!
             "snapshot/risk": [{"risk/title": "3 MA gehen in den Urlaub", "risk/reporter": -2}],
-            "snapshot/achievement": [{"achievement/title": "Internes Sales-Team wird mit ausgebildet", "achievement/reporter": -1},
+            "snapshot/achievement": [{"achievement/title": "Internes Sales-Team wird erfolgreich mit ausgebildet", "achievement/reporter": -1},
                                      {"achievement/title": "Wichtige Sicherheitslücke geschlossen", "achievement/reporter": -1}],
         }],
     },
