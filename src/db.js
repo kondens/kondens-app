@@ -69,6 +69,7 @@ export const schema = {
                                    ":db/valueType": ":db.type/ref"},
 
     "reportable/isExcluded":      {":db/cardinality": ":db.cardinality/one"},
+    //refactor x/reporter -> reportable/reporter
 
     "risk/title":                 {":db/cardinality": ":db.cardinality/one"},
     "risk/reporter":              {":db/cardinality": ":db.cardinality/one",
