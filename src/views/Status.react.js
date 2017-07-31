@@ -8,8 +8,6 @@ import { View,
          StyleSheet,
          Platform,
          ScrollView,
-         findNodeHandle,
-         UIManager,
          Alert }   from "react-native";
 
 import { UI }           from "../UI.react";
@@ -18,6 +16,8 @@ import { Mutations,
          Colors,
          Fonts,
          RAGs,
+         RagColor,
+         RagSymbol,
          Routes, }        from "../constants";
 
 import Moment           from "moment";
@@ -36,9 +36,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         backgroundColor: Colors.background,
     },
-    scrollContainer: {
-
-    },
+    scrollContainer: {},
     header: {
         flexDirection: "row",
         paddingTop: 18,
@@ -98,7 +96,6 @@ const taskStyles = StyleSheet.create({
     },
     container: {
         flexDirection: "column",
-        backgroundColor: "#FFF",
         padding: 12,
     },
     title: {
@@ -309,115 +306,103 @@ const ProgressBar = ({start, end, at, isLight}) => {
     }
 }
 
-const RAG = ({makeRipple, reconciler, snapId, rag}) => {
+
+const RAG = ({onRagSelect, onRagReset, reconciler, snapId, rag}) => {
     if (!rag) {
         return (
             <View style = { ragStyles.container }>
                 <TouchableOpacity style = { [ragStyles.button, {backgroundColor: Colors.achievement}] }
-                                onPress = { e => { makeRipple(e, Colors.achievement, RAGs.GREEN, false); } }>
-                    <FontAwesome name = "thumbs-up" size = {24} color = "#FFF" />
+                                onPress = { e => onRagSelect(RAGs.GREEN) }>
+                    <FontAwesome name={ RagSymbol[RAGs.GREEN] } size={ 24 } color={ "#FFF" } />
                 </TouchableOpacity>
                 <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#FFC107"}] }
-                                onPress = { e => { makeRipple(e, "#FFC107", RAGs.AMBER, false); } }>
-                    <FontAwesome name = "bell" size = {24} color = "#FFF" />
+                                onPress = { e => onRagSelect(RAGs.AMBER) }>
+                    <FontAwesome name={ RagSymbol[RAGs.AMBER] } size={ 24 } color={ "#FFF" } />
                 </TouchableOpacity>
                 <TouchableOpacity style = { [ragStyles.button, {backgroundColor: Colors.issue}] }
-                                onPress = { e => { makeRipple(e, Colors.issue, RAGs.RED, false); } }>
-                    <FontAwesome name = "exclamation-triangle" size = {24} color = "#FFF" />
+                                onPress = { e => onRagSelect(RAGs.RED) }>
+                    <FontAwesome name={ RagSymbol[RAGs.RED] } size={ 24 } color={ "#FFF" } />
                 </TouchableOpacity>
             </View>
         )
     } else {
-        let ragSymbol = {
-            [RAGs.GREEN]: "thumbs-up",
-            [RAGs.AMBER]: "bell",
-            [RAGs.RED]: "exclamation-triangle",   
-        }
-
-        let ragColor = {
-            [RAGs.GREEN]: Colors.achievement,
-            [RAGs.AMBER]: Colors.amber,
-            [RAGs.RED]: Colors.issue,
-        }
-
         return (
             <View style = { ragStyles.container }>
                 <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton ] }>
-                    <Text style = { ragStyles.buttonLabel }>Risk?</Text>
+                    <Text style={ ragStyles.buttonLabel }>Risk?</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton, {width: 50} ] }
-                                onPress = { e => { makeRipple(e, "#FFF", rag, true)} }>{ /* @TODO: set this to ragColor[rag] once reconciler pre-anims is done */}
-                    <FontAwesome name = { ragSymbol[rag] } size = {24} color = "#FFF" />
-                </TouchableOpacity> 
+                                onPress = { e => onRagReset() }>
+                    <FontAwesome name={ RagSymbol[rag] } size={ 24 } color={ "#FFF" } />
+                </TouchableOpacity>
                 <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton ] }>
-                    <Text style = { ragStyles.buttonLabel }>Issue?</Text>
+                    <Text style={ ragStyles.buttonLabel }>Issue?</Text>
                 </TouchableOpacity>
             </View>
         )
     }
 }
 
+
 class Task extends UI {
-    constructor (props) {
+    constructor(props) {
         super(props);
-        this.rippleTarget = undefined;
+        this.state = {
+            backgroundColor: undefined,
+        }
     }
 
+    onRagSelect = (rag) => this.getReconciler().put(Mutations.UPDATE_STATUS, this.props.snapId, ["snapshot/rag", rag])
+    
+    onRagReset = () => this.getReconciler().put(Mutations.RESET_STATUS, this.props.snapId, "snapshot/rag")
+
+    onBackgroundColorChange = (color) => this.setState({backgroundColor: color})
+
     render () {
+        const { backgroundColor } = this.state
         const { title, start, end, reconciler, snapId, rag } = this.props
 
-        let ragColor = {
-            [RAGs.GREEN]: Colors.achievement,
-            [RAGs.AMBER]: Colors.amber,
-            [RAGs.RED]: Colors.issue,
-        }
+        const swipeRight = [{
+            backgroundColor: Colors.risk,
+            component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+                            <FontAwesome name="trash-o" size={38} color="#FFF" />
+                        </View>
+        }]
 
-        const swipeRight = [
-            {
-                backgroundColor: Colors.risk,
-                component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                                <FontAwesome name = "trash-o" size = {38} color = "#FFF" />
-                            </View>
-            }
-        ]
-
-        const swipeLeft = [
-            {
-                backgroundColor: Colors.achievement,
-                component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                                <FontAwesome name = "check" size = {38} color = "#FFF" />
-                            </View>
-            }
-        ]
+        const swipeLeft = [{
+            backgroundColor: Colors.achievement,
+            component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+                            <FontAwesome name="check" size={38} color="#FFF" />
+                        </View>
+        }]
 
         //@TODO: swipe/scroll etc. https://github.com/dancormier/react-native-swipeout/wiki
         return (
-            <Ripple style = { taskStyles.shadowContainer }
-                    rippleOpacity = { 1.0 }
-                    rippleDuration = { 300 }
-                    ref = { ref => { this.rippleTarget = ref } }
-                    onEnd = { rag => {  rag ? reconciler.put(Mutations.UPDATE_STATUS, snapId, ["snapshot/rag", rag]) :
-                                              reconciler.put(Mutations.RESET_STATUS, snapId, "snapshot/rag") } }>
+            <Ripple style           = { taskStyles.shadowContainer }
+                    color           = { RagColor[rag] }
+                    rippleOpacity   = { 1.0 }
+                    rippleDuration  = { 300 }
+                    onColor         = { this.onBackgroundColorChange }>
                 <Swipeout autoClose = { true }
                           right     = { swipeRight }
-                          left      = { swipeLeft }>
-                    <View style = { [taskStyles.container, rag && {backgroundColor: ragColor[rag]}] }>
-                        <Text style = { [taskStyles.title, rag && {color: "#FFF"}] }>{ title }</Text>
+                          left      = { swipeLeft }
+                          style     = { {backgroundColor: "transparent"} }>
+                    <View style = { [taskStyles.container, {backgroundColor: backgroundColor || "#FFFFFF"}] }>
+                        <Text style = { [taskStyles.title, backgroundColor && {color: Colors.inverseText}] }>{ title }</Text>
                         {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
-                        <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { rag } />
-                        <RAG reconciler = { reconciler }
-                             snapId     = { snapId }
-                             rag        = { rag }
-                             makeRipple = { (e, color, rag, inverse) => { e.persist()
-                                                                          UIManager.measure(findNodeHandle(this.rippleTarget), 
-                                                                                            (x, y, width, height, px, py) => 
-                                                                                            { this.rippleTarget.startRipple(e, color, px, py, width, height, rag, inverse) }) }}/>
+                        <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { backgroundColor } />
+                        <RAG reconciler  = { reconciler }
+                             snapId      = { snapId }
+                             rag         = { rag }
+                             onRagSelect = { this.onRagSelect }
+                             onRagReset  = { this.onRagReset }/>
                     </View>
                 </Swipeout>
             </Ripple>
         )
     }
 }
+
 
 export class Status extends UI {
     static query () {
@@ -454,13 +439,13 @@ export class Status extends UI {
                     </View>
                     <View style = { styles.body }>
                         { d.intoArray(d.map((snap) => (
-                                <Task key   = { d.get(snap, d.DB_ID) }
-                                      rag   = { d.get(snap, "snapshot/rag", false) }
-                                      snapId= { d.get(snap, d.DB_ID) }
-                                      title = { d.get(snap, "snapshot/title") }
-                                      start = { d.getIn(snap, ["snapshot/start", "date/timestamp"]) }
-                                      end   = { d.getIn(snap, ["snapshot/end", "date/timestamp"]) }
-                                      reconciler = { this.getReconciler() } />
+                            <Task key   = { d.get(snap, d.DB_ID) }
+                                  rag   = { d.get(snap, "snapshot/rag", false) }
+                                  snapId= { d.get(snap, d.DB_ID) }
+                                  title = { d.get(snap, "snapshot/title") }
+                                  start = { d.getIn(snap, ["snapshot/start", "date/timestamp"]) }
+                                  end   = { d.getIn(snap, ["snapshot/end", "date/timestamp"]) }
+                                  reconciler = { this.getReconciler() } />
                         ), wipSnaps)) }
                     </View>
                 </ScrollView>

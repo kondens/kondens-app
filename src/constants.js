@@ -10,6 +10,7 @@ export const Colors = {
     lowlight:           "#BBB",
     body:               "rgba(0,0,0,0.54)", // "#808080",
     primaryText:        "rgba(0,0,0,0.87)",
+    inverseText:        "#FFFFFF",
 
     risk: "#FF8A65",
     issue: "#EF5350",
@@ -71,6 +72,18 @@ export const RAGs = {
     RED: "RED",
     AMBER: "AMBER",
     GREEN: "GREEN",
+}
+
+export const RagColor = {
+    [RAGs.GREEN]: Colors.achievement,
+    [RAGs.AMBER]: Colors.amber,
+    [RAGs.RED]: Colors.issue,
+}
+
+export const RagSymbol = {
+    [RAGs.GREEN]: "thumbs-up",
+    [RAGs.AMBER]: "bell",
+    [RAGs.RED]: "exclamation-triangle",   
 }
 
 export const STR = {
