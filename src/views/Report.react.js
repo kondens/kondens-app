@@ -168,6 +168,7 @@ const styles = StyleSheet.create({
     addButtonLabel: {
         color: "#FFF",
         fontSize: 24,
+        lineHeight: 24,
     },
     ragContainer : {
         position: "absolute",
