@@ -60,9 +60,6 @@ const styles = StyleSheet.create({
         marginRight: 6,
     },
 
-    body: {
-        flex: 1,
-    },
     info: {
         marginLeft: 6,
         fontSize: Fonts.h3Size,
@@ -96,13 +93,12 @@ const styles = StyleSheet.create({
         // backgroundColor: "#FFF",
     },
     editorItem: {
-        // padding: 6,
         marginVertical: 3,
         marginHorizontal: 6,
         padding: 12,
         flexDirection: "row",
-        alignItems: "center",
         justifyContent: "space-between",
+        alignItems: "center",
         borderRadius: 2,
         shadowOpacity: (Platform.OS == "ios") ? 0.18 : 0,
         shadowRadius: 1,
@@ -111,13 +107,17 @@ const styles = StyleSheet.create({
             width: 0,
         },
     },
+    textWrap: {
+        flexDirection: "column",
+    },
     editorItemLabel: {
         color: "#FFF",
         backgroundColor: "transparent",
         fontSize: Fonts.bodySize,
+        // textAlign: 'left',
+        // flexWrap: 'wrap',
     },
     editorItemHide: {
-        paddingHorizontal: 6,
     },
     addingView : {
         height: 32.5,
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         borderRadius: 4,
         marginTop: 6,
+        marginHorizontal: 6,
         color: Colors.body,
         fontSize: Fonts.bodySize,
     },
@@ -298,15 +299,17 @@ class Reportable extends UI {
 
         return (
             <Animated.View style = { {opacity: this.state.fadeValue} }>
-                <TouchableOpacity style = { [styles.editorItem, { backgroundColor: color }] }>
-                    <Text style = { styles.editorItemLabel }>{title}</Text>
+                <View style = { [styles.editorItem, { backgroundColor: color }] }>
+                    <View style={ styles.textWrap }>
+                        <Text style = { styles.editorItemLabel }>{ title }</Text>
+                    </View>
                     <TouchableOpacity style   = { styles.editorItemHide }
                                       onPress = { (e) => { this.handleExclusion() } }>
                         <AnimatedExcluder name = "remove"
                                           ref  = { ref => { this.excluderRef = ref } }
                                           isExcluded = { isExcluded }/>
                     </TouchableOpacity>
-                </TouchableOpacity> 
+                </View> 
             </Animated.View>
         )
     }
@@ -356,8 +359,8 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
     }
 
     return (
-        <View style = { styles.editorContainer}>
-            <KeyboardAwareScrollView extraHeight = {135} >
+        <View style = { styles.editorContainer }>
+            <KeyboardAwareScrollView extraHeight = {135}>
                 { d.isEmpty(items) && !isAddingItem ? <Text style = { styles.info }>Noch keine Items</Text> :
                     d.intoArray(d.map((item) => {
                         if (showExcludedReportables || !d.get(item, "reportable/isExcluded")) {
@@ -686,10 +689,8 @@ class Report extends React.Component {
         })
 
         return (
-            <View style={ {flex: 1} }>
-                <ReportNavigator navigation = { navigationProps } 
-                                screenProps = { {reconciler: this.props.screenProps.reconciler} }/>
-            </View>
+            <ReportNavigator navigation = { navigationProps } 
+                            screenProps = { {reconciler: this.props.screenProps.reconciler} }/>
         )
     }
 } 
