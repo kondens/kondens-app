@@ -38,13 +38,28 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         backgroundColor: Colors.background,
-        padding: 6
     },
     header: {
+        flexDirection: "column",
+        paddingTop: 18,
+        paddingHorizontal: 12,
+        paddingBottom: 12,
     },
     headerInfo: {
-        flexDirection: "column",
+        flexDirection: "row",
+        marginBottom: 6,
     },
+    taskTitle: {
+        fontSize: Fonts.h3Size,
+        color: Colors.body,
+    },
+    date: {
+        fontSize: Fonts.h3Size,
+        fontWeight: "bold",
+        color: Colors.accent,
+        marginRight: 6,
+    },
+
     body: {
         flex: 1,
     },
@@ -53,8 +68,8 @@ const styles = StyleSheet.create({
         color: Colors.body,
     },
     title: {
-        fontSize: Fonts.h1Size,
-        fontWeight: Fonts.h1Weight,
+        fontSize: Fonts.h2Size,
+        fontWeight: Fonts.h2Weight,
         color: Colors.accent,
     },
     editorContainer: {
@@ -185,9 +200,10 @@ const RAG = ({rag, reconciler, taskId}) => (
 const ReportHeader = ({title, taskTitle, titleColor, rag, reconciler, taskId}) => (
     <View style = { styles.header }>
         <View style = { styles.headerInfo }>
-            <Text style = { styles.info }>{taskTitle}, { Moment().format("DD.MM.YY") }</Text>
-            <Text style = { [styles.title, {color: titleColor}] }>{title}</Text>
+            <Text style = { styles.date }>{ Moment().format("DD. MMMM") }</Text>
+            <Text style = { styles.taskTitle }>{ taskTitle }</Text>
         </View>
+        <Text style = { [styles.title, {color: titleColor}] }>{title}</Text>
         <RAG rag        = { rag }
              taskId     = { taskId }
              reconciler = { reconciler } />

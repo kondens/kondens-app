@@ -2,13 +2,14 @@
 
 export const Colors = {
     accent:             "#e91e63",
-    background:         "#F8F8F8",
+    background:         "#F3F3F3", //"#F8F8F8",
     headerTint:         "#e91e63",
     headerBackground:   "#FFFFFF",
     accentNeutral:      "#607D8B",
     disabled:           "#BBB",
     lowlight:           "#BBB",
-    body:               "#808080",
+    body:               "rgba(0,0,0,0.54)", // "#808080",
+    primaryText:        "rgba(0,0,0,0.87)",
 
     risk: "#FF8A65",
     issue: "#EF5350",

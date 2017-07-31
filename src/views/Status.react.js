@@ -35,12 +35,15 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: "column",
         backgroundColor: Colors.background,
-        padding: 6
     },
     scrollContainer: {
 
     },
     header: {
+        flexDirection: "row",
+        paddingTop: 18,
+        paddingHorizontal: 24,
+        paddingBottom: 12,
     },
     body: {
         flex: 1,
@@ -50,9 +53,10 @@ const styles = StyleSheet.create({
         color: Colors.body,
     },
     date: {
-        fontSize: Fonts.h1Size,
-        fontWeight: Fonts.h1Weight,
+        fontSize: Fonts.h3Size,
+        fontWeight: "bold",
         color: Colors.accent,
+        marginRight: 6,
     },
 
     footer: {
@@ -83,30 +87,31 @@ const styles = StyleSheet.create({
 
 const taskStyles = StyleSheet.create({
     shadowContainer: {
-        marginVertical: 9,
-        marginHorizontal: 6,
+        marginVertical: 6,
+        marginHorizontal: 12,
         shadowOpacity: (Platform.OS == "ios") ? 0.18 : 0,
-        shadowRadius: 3,
+        shadowRadius: 1,
         shadowOffset: {
-            height: 2,
-            width: 3,
+            height: 1,
+            width: 0,
         },
     },
     container: {
         flexDirection: "column",
         backgroundColor: "#FFF",
-        padding: 6,
+        padding: 12,
     },
     title: {
         fontSize: Fonts.bodySize,
-        fontWeight: Fonts.h2Weight,
-        color: Colors.body,
+        fontWeight: "500", // Fonts.h2Weight,
+        color: Colors.primaryText,
         marginBottom: 6,
     },
 })
 
 const progressBarStyles = StyleSheet.create({
     container: {
+        flexDirection: "column",
         marginBottom: 12,
     },
     barContainer: {
@@ -116,18 +121,31 @@ const progressBarStyles = StyleSheet.create({
     },
     bar: {
         flexDirection: "row",
+        alignItems: "center",
         justifyContent: "space-between",
-        minHeight: 22,
-        paddingHorizontal: 14,
-        borderRadius: 50,
+        marginTop: 25,
+        height: 6,
+        // paddingHorizontal: 14,
+        // borderRadius: 50,
         overflow: "hidden",
+    },
+    left: {
+        borderLeftWidth: 2,
+        borderRightWidth: 2,
+        borderColor: Colors.accent,
+    },
+    progress: {
+        // borderTopWidth: 2,
+        flex: 1,
+        height: 2,
+        backgroundColor: Colors.accent,
     },
     labelContainer: {
         position: "absolute",
         flexDirection: "row",
         alignItems: "center",
         backgroundColor: "transparent",
-        marginHorizontal: 6,
+        // marginHorizontal: 6,
     },
     beforeBegin: {
        color: Colors.body,
@@ -151,8 +169,9 @@ const progressBarStyles = StyleSheet.create({
 
 const ragStyles = StyleSheet.create({
     container: {
+        marginTop: 6,
         flexDirection: "row",
-        justifyContent: "space-around",
+        justifyContent: "space-between",
         marginHorizontal: 30,
     },
     button: {
@@ -252,15 +271,9 @@ const ProgressBar = ({start, end, at, isLight}) => {
     if (progress > 0) {
         return (
             <View style={ progressBarStyles.container }>
-                <View style={ progressBarStyles.barContainer }>
-                    <View style={ [ progressBarStyles.bar, 
-                                    isLight ? { backgroundColor: "transparent" } : { backgroundColor: "#C8E6C9" }, 
-                                    { flex: progress } ] } />
-                    { (at < end) && <View style={ [progressBarStyles.bar, {flex: 1-progress}] } /> }
-                </View>
                 <View style={ progressBarStyles.labelContainer }>
                     <Text style={ [progressBarStyles.label, progressBarStyles.start, isLight && {color: "#FFF"}] }>
-                        { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } (endet { Moment(end, "x").fromNow() })
+                        { Moment(start, "x").format("DD. MMMM") } bis { Moment(end, "x").format("DD. MMMM") } (endet { Moment(end, "x").fromNow() })
                     </Text>
                 {/*
                     <Text style={ [progressBarStyles.label, progressBarStyles.start] }>
@@ -272,6 +285,16 @@ const ProgressBar = ({start, end, at, isLight}) => {
                     <Text style={ [progressBarStyles.label, progressBarStyles.end] }>
                         { Moment(end, "x").format("DD.MM.YY") }
                     </Text>*/}
+                </View>
+                <View style={ progressBarStyles.barContainer }>
+                    <View style={ [ progressBarStyles.bar,
+                                    (!isLight) && progressBarStyles.left,
+                                    // !isLight && [progressBarStyles.progress, {borderColor: "transparent"}],
+                                    // isLight ? { backgroundColor: "transparent" } : { backgroundColor: "#C8E6C9" }, 
+                                    { flex: progress } ] }>
+                        { (!isLight) && <View style={ progressBarStyles.progress } /> }
+                    </View>
+                    { (at < end) && <View style={ [progressBarStyles.bar, {flex: 1-progress}] } /> }
                 </View>
             </View>
         )
@@ -379,16 +402,16 @@ class Task extends UI {
                           right     = { swipeRight }
                           left      = { swipeLeft }>
                     <View style = { [taskStyles.container, rag && {backgroundColor: ragColor[rag]}] }>
-                            <Text style = { [taskStyles.title, rag && {color: "#FFF"}] }>{ title.toUpperCase() }</Text>
-                            {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
-                            <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { rag } />
-                            <RAG reconciler = { reconciler }
-                                 snapId     = { snapId }
-                                 rag        = { rag }
-                                 makeRipple = { (e, color, rag, inverse) => { e.persist()
-                                                                              UIManager.measure(findNodeHandle(this.rippleTarget), 
-                                                                                                (x, y, width, height, px, py) => 
-                                                                                                { this.rippleTarget.startRipple(e, color, px, py, width, height, rag, inverse) }) }}/>
+                        <Text style = { [taskStyles.title, rag && {color: "#FFF"}] }>{ title }</Text>
+                        {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
+                        <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { rag } />
+                        <RAG reconciler = { reconciler }
+                             snapId     = { snapId }
+                             rag        = { rag }
+                             makeRipple = { (e, color, rag, inverse) => { e.persist()
+                                                                          UIManager.measure(findNodeHandle(this.rippleTarget), 
+                                                                                            (x, y, width, height, px, py) => 
+                                                                                            { this.rippleTarget.startRipple(e, color, px, py, width, height, rag, inverse) }) }}/>
                     </View>
                 </Swipeout>
             </Ripple>
@@ -426,8 +449,8 @@ export class Status extends UI {
             <View style = { styles.container }>
                 <ScrollView style = { styles.scrollContainer}>
                     <View style = { styles.header }>
+                        <Text style = { styles.date }>{ Moment().format("DD. MMMM") }</Text>
                         <Text style = { styles.name }>{name}</Text>
-                        <Text style = { styles.date }>{ Moment().format("DD.MM.YY") }</Text>
                     </View>
                     <View style = { styles.body }>
                         { d.intoArray(d.map((snap) => (
