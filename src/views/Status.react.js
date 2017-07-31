@@ -240,7 +240,7 @@ const ActionBtn = ({reconciler}) => (
                            buttonColor = { Colors.achievement }
                            onPress     = {() => {reconciler.put(Mutations.NAVIGATION_DISPATCH, {
                                                                         routeName: Routes.REPORT,
-                                                                        params: {taskIdent: d.vector("task/id", 5)} 
+                                                                        params: {taskIdent: d.vector("task/id", 10)} 
                                                                     })}}>
             <FontAwesome color = "#FFF" name = "trophy" size = {20} />
         </ActionButton.Item>
