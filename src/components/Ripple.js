@@ -44,19 +44,19 @@ export default class Ripple extends PureComponent {
     // disabled: false,
   };
 
-  static propTypes = {
-    ...Animated.View.propTypes,
-    ...TouchableWithoutFeedback.propTypes,
+  // static propTypes = {
+  //   ...Animated.View.propTypes,
+  //   ...TouchableWithoutFeedback.propTypes,
 
-    rippleColor: PropTypes.string,
-    rippleOpacity: PropTypes.number,
-    rippleDuration: PropTypes.number,
-    rippleSize: PropTypes.number,
-    // rippleContainerBorderRadius: PropTypes.number,
-    // rippleCentered: PropTypes.bool,
-    // rippleSequential: PropTypes.bool,
-    // disabled: PropTypes.bool,
-  };
+  //   rippleColor: PropTypes.string,
+  //   rippleOpacity: PropTypes.number,
+  //   rippleDuration: PropTypes.number,
+  //   rippleSize: PropTypes.number,
+  //   // rippleContainerBorderRadius: PropTypes.number,
+  //   // rippleCentered: PropTypes.bool,
+  //   // rippleSequential: PropTypes.bool,
+  //   // disabled: PropTypes.bool,
+  // };
 
   constructor (props) {
     super(props);
