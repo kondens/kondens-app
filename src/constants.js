@@ -1,11 +1,11 @@
 "use strict";
 
 export const Colors = {
-    accent:             "#e91e63",
+    accent:             "#E8606E", // "#e91e63",
     background:         "#F3F3F3", //"#F8F8F8",
     headerTint:         "#e91e63",
     headerBackground:   "#FFFFFF",
-    accentNeutral:      "#607D8B",
+    accentNeutral:      "#75A3BC", // "#607D8B",
     disabled:           "#BBB",
     lowlight:           "#BBB",
     body:               "rgba(0,0,0,0.54)", // "#808080",
