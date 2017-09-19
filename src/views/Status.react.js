@@ -81,6 +81,12 @@ const styles = StyleSheet.create({
         fontSize: Fonts.bodySize,
         margin: 12,
     },
+
+    ragLabel: {
+        letterSpacing: 1,
+        fontSize: Fonts.bodySize,
+        fontWeight: "bold",
+    }
 })
 
 const taskStyles = StyleSheet.create({
@@ -129,13 +135,13 @@ const progressBarStyles = StyleSheet.create({
     left: {
         borderLeftWidth: 2,
         borderRightWidth: 2,
-        borderColor: Colors.accent,
+        borderColor: Colors.accentNeutral,
     },
     progress: {
         // borderTopWidth: 2,
         flex: 1,
         height: 2,
-        backgroundColor: Colors.accent,
+        backgroundColor: Colors.accentNeutral,
     },
     labelContainer: {
         position: "absolute",
@@ -169,13 +175,14 @@ const ragStyles = StyleSheet.create({
         marginTop: 6,
         flexDirection: "row",
         justifyContent: "space-between",
-        marginHorizontal: 30,
+        marginHorizontal: 12,
     },
     button: {
         borderRadius: 50,
         paddingVertical: 6,
         paddingHorizontal: 12,
-        width: 80,
+        flex: 1,
+        // width: 80,
         height: 36,
         alignItems: "center",
         justifyContent: "center",
@@ -234,6 +241,7 @@ const addSnap = (reconciler) => {
     reconciler.put(Mutations.ADD_SNAP, 1, 3, snap);
 }
 
+
 const ActionBtn = ({reconciler}) => (
     <ActionButton buttonColor={Colors.accent} title="Weitere Achievements" bgColor="rgba(0,0,0,0.3)" degrees={135}>
         <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
@@ -259,6 +267,7 @@ const ActionBtn = ({reconciler}) => (
     </ActionButton>
 );
 
+
 const ProgressBar = ({start, end, at, isLight}) => {
     let progress = 0;
     if (at > start) {
@@ -269,7 +278,9 @@ const ProgressBar = ({start, end, at, isLight}) => {
         return (
             <View style={ progressBarStyles.container }>
                 <View style={ progressBarStyles.labelContainer }>
-                    <Text style={ [progressBarStyles.label, progressBarStyles.start, isLight && {color: "#FFF"}] }>
+                    <Text style         = { [progressBarStyles.label, progressBarStyles.start, isLight && {color: "#FFF"}] }
+                          numberOfLines = { 1 }
+                          ellipsizeMode = { "tail" }>
                         { Moment(start, "x").format("DD. MMMM") } bis { Moment(end, "x").format("DD. MMMM") } ({ Moment(end, "x").fromNow() })
                     </Text>
                 {/*
@@ -311,32 +322,32 @@ const RAG = ({onRagSelect, onRagReset, reconciler, snapId, rag}) => {
     if (!rag) {
         return (
             <View style = { ragStyles.container }>
-                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: Colors.achievement}] }
+                <TouchableOpacity style = { ragStyles.button }
                                 onPress = { e => onRagSelect(RAGs.GREEN) }>
-                    <FontAwesome name={ RagSymbol[RAGs.GREEN] } size={ 24 } color={ "#FFF" } />
+                    <Text style={ [styles.ragLabel, {color: Colors.achievement}] }>{RAGs.GREEN}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: "#FFC107"}] }
+                <TouchableOpacity style = { ragStyles.button }
                                 onPress = { e => onRagSelect(RAGs.AMBER) }>
-                    <FontAwesome name={ RagSymbol[RAGs.AMBER] } size={ 24 } color={ "#FFF" } />
+                    <Text style={ [styles.ragLabel, {color: "#FFC107"}] }>{RAGs.AMBER}</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style = { [ragStyles.button, {backgroundColor: Colors.issue}] }
+                <TouchableOpacity style = { ragStyles.button }
                                 onPress = { e => onRagSelect(RAGs.RED) }>
-                    <FontAwesome name={ RagSymbol[RAGs.RED] } size={ 24 } color={ "#FFF" } />
+                    <Text style={ [styles.ragLabel, {color: Colors.issue}] }>{RAGs.RED}</Text>
                 </TouchableOpacity>
             </View>
         )
     } else {
         return (
             <View style = { ragStyles.container }>
-                <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton ] }>
-                    <Text style={ ragStyles.buttonLabel }>Risk?</Text>
-                </TouchableOpacity>
-                <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton, {width: 50} ] }
+                <TouchableOpacity style = { [ragStyles.button] }
                                 onPress = { e => onRagReset() }>
-                    <FontAwesome name={ RagSymbol[rag] } size={ 24 } color={ "#FFF" } />
+                    <Text style={ [styles.ragLabel, {color: "#FFF"}] }>RESET</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style = { [ragStyles.button, ragStyles.invertedButton ] }>
-                    <Text style={ ragStyles.buttonLabel }>Issue?</Text>
+                <TouchableOpacity style = { ragStyles.button }>
+                    <Text style={ [styles.ragLabel, {color: "#FFF"}] }>RISK?</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style = { ragStyles.button }>
+                    <Text style={ [styles.ragLabel, {color: "#FFF"}] }>ISSUE?</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -383,21 +394,16 @@ class Task extends UI {
                     rippleOpacity   = { 1.0 }
                     rippleDuration  = { 300 }
                     onColor         = { this.onBackgroundColorChange }>
-                <Swipeout autoClose = { true }
-                          right     = { swipeRight }
-                          left      = { swipeLeft }
-                          style     = { {backgroundColor: "transparent"} }>
-                    <View style = { [taskStyles.container, {backgroundColor: backgroundColor || "#FFFFFF"}] }>
-                        <Text style = { [taskStyles.title, backgroundColor && {color: Colors.inverseText}] }>{ title }</Text>
-                        {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
-                        <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { backgroundColor } />
-                        <RAG reconciler  = { reconciler }
-                             snapId      = { snapId }
-                             rag         = { rag }
-                             onRagSelect = { this.onRagSelect }
-                             onRagReset  = { this.onRagReset }/>
-                    </View>
-                </Swipeout>
+                <View style = { [taskStyles.container, {backgroundColor: backgroundColor || "#FFFFFF"}] }>
+                    <Text style = { [taskStyles.title, backgroundColor && {color: Colors.inverseText}] }>{ title }</Text>
+                    {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
+                    <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { backgroundColor } />
+                    <RAG reconciler  = { reconciler }
+                         snapId      = { snapId }
+                         rag         = { rag }
+                         onRagSelect = { this.onRagSelect }
+                         onRagReset  = { this.onRagReset }/>
+                </View>
             </Ripple>
         )
     }

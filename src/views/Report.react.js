@@ -43,7 +43,7 @@ const styles = StyleSheet.create({
         flexDirection: "column",
         paddingTop: 18,
         paddingHorizontal: 12,
-        paddingBottom: 12,
+        paddingBottom: 24,
     },
     headerInfo: {
         flexDirection: "row",
@@ -178,8 +178,9 @@ const styles = StyleSheet.create({
         height: 36,
     },
     ragItem : {
+        borderWidth: 1,
         // paddingVertical: 6,
-        paddingHorizontal: 6,
+        paddingHorizontal: 12,
         alignItems: "center",
         justifyContent: "center",
         borderRadius: 4,
@@ -189,17 +190,17 @@ const styles = StyleSheet.create({
 
 const RAG = ({rag, reconciler, taskId}) => (
     <View style = { styles.ragContainer }>
-        <TouchableOpacity style   = { [styles.ragItem, {backgroundColor: Colors.lowlight}, rag == RAGs.RED && {backgroundColor: Colors.issue}] }
-                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.RED])}}   >
-            <FontAwesome name = { "exclamation-triangle" } size = { 24 } color = "#FFF" />
+        <TouchableOpacity style   = { [styles.ragItem, {borderColor: Colors.achievement}, rag == RAGs.GREEN && {backgroundColor: Colors.achievement}] }
+                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.GREEN]) } }>
+            <Text style={ [{fontWeight: "bold", color: Colors.achievement}, rag == RAGs.GREEN && {color: "#FFF"}] }>G</Text>
         </TouchableOpacity>
-        <TouchableOpacity style   = { [styles.ragItem, {backgroundColor: Colors.lowlight}, rag == RAGs.AMBER && {backgroundColor: Colors.amber}] }
-                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.AMBER]) } } >
-            <FontAwesome name = { "bell" } size = { 24 } color = "#FFF" />
+        <TouchableOpacity style   = { [styles.ragItem, {borderColor: Colors.amber}, rag == RAGs.AMBER && {backgroundColor: Colors.amber}] }
+                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.AMBER]) } }>
+            <Text style={ [{fontWeight: "bold", color: Colors.amber}, rag == RAGs.AMBER && {color: "#FFF"}] }>A</Text>
         </TouchableOpacity>
-        <TouchableOpacity style   = { [styles.ragItem, {backgroundColor: Colors.lowlight}, rag == RAGs.GREEN && {backgroundColor: Colors.achievement}] }
-                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.GREEN]) } } >
-            <FontAwesome name = { "thumbs-up" } size = { 24 } color = "#FFF" />
+        <TouchableOpacity style   = { [styles.ragItem, {borderColor: Colors.issue}, rag == RAGs.RED && {backgroundColor: Colors.issue}] }
+                          onPress = { () => { reconciler.put(Mutations.UPDATE_STATUS, taskId, ["snapshot/rag", RAGs.RED])}}  >
+            <Text style={ [{fontWeight: "bold", color: Colors.issue}, rag == RAGs.RED && {color: "#FFF"}] }>R</Text>
         </TouchableOpacity>
     </View>
 )
@@ -477,6 +478,7 @@ class AchievementsView extends UI {
                                 reconciler = { this.getReconciler() } />
     }
 }
+
 
 class DecisionsView extends UI {
     static query ({taskIdent}) {

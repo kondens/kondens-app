@@ -40,6 +40,6 @@ export const RouteDefinitions = {
 export const Navigator = StackNavigator(RouteDefinitions, {
     navigationOptions: {
         headerStyle: { backgroundColor: Colors.headerBackground },
-        headerTintColor: Colors.headerTint,
+        headerTintColor: Colors.accent,
     }
 });
