@@ -23,37 +23,91 @@ export const dummyData = [
     {
         "task/id": 1,
         "task/snapshot": [{
-            "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/title": "Sales-HR-Analyse",
-            "snapshot/start": {"date/timestamp": moment("2017-07-01").format("x")},
-            "snapshot/end": {"date/timestamp": moment("2017-08-01").format("x")},
-            "snapshot/staff": -1,
-            "snapshot/completeness": Completeness.WIP,
+            "snapshot/title":           "Projektgovernance definieren",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2017-09-14").format("x")},
+            "snapshot/staff":           -1,
+            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
         "task/id": 2,
         "task/snapshot": [{
-            "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/title": "Stakeholder-Analyse",
-            "snapshot/start": {"date/timestamp": moment("2017-07-15").format("x")},
-            "snapshot/end": {"date/timestamp": moment("2017-08-10").format("x")},
-            "snapshot/staff": -1,
-            "snapshot/completeness": Completeness.WIP,
+            "snapshot/title":           "Structural Completeness of Tasks",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2017-09-07").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2017-09-21").format("x")},
+            "snapshot/staff":           -1,
+            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
         "task/id": 3,
         "task/snapshot": [{
-            "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/title": "Kreditprozess-Analyse",
-            "snapshot/start": {"date/timestamp": moment("2017-06-05").format("x")},
-            "snapshot/end": {"date/timestamp": moment("2017-11-27").format("x")},
-            "snapshot/staff": -1,
-            "snapshot/completeness": Completeness.WIP,
+            "snapshot/title":           "Scope Agreement",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2017-09-21").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2017-09-30").format("x")},
+            "snapshot/staff":           -1,
+            "snapshot/completeness":    Completeness.WIP,
         }],
     },
-
+    {
+        "task/id": 4,
+        "task/snapshot": [{
+            "snapshot/title":           "Planung",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2017-10-01").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2017-10-24").format("x")},
+            "snapshot/staff":           -1,
+            "snapshot/completeness":    Completeness.WIP,
+        }],
+    },
+    {
+        "task/id": 5,
+        "task/snapshot": [{
+            "snapshot/title":           "Specification",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2017-11-01").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2017-11-15").format("x")},
+            "snapshot/staff":           -1,
+            "snapshot/completeness":    Completeness.WIP,
+        }],
+    },
+    {
+        "task/id": 6,
+        "task/snapshot": [{
+            "snapshot/title":           "Development",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2017-11-16").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2018-01-04").format("x")},
+            "snapshot/staff":           -1,
+            "snapshot/completeness":    Completeness.WIP,
+        }],
+    },
+    {
+        "task/id": 7,
+        "task/snapshot": [{
+            "snapshot/title":           "Testing",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2017-12-25").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2018-01-18").format("x")},
+            "snapshot/staff":           -1,
+            "snapshot/completeness":    Completeness.WIP,
+        }],
+    },
+    {
+        "task/id": 8,
+        "task/snapshot": [{
+            "snapshot/title":           "Golive",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2018-01-18").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2018-02-01").format("x")},
+            "snapshot/staff":           -1,
+            "snapshot/completeness":    Completeness.WIP,
+        }],
+    },
 
     //REPORT VIEW
 
@@ -65,40 +119,56 @@ export const dummyData = [
         "task/id": 10,
         "task/children": [-10, -11, -12],
         "task/snapshot": [{
-            "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/title": "Workstream I",
-            "snapshot/start": {"date/timestamp": moment("2017-05-01").format("x")},
-            "snapshot/end": {"date/timestamp": moment("2017-12-12").format("x")},
-            "snapshot/staff": -2,
-            "snapshot/completeness": Completeness.WIP,
+            "snapshot/title":           "Testprojekt",
+            "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/start":           {"date/timestamp": moment("2017-09-01").format("x")},
+            "snapshot/end":             {"date/timestamp": moment("2018-02-01").format("x")},
+            "snapshot/staff":           -2,
+            "snapshot/completeness":    Completeness.WIP,
             //These have been reported form lower levels->generelles!
-            "snapshot/risk": [{"risk/title": "3 MA gehen in den Urlaub", "risk/reporter": -1}],
-            "snapshot/achievement": [{"achievement/title": "Sales-Analysten wurden ausgebildet", "achievement/reporter": -1},
-                                     {"achievement/title": "Wichtige Sicherheitslücken geschlossen", "achievement/reporter": -1}],
+            "snapshot/next": [
+                {"next/title": "Structural Completeness of Tasks", "next/reporter": -1},
+            ],
+            "snapshot/risk": [
+                {"risk/title": "Drei MA gehen in den Urlaub", "risk/reporter": -1}
+            ],
+            "snapshot/achievement": [
+                {"achievement/title": "Wichtige Sicherheitslücke geschlossen", "achievement/reporter": -1}
+            ],
         }],
     },
     {
         ":db/id": -10,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/achievement": [{"achievement/title": "Sales-HR-Analyse abgeschlossen", "achievement/reporter": -1}],
+            "snapshot/achievement": [
+                {"achievement/title": "Done: Projektgovernance definieren", "achievement/reporter": -1}
+            ],
         }],
     },
     {
         ":db/id": -11,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/risk": [{"risk/title": "SAP-Vertragslage schwierig", "risk/reporter": -1}],
-            "snapshot/issue":[{"issue/title": "Terminfindungsschwierigkeiten", "issue/reporter": -1}],
+            "snapshot/risk": [
+                {"risk/title": "SAP-Vertragslage schwierig", "risk/reporter": -1}
+            ],
+            "snapshot/issue":[
+                {"issue/title": "Terminfindungsschwierigkeiten", "issue/reporter": -1}
+            ],
         }],
     },
     {
         ":db/id": -12,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/risk": [{ "risk/title": "Stakeholder alle krank", "risk/reporter": -1},
-                              { "risk/title": "CEO von Lobby beeinflusst", "risk/reporter": -1}],
-            "snapshot/issue":[{"issue/title": "CFO verweigert Kooperation", "issue/reporter": -1}],
+            "snapshot/risk": [
+                {"risk/title": "Stakeholder alle krank", "risk/reporter": -1},
+                {"risk/title": "CEO von Lobby beeinflusst", "risk/reporter": -1}
+            ],
+            "snapshot/issue": [
+                {"issue/title": "CFO verweigert Kooperation", "issue/reporter": -1}
+            ],
         }],
     },
 ]
