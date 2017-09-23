@@ -8,7 +8,7 @@ import { View,
          StyleSheet,
          Platform,
          ScrollView,
-         Alert }   from "react-native";
+         Alert }        from "react-native";
 
 import { UI }           from "../UI.react";
 import { Mutations,
@@ -18,11 +18,11 @@ import { Mutations,
          RAGs,
          RagColor,
          RagSymbol,
-         Routes, }        from "../constants";
+         Routes, }      from "../constants";
 
 import Moment           from "moment";
 
-import { FontAwesome }  from '@expo/vector-icons';
+import Icon             from "react-native-vector-icons/FontAwesome";
 
 import Swipeout         from "react-native-swipeout";
 
@@ -250,19 +250,19 @@ const ActionBtn = ({reconciler}) => (
                                                                         routeName: Routes.REPORT,
                                                                         params: {taskIdent: d.vector("task/id", 10)} 
                                                                     })}}>
-            <FontAwesome color = "#FFF" name = "trophy" size = {20} />
+            <Icon color = "#FFF" name = "trophy" size = {20} />
         </ActionButton.Item>
         <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
                            buttonColor = { Colors.risk }
                            title       = "Weitere Risks" 
                            onPress     = {() => {addSnap(reconciler)}}>
-            <FontAwesome color = "#FFF" name = "exclamation-circle" size = {20} />
+            <Icon color = "#FFF" name = "exclamation-circle" size = {20} />
         </ActionButton.Item>
         <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
                            buttonColor = { Colors.issue } 
                            title       = "Weitere Issues" 
                            onPress     = {() => {reconciler.put(Mutations.CREATE_STATUS)}}>
-            <FontAwesome color = "#FFF" name = "exclamation-triangle" size = {20} />
+            <Icon color = "#FFF" name = "exclamation-triangle" size = {20} />
         </ActionButton.Item>
     </ActionButton>
 );
@@ -376,14 +376,14 @@ class Task extends UI {
         const swipeRight = [{
             backgroundColor: Colors.risk,
             component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                            <FontAwesome name="trash-o" size={38} color="#FFF" />
+                            <Icon name="trash-o" size={38} color="#FFF" />
                         </View>
         }]
 
         const swipeLeft = [{
             backgroundColor: Colors.achievement,
             component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                            <FontAwesome name="check" size={38} color="#FFF" />
+                            <Icon name="check" size={38} color="#FFF" />
                         </View>
         }]
 

@@ -30,7 +30,7 @@ import Moment                   from "moment";
 
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { FontAwesome }          from '@expo/vector-icons';
+import Icon from "react-native-vector-icons/FontAwesome";
 
 
 const styles = StyleSheet.create({
@@ -225,7 +225,7 @@ const AddButton = ({onPress}) => (
     </TouchableOpacity>
 )
 
-const AnimatedFontAwesome = Animated.createAnimatedComponent(FontAwesome)
+const AnimatedIcon = Animated.createAnimatedComponent(Icon)
 
 class AnimatedExcluder extends UI {
     constructor(props) {
@@ -252,7 +252,7 @@ class AnimatedExcluder extends UI {
           outputRange: ['0deg', '135deg']
         })
 
-        return <AnimatedFontAwesome style = { {transform: [{rotate: spin}]} } 
+        return <AnimatedIcon style = { {transform: [{rotate: spin}]} } 
                                      name = {this.props.name} 
                                     color = "#FFF" 
                                      size = {20} />
@@ -387,13 +387,13 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
                                         onPress = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                             reconciler.put(Mutations.HIDE_EXCLUDED_REPORTABLES) } }>
-                          <FontAwesome name = "eye" color = { Colors.accent } size = {32} />
+                          <Icon name = "eye" color = { Colors.accent } size = {32} />
                       </TouchableOpacity> 
                   :
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
                                         onPress = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                             reconciler.put(Mutations.SHOW_EXCLUDED_REPORTABLES) } }>
-                          <FontAwesome name = "eye-slash" color = { Colors.accent } size = {32} />
+                          <Icon name = "eye-slash" color = { Colors.accent } size = {32} />
                       </TouchableOpacity> }
             </View>
         </View>
@@ -632,7 +632,7 @@ class IssuesView extends UI {
     }
 }
 
-const tabBarIcon = (name, color) => options => <FontAwesome name  = {name}
+const tabBarIcon = (name, color) => options => <Icon name  = {name}
                                                             size  = {28}
                                                             //color = { options.focused ? color : options.tintColor } 
                                                             color = { options.focused ? Colors.accent : options.tintColor }/>

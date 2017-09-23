@@ -2,5 +2,7 @@
   "expo": {
     "sdkVersion": "20.0.0",
     "privacy": "unlisted"
-  }
+  },
+  "name": "kondensapp",
+  "displayName": "kondens"
 }
