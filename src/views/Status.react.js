@@ -281,7 +281,7 @@ const ProgressBar = ({start, end, at, isLight}) => {
                     <Text style         = { [progressBarStyles.label, progressBarStyles.start, isLight && {color: "#FFF"}] }
                           numberOfLines = { 1 }
                           ellipsizeMode = { "tail" }>
-                        { Moment(start, "x").format("DD. MMMM") } bis { Moment(end, "x").format("DD. MMMM") } ({ Moment(end, "x").fromNow() })
+                        { Moment(start, "x").format("DD. MMM") } bis { Moment(end, "x").format("DD. MMM") } ({ Moment(end, "x").fromNow() })
                     </Text>
                 {/*
                     <Text style={ [progressBarStyles.label, progressBarStyles.start] }>
