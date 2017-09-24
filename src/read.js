@@ -5,6 +5,8 @@ import d            from "@clockworks/datascript";
 
 import { DEFAULT }  from "./constants"
 
+import Moment       from "moment";
+
 
 // Multi-method that describes how to answer queries for application state.
 // All queries involving any logic more complex than a simple sorting, grouping
@@ -75,12 +77,11 @@ read["user/currentSnaps"] = (key, db, eid) => {
 }
 
 read["user/isStatusComplete"] = (key, db, eid) => {
+    const currentSnaps = d.pull_many(db, `[ "snapshot/rag" { "snapshot/start" [ "date/timestamp" ] } ]`, read["user/currentSnaps"](key, db, eid));
+    const wipSnaps = d.filter(snap => d.getIn(snap, ["snapshot/start", "date/timestamp"]) < Moment().format("x"), currentSnaps)
+    const ragSnaps = d.filter(snap => d.get(snap, "snapshot/rag", false), wipSnaps)
 
-  //@TODO: only wip snaps
-    const currentSnaps = read["user/currentSnaps"](key, db, eid);
-    const snapRags = d.pull_many(db, `[ "snapshot/rag" ]`, currentSnaps);
-
-    return d.count(snapRags) == d.count(currentSnaps);
+    return d.count(wipSnaps) == d.count(ragSnaps);
 }
 
 read["task/newestSnapshot"] = (key, db, eid) => d.vector(currentSnapForTask(db, eid));
