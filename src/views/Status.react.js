@@ -115,7 +115,6 @@ const taskStyles = StyleSheet.create({
 const progressBarStyles = StyleSheet.create({
     container: {
         flexDirection: "column",
-        marginBottom: 12,
     },
     barContainer: {
         flex: 1,
@@ -296,11 +295,10 @@ const ProgressBar = ({start, end, at, isLight}) => {
                 </View>
                 <View style={ progressBarStyles.barContainer }>
                     <View style={ [ progressBarStyles.bar,
-                                    (!isLight) && progressBarStyles.left,
-                                    // !isLight && [progressBarStyles.progress, {borderColor: "transparent"}],
-                                    // isLight ? { backgroundColor: "transparent" } : { backgroundColor: "#C8E6C9" }, 
+                                    progressBarStyles.left,
+                                    isLight && { borderColor: "#FFFFFF" },
                                     { flex: progress } ] }>
-                        { (!isLight) && <View style={ progressBarStyles.progress } /> }
+                        { <View style={ [ progressBarStyles.progress, isLight && { backgroundColor: "#FFFFFF" } ] } /> }
                     </View>
                     { (at < end) && <View style={ [progressBarStyles.bar, {flex: 1-progress}] } /> }
                 </View>
