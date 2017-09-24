@@ -371,6 +371,8 @@ class Task extends UI {
         const { backgroundColor } = this.state
         const { title, start, end, reconciler, snapId, rag } = this.props
 
+        const showRag = start < Moment().format("x");
+
         const swipeRight = [{
             backgroundColor: Colors.risk,
             component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
@@ -396,11 +398,13 @@ class Task extends UI {
                     <Text style = { [taskStyles.title, backgroundColor && {color: Colors.inverseText}] }>{ title }</Text>
                     {/*<Text style = { taskStyles.status }>Von { Moment(start, "x").format("DD.MM.YY") } bis { Moment(end, "x").format("DD.MM.YY") } ({ Moment(end, "x").fromNow() })</Text>*/}
                     <ProgressBar start = { start } end = { end } at = { Moment().format("x") } isLight = { backgroundColor } />
-                    <RAG reconciler  = { reconciler }
-                         snapId      = { snapId }
-                         rag         = { rag }
-                         onRagSelect = { this.onRagSelect }
-                         onRagReset  = { this.onRagReset }/>
+                    { showRag && 
+                        <RAG reconciler  = { reconciler }
+                             snapId      = { snapId }
+                             rag         = { rag }
+                             onRagSelect = { this.onRagSelect }
+                             onRagReset  = { this.onRagReset }/>
+                    }
                 </View>
             </Ripple>
         )
