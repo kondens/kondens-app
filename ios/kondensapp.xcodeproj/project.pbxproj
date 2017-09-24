@@ -552,6 +552,7 @@
 				00E356EF1AD99517003FC87E /* kondensappTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				7197F40A5E2F47F29FD2311C /* Resources */,
+				E983B8D31F77B59100F08749 /* Recovered References */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -574,6 +575,14 @@
 				E97A26BF1F76E30C005D2383 /* libRNVectorIcons.a */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E983B8D31F77B59100F08749 /* Recovered References */ = {
+			isa = PBXGroup;
+			children = (
+				2BAA85DF614E4693A8545EC6 /* libRNVectorIcons.a */,
+			);
+			name = "Recovered References";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
