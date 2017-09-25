@@ -331,7 +331,7 @@ class AddingView extends UI {
 
         if (this.state.text.trim() !== "") {
             reconciler.put(Mutations.UPDATE_STATUS, taskId, 
-                ["snapshot/achievement", {"achievement/title": this.state.text, "achievement/reporter": taskOwner}]);
+                ["snapshot/achievement", {"reportable/title": this.state.text, "reportable/reporter": taskOwner}]);
         }
     }
 
@@ -368,7 +368,7 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
                         if (showExcludedReportables || !d.get(item, "reportable/isExcluded")) {
                             return <Reportable key        = { d.get(item, d.DB_ID) }
                                                itemId     = { d.get(item, d.DB_ID) }
-                                               title      = { d.get(item, type + "/title") }
+                                               title      = { d.get(item, "reportable/title") }
                                                color      = { bgColor[type] }
                                                reconciler = { reconciler }
                                                isExcluded = { d.get(item, "reportable/isExcluded") }
@@ -448,13 +448,13 @@ class AchievementsView extends UI {
                                                                "snapshot/title"
                                                                "snapshot/rag"
                                                                 "snapshot/staff"
-                                                                { "snapshot/achievement" [ "achievement/title"
+                                                                { "snapshot/achievement" [ "reportable/title"
                                                                                            :db/id
-                                                                                           "achievement/reporter"
+                                                                                           "reportable/reporter"
                                                                                            "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/achievement" [ "achievement/title"
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/achievement" [ "reportable/title"
                                                                                                               :db/id
-                                                                                                              "achievement/reporter"
+                                                                                                              "reportable/reporter"
                                                                                                               "reportable/isExcluded" ] } ] }]}]`
             )
         )
@@ -489,13 +489,13 @@ class DecisionsView extends UI {
                                                                "snapshot/title"
                                                                "snapshot/rag"
                                                                 "snapshot/staff"
-                                                                { "snapshot/decision" [ "decision/title"
+                                                                { "snapshot/decision" [ "reportable/title"
                                                                                         :db/id
-                                                                                        "decision/reporter"
+                                                                                        "reportable/reporter"
                                                                                         "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/decision" [ "decision/title"
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/decision" [ "reportable/title"
                                                                                                            :db/id
-                                                                                                           "decision/reporter"
+                                                                                                           "reportable/reporter"
                                                                                                            "reportable/isExcluded" ] } ] }]}]`
             )
         )
@@ -527,13 +527,13 @@ class NextView extends UI {
                                                                "snapshot/title"
                                                                "snapshot/rag"
                                                                 "snapshot/staff"
-                                                                { "snapshot/next" [ "next/title"
-                                                                                        :db/id
-                                                                                        "next/reporter"
-                                                                                        "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/next" [ "next/title"
+                                                                { "snapshot/next" [ "reportable/title"
+                                                                                    :db/id
+                                                                                    "reportable/reporter"
+                                                                                    "reportable/isExcluded" ] } ] } 
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/next" [ "reportable/title"
                                                                                                            :db/id
-                                                                                                           "next/reporter"
+                                                                                                           "reportable/reporter"
                                                                                                            "reportable/isExcluded" ] } ] }]}]`
             )
         )
@@ -565,14 +565,14 @@ class RisksView extends UI {
                                                                "snapshot/title"
                                                                "snapshot/rag"
                                                                 "snapshot/staff"
-                                                                { "snapshot/risk" [ "risk/title"
-                                                                                        :db/id
-                                                                                        "risk/reporter"
-                                                                                        "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/risk" [ "risk/title"
-                                                                                                           :db/id
-                                                                                                           "risk/reporter"
-                                                                                                           "reportable/isExcluded" ] } ] }]}]`
+                                                                { "snapshot/risk" [ "reportable/title"
+                                                                                    :db/id
+                                                                                    "reportable/reporter"
+                                                                                    "reportable/isExcluded" ] } ] } 
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/risk" [ "reportable/title"
+                                                                                                        :db/id
+                                                                                                        "reportable/reporter"
+                                                                                                        "reportable/isExcluded" ] } ] }]}]`
             )
         )
     }
@@ -603,14 +603,14 @@ class IssuesView extends UI {
                                                                "snapshot/title"
                                                                "snapshot/rag"
                                                                 "snapshot/staff"
-                                                                { "snapshot/issue" [ "issue/title"
-                                                                                        :db/id
-                                                                                        "issue/reporter"
-                                                                                        "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/issue" [ "issue/title"
-                                                                                                           :db/id
-                                                                                                           "issue/reporter"
-                                                                                                           "reportable/isExcluded" ] } ] }]}]`
+                                                                { "snapshot/issue" [ "reportable/title"
+                                                                                     :db/id
+                                                                                     "reportable/reporter"
+                                                                                     "reportable/isExcluded" ] } ] } 
+                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/issue" [ "reportable/title"
+                                                                                                        :db/id
+                                                                                                        "reportable/reporter"
+                                                                                                        "reportable/isExcluded" ] } ] }]}]`
             )
         )
     }
@@ -631,6 +631,7 @@ class IssuesView extends UI {
                                 reconciler = { this.getReconciler() } />
     }
 }
+
 
 const tabBarIcon = (name, color) => options => <Icon name  = {name}
                                                             size  = {28}

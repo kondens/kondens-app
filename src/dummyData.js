@@ -127,13 +127,13 @@ export const dummyData = [
             "snapshot/completeness":    Completeness.WIP,
             //These have been reported form lower levels->generelles!
             "snapshot/next": [
-                {"next/title": "Structural Completeness of Tasks", "next/reporter": -1},
+                {"reportable/title": "Structural Completeness of Tasks", "reportable/reporter": -1},
             ],
             "snapshot/risk": [
-                {"risk/title": "Drei MA gehen in den Urlaub", "risk/reporter": -1}
+                {"reportable/title": "Drei MA gehen in den Urlaub", "reportable/reporter": -1}
             ],
             "snapshot/achievement": [
-                {"achievement/title": "Wichtige Sicherheitslücke geschlossen", "achievement/reporter": -1}
+                {"reportable/title": "Wichtige Sicherheitslücke geschlossen", "reportable/reporter": -1}
             ],
         }],
     },
@@ -142,7 +142,7 @@ export const dummyData = [
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
             "snapshot/achievement": [
-                {"achievement/title": "Done: Projektgovernance definieren", "achievement/reporter": -1}
+                {"reportable/title": "Done: Projektgovernance definieren", "reportable/reporter": -1}
             ],
         }],
     },
@@ -151,10 +151,10 @@ export const dummyData = [
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
             "snapshot/risk": [
-                {"risk/title": "SAP-Vertragslage schwierig", "risk/reporter": -1}
+                {"reportable/title": "SAP-Vertragslage schwierig", "reportable/reporter": -1}
             ],
             "snapshot/issue":[
-                {"issue/title": "Terminfindungsschwierigkeiten", "issue/reporter": -1}
+                {"reportable/title": "Terminfindungsschwierigkeiten", "reportable/reporter": -1}
             ],
         }],
     },
@@ -163,11 +163,11 @@ export const dummyData = [
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
             "snapshot/risk": [
-                {"risk/title": "Stakeholder alle krank", "risk/reporter": -1},
-                {"risk/title": "CEO von Lobby beeinflusst", "risk/reporter": -1}
+                {"reportable/title": "Stakeholder alle krank", "reportable/reporter": -1},
+                {"reportable/title": "CEO von Lobby beeinflusst", "reportable/reporter": -1}
             ],
             "snapshot/issue": [
-                {"issue/title": "CFO verweigert Kooperation", "issue/reporter": -1}
+                {"reportable/title": "CFO verweigert Kooperation", "reportable/reporter": -1}
             ],
         }],
     },
@@ -201,8 +201,7 @@ export const dummyData2 = [
             "snapshot/start": {"date/timestamp": moment("2017-08-11").format("x")},
             "snapshot/end": {"date/timestamp": moment("2017-08-20").format("x")},
             "snapshot/staff": -1,
-            "snapshot/completeness": Completeness.DONE,
-            "snapshot/achievement": [{"achievement/title": "Sales-Analyse abgeschlossen.", "achievement/reporter": -1}],
+            "snapshot/achievement": [{"reportable/title": "Sales-Analyse abgeschlossen.", "reportable/reporter": -1}],
             "snapshot/rag": RAGs.GREEN,
         }],
     },
@@ -224,9 +223,8 @@ export const dummyData2 = [
                 "snapshot/start": {"date/timestamp": moment("2017-08-11").format("x")},
                 "snapshot/end": {"date/timestamp": moment("2017-09-05").format("x")},
                 "snapshot/staff": -2,
-                "snapshot/achievement": [{"achievement/title": "Jetzt-Maltes Sales-Pitch abgeschlossen.", "achievement/reporter": -2},
-                                         {"achievement/title": "Text", "achievement/reporter": -2}],
-                "snapshot/completeness": Completeness.DONE,
+                "snapshot/achievement": [{"reportable/title": "Jetzt-Maltes Sales-Pitch abgeschlossen.", "reportable/reporter": -2},
+                                         {"reportable/title": "Text", "reportable/reporter": -2}],
             }]
     },
     {
@@ -240,8 +238,8 @@ export const dummyData2 = [
             "snapshot/staff": -2,
             "snapshot/completeness": Completeness.WIP,
             "snapshot/rag": RAGs.GREEN,
-            "snapshot/risk": [{"risk/title": "SAP-Vertragslage schwierig", "risk/reporter": -2}],
-            "snapshot/issue":[{"issue/title": "Terminfindungsschwierigkeiten", "issue/reporter": -2}],
+            "snapshot/risk": [{"reportable/title": "SAP-Vertragslage schwierig", "reportable/reporter": -2}],
+            "snapshot/issue":[{"reportable/title": "Terminfindungsschwierigkeiten", "reportable/reporter": -2}],
         }],
     },
     {
@@ -253,11 +251,10 @@ export const dummyData2 = [
             "snapshot/start": {"date/timestamp": moment("2017-07-01").format("x")},
             "snapshot/end": {"date/timestamp": moment("2017-08-01").format("x")},
             "snapshot/staff": -2,
-            "snapshot/completeness": Completeness.WIP,
             "snapshot/rag": RAGs.AMBER,
-            "snapshot/risk": [{ "risk/title": "Stakeholder alle krank", "risk/reporter": -2},
-                              { "risk/title": "CEO von Lobby beeinflusst", "risk/reporter": -2}],
-            "snapshot/issue":[{"issue/title": "CFO verweigert Kooperation", "issue/reporter": -2}],
+            "snapshot/risk": [{ "reportable/title": "Stakeholder alle krank", "reportable/reporter": -2},
+                              { "reportable/title": "CEO von Lobby beeinflusst", "reportable/reporter": -2}],
+            "snapshot/issue":[{"reportable/title": "CFO verweigert Kooperation", "reportable/reporter": -2}],
         }],
     },
     {
@@ -269,11 +266,10 @@ export const dummyData2 = [
             "snapshot/start": {"date/timestamp": moment("2017-06-01").format("x")},
             "snapshot/end": {"date/timestamp": moment("2017-11-01").format("x")},
             "snapshot/staff": -3,
-            "snapshot/completeness": Completeness.WIP,
             //These have been reported form lower levels->generelles!
-            "snapshot/risk": [{"risk/title": "3 MA gehen in den Urlaub", "risk/reporter": -2}],
-            "snapshot/achievement": [{"achievement/title": "Internes Sales-Team wird erfolgreich mit ausgebildet", "achievement/reporter": -1},
-                                     {"achievement/title": "Wichtige Sicherheitslücke geschlossen", "achievement/reporter": -1}],
+            "snapshot/risk": [{"reportable/title": "3 MA gehen in den Urlaub", "reportable/reporter": -2}],
+            "snapshot/achievement": [{"reportable/title": "Internes Sales-Team wird erfolgreich mit ausgebildet", "reportable/reporter": -1},
+                                     {"reportable/title": "Wichtige Sicherheitslücke geschlossen", "reportable/reporter": -1}],
         }],
     },
     // {

@@ -69,31 +69,15 @@ export const schema = {
                                    ":db/valueType": ":db.type/ref"},
 
     "reportable/isExcluded":      {":db/cardinality": ":db.cardinality/one"},
-    //refactor x/reporter -> reportable/reporter
-
-    "risk/title":                 {":db/cardinality": ":db.cardinality/one"},
-    "risk/reporter":              {":db/cardinality": ":db.cardinality/one",
+    "reportable/title":           {":db/cardinality": ":db.cardinality/one"},
+    "reportable/reporter":        {":db/cardinality": ":db.cardinality/one",
                                    ":db/valueType": ":db.type/ref"},
+
     "risk/severity":              {":db/cardinality": ":db.cardinality/one"}, 
     "risk/mitigation":            {":db/cardinality": ":db.cardinality/one"}, 
 
-    "issue/title":                {":db/cardinality": ":db.cardinality/one"},
-    "issue/reporter":             {":db/cardinality": ":db.cardinality/one",
-                                   ":db/valueType": ":db.type/ref"},
     "issue/severity":             {":db/cardinality": ":db.cardinality/one"}, 
     "issue/mitigation":           {":db/cardinality": ":db.cardinality/one"},
-
-    "achievement/title":          {":db/cardinality": ":db.cardinality/one"}, 
-    "achievement/reporter":       {":db/cardinality": ":db.cardinality/one",
-                                   ":db/valueType": ":db.type/ref"},   
-
-    "next/title":                 {":db/cardinality": ":db.cardinality/one"}, 
-    "next/reporter":              {":db/cardinality": ":db.cardinality/one",
-                                   ":db/valueType": ":db.type/ref"},  
-
-    "decision/title":             {":db/cardinality": ":db.cardinality/one"},
-    "decision/reporter":          {":db/cardinality": ":db.cardinality/one",
-                                   ":db/valueType": ":db.type/ref"}, 
 }
 
 export const initialState = () => d.db_with(d.empty_db(schema), [
