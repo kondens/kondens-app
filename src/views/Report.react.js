@@ -6,9 +6,11 @@ import { View,
          StyleSheet,
          Text,
          TouchableOpacity,
+         TouchableHighlight,
+         TouchableWithoutFeedback,
          Platform,
          Animated,
-         LayoutAnimation,
+         // LayoutAnimation,
          TextInput,
          KeyboardAvoidingView,
          ScrollView, } from "react-native";
@@ -30,7 +32,7 @@ import Moment                   from "moment";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import Icon from "react-native-vector-icons/FontAwesome";
-
+import SortableListView from "react-native-sortable-listview";
 
 const styles = StyleSheet.create({
     container: {
@@ -60,6 +62,7 @@ const styles = StyleSheet.create({
     },
 
     info: {
+        flex: 1,
         marginLeft: 6,
         fontSize: Fonts.h3Size,
         color: Colors.body,
@@ -258,65 +261,86 @@ class AnimatedExcluder extends UI {
     }
 }
 
+
 class Reportable extends UI {
-    constructor(props) {
-        super(props);
-        if (this.props.isExcluded) {
-            this.state = {fadeValue: new Animated.Value(0.5)};
-        } else {
-            this.state = {fadeValue: new Animated.Value(1)};
-        }
+   constructor(props) {
+       super(props);
+       if (d.get(this.props.data, "reportable/isExcluded")) {
+           this.state = {fadeValue: new Animated.Value(0.5)};
+       } else {
+           this.state = {fadeValue: new Animated.Value(1)};
+       }
 
-        this.excluderRef = undefined;
-    }
+       this.excluderRef = undefined;
+   }
 
-    startFade (toValue) { Animated.timing(this.state.fadeValue, { toValue: toValue }).start() }
+   startFade (toValue) { Animated.timing(this.state.fadeValue, { toValue: toValue }).start() }
 
-    handleExclusion () {
-        const { isExcluded, itemId, showExcluded} = this.props;
+   handleExclusion () {
+       const { data, showExcluded } = this.props;
+       const isExcluded = d.get(data, "reportable/isExcluded");
+       const itemId = d.get(data, d.DB_ID);
 
-        this.excluderRef.startRotation();
-        if (isExcluded) {
-            reconciler.put(Mutations.INCLUDE_REPORTABLE, itemId);
-            this.startFade(1);
-        } else {
-            reconciler.put(Mutations.EXCLUDE_REPORTABLE, itemId);
-            if (showExcluded) { 
-                this.startFade(0.5); 
-            } else { 
-                LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
-                this.startFade(0); 
-            }
-        } 
-    }
+       this.excluderRef.startRotation();
+       if (isExcluded) {
+           reconciler.put(Mutations.INCLUDE_REPORTABLE, itemId);
+           this.startFade(1);
+       } else {
+           reconciler.put(Mutations.EXCLUDE_REPORTABLE, itemId);
+           if (showExcluded) { 
+               this.startFade(0.5); 
+           } else { 
+               // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+               this.startFade(0); 
+           }
+       } 
+   }
 
-    render () {
-        const { title, color, reconciler, isExcluded } = this.props
+   render () {
+       const { data, color, reconciler } = this.props
+       const title = d.get(data, "reportable/title");
+       const isExcluded = d.get(data, "reportable/isExcluded");
 
-        const fade = this.state.fadeValue.interpolate({
-            inputRange: [0, 1],
-            outputRange: [0, 1],
-        })
+       const fade = this.state.fadeValue.interpolate({
+           inputRange: [0, 1],
+           outputRange: [0, 1],
+       })
 
-        return (
-            <TouchableOpacity onPress = { isExcluded && (e => { this.handleExclusion() }) /*later add drag drop case*/ }>
-                <Animated.View style = { {opacity: this.state.fadeValue} }>
-                    <View style = { [styles.editorItem, { backgroundColor: color }] }>
-                        <View style={ styles.textWrap }>
-                            <Text style = { styles.editorItemLabel }>{ title }</Text>
-                        </View>
-                        <TouchableOpacity style   = { styles.editorItemHide }
-                                          onPress = { (e) => { this.handleExclusion() } }>
-                            <AnimatedExcluder name = "remove"
-                                              ref  = { ref => { this.excluderRef = ref } }
-                                              isExcluded = { isExcluded }/>
-                        </TouchableOpacity>
-                    </View> 
-                </Animated.View>
-            </TouchableOpacity>        
-        )
-    }
+       return (
+           <TouchableOpacity {...this.props.sortHandlers} /* onPress = { isExcluded && (e => { this.handleExclusion() }) /*later add drag drop case*/ >
+               <Animated.View style = { {opacity: this.state.fadeValue} }>
+                   <View style = { [styles.editorItem, { backgroundColor: color }] }>
+                       <View style={ styles.textWrap }>
+                           <Text style = { styles.editorItemLabel }>{ title }</Text>
+                       </View>
+                       <TouchableOpacity style   = { styles.editorItemHide }
+                                         onPress = { (e) => { this.handleExclusion() } }>
+                           <AnimatedExcluder name = "remove"
+                                             ref  = { ref => { this.excluderRef = ref } }
+                                             isExcluded = { isExcluded }/>
+                       </TouchableOpacity>
+                   </View> 
+               </Animated.View>
+           </TouchableOpacity>        
+       )
+   }
 }
+
+const titleColors = {
+    [ReportType.ACHIEVEMENT]: Colors.achievement,
+    [ReportType.DECISION]: Colors.decision,
+    [ReportType.RISK]: Colors.risk,
+    [ReportType.ISSUE]: Colors.issue,
+    [ReportType.NEXT]: Colors.next,
+};
+
+const snapshotTypes = {
+    [ReportType.ACHIEVEMENT]: "snapshot/achievement",
+    [ReportType.DECISION]: "snapshot/decision",
+    [ReportType.RISK]: "snapshot/risk",
+    [ReportType.ISSUE]: "snapshot/issue",
+    [ReportType.NEXT]: "snapshot/next",
+};
 
 class AddingView extends UI {
     constructor (props) {
@@ -325,74 +349,71 @@ class AddingView extends UI {
         this.state = {text: ""};
     }
 
-    addAchievement () {
-        const { reconciler, taskId, taskOwner, toggleAddItem } = this.props;
+    addReportable () {
+        const { reconciler, taskId, taskOwner, toggleAddItem, type, newItemOrder } = this.props;
 
         toggleAddItem();
 
         if (this.state.text.trim() !== "") {
             reconciler.put(Mutations.UPDATE_STATUS, taskId, 
-                ["snapshot/achievement", {"reportable/title": this.state.text, "reportable/reporter": taskOwner}]);
+                [snapshotTypes[type], {"reportable/title": this.state.text, "reportable/reporter": taskOwner, "reportable/order": newItemOrder}]);
         }
     }
 
     render () {
-        const { borderColor } = this.props
+        const { type } = this.props
 
         return (
-            <TextInput style            = { [styles.addingView, {borderColor: borderColor}] }
+            <TextInput style            = { [styles.addingView, {borderColor: titleColors[type]}] }
                        autoFocus        = { true }
                        onChangeText     = { text => this.setState({text}) }
                        value            = { this.state.text }
                        placeholder      = "Neues Item..."
-                       onSubmitEditing  = { () => { this.addAchievement(); } }
+                       onSubmitEditing  = { () => { this.addReportable(); } }
                        returnKeyType    = "done" />  
         )
     }
 }
 
 
-const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem, toggleAddItem, taskId, taskOwner}) => {
-    const bgColor = {
-        [ReportType.ACHIEVEMENT]: Colors.achievement,
-        [ReportType.ISSUE]: Colors.issue,
-        [ReportType.NEXT]: Colors.next,
-        [ReportType.DECISION]: Colors.decision,
-        [ReportType.RISK]: Colors.risk,
-    }
+const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem, toggleAddItem, taskId, taskOwner, order}) => {
+    let itemMap = {}
+    d.each(items, item => {
+        itemMap[d.get(item, d.DB_ID)] = item;
+    })
 
     return (
         <View style = { styles.editorContainer }>
-            <KeyboardAwareScrollView extraHeight = {135}>
-                { d.isEmpty(items) && !isAddingItem ? <Text style = { styles.info }>Noch keine Items</Text> :
-                    d.intoArray(d.map((item) => {
-                        if (showExcludedReportables || !d.get(item, "reportable/isExcluded")) {
-                            return <Reportable key        = { d.get(item, d.DB_ID) }
-                                               itemId     = { d.get(item, d.DB_ID) }
-                                               title      = { d.get(item, "reportable/title") }
-                                               color      = { bgColor[type] }
-                                               reconciler = { reconciler }
-                                               isExcluded = { d.get(item, "reportable/isExcluded") }
-                                               showExcluded = { showExcludedReportables } />
-                        } else { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut) /*@TODO: better place while still guaranteeing first anim */}
-                    }, items))
-                }
-                { isAddingItem && <AddingView reconciler    = { reconciler}
-                                              borderColor   = { bgColor[type] }
-                                              taskId        = { taskId }
-                                              taskOwner     = { taskOwner }
-                                              toggleAddItem = { toggleAddItem } />}
-            </KeyboardAwareScrollView>
+            { d.isEmpty(items) && !isAddingItem ? <Text style = { styles.info }>Noch keine Items</Text> :
+                <SortableListView style = { { flex: 1 } }
+                                   data = { itemMap }
+                                  order = { order }
+                             onRowMoved = { e => { reconciler.put(Mutations.UPDATE_REPORTABLE_ORDER, e.from, e.to, e.order);} }
+                              renderRow = { row => { if (showExcludedReportables || !d.get(row, "reportable/isExcluded")) {
+                                                        return <Reportable data = { row }
+                                                                   showExcluded = { showExcludedReportables }
+                                                                          color = { titleColors[type] }
+                                                                     reconciler = { reconciler } /> }
+                                                    // } else { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); /*@TODO: better place while still guaranteeing first anim */ }
+                                            } } />
+            }
+            { isAddingItem && <AddingView reconciler    = { reconciler }
+                                          taskId        = { taskId }
+                                          taskOwner     = { taskOwner }
+                                          type          = { type }
+                                          toggleAddItem = { toggleAddItem }
+                                          newItemOrder  = { order.length } />}
+
             <View style = { styles.editorFooter }>
                 { showExcludedReportables ? 
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
-                                        onPress = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                        onPress = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                             reconciler.put(Mutations.HIDE_EXCLUDED_REPORTABLES) } }>
                           <Icon name = "eye" color = { Colors.accent } size = {32} />
                       </TouchableOpacity> 
                   :
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
-                                        onPress = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                        onPress = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                             reconciler.put(Mutations.SHOW_EXCLUDED_REPORTABLES) } }>
                           <Icon name = "eye-slash" color = { Colors.accent } size = {32} />
                       </TouchableOpacity> }
@@ -403,28 +424,12 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
 
 
 const ReportViewMaker = ({task, type, showExcludedReportables, reconciler, isAddingItem, toggleAddItem}) => {
-    const snapshotTypes = {
-        [ReportType.ACHIEVEMENT]: "snapshot/achievement",
-        [ReportType.DECISION]: "snapshot/decision",
-        [ReportType.RISK]: "snapshot/risk",
-        [ReportType.ISSUE]: "snapshot/issue",
-        [ReportType.NEXT]: "snapshot/next",
-    };
-
     const titles = {
         [ReportType.ACHIEVEMENT]: "Achievements",
         [ReportType.DECISION]: "Decisions",
         [ReportType.RISK]: "Risks",
         [ReportType.ISSUE]: "Issues",
         [ReportType.NEXT]: "Next Steps",
-    };
-
-    const titleColors = {
-        [ReportType.ACHIEVEMENT]: Colors.achievement,
-        [ReportType.DECISION]: Colors.decision,
-        [ReportType.RISK]: Colors.risk,
-        [ReportType.ISSUE]: Colors.issue,
-        [ReportType.NEXT]: Colors.next,
     };
 
     const ownerPart = d.getIn(task, ["task/newestSnapshot", 0]);
@@ -443,9 +448,10 @@ const ReportViewMaker = ({task, type, showExcludedReportables, reconciler, isAdd
 
     const allItems = d.concat(highlevelItems, lowlevelItems);
 
-    const order = d.getIn(task, ["task/newestSnapshot", 0, "reportables/order"]);
+    const shownItems = showExcludedReportables ? allItems : d.filter(item => !d.get(item, "reportable/isExcluded", false), allItems);
 
-    console.log(d.toJs(order));
+    const orderedItems = d.sort((x, y) => d.get(x, "reportable/order") < d.get(y, "reportable/order"), shownItems);
+    const order = d.intoArray(d.map(item => d.get(item, d.DB_ID), orderedItems));
 
     return (
         <View style = { styles.container }>
@@ -455,7 +461,7 @@ const ReportViewMaker = ({task, type, showExcludedReportables, reconciler, isAdd
                           rag        = { overallRag }
                           taskId     = { taskId }
                           reconciler = { reconciler } />
-            <Editor items                   = { allItems }
+            <Editor items                   = { shownItems }
                     type                    = { type }
                     showExcludedReportables = { showExcludedReportables }
                     isAddingItem            = { isAddingItem }
@@ -474,46 +480,55 @@ const query = `[ { (read "task/newestSnapshot") [ :db/id
                                                   "snapshot/title"
                                                   "snapshot/rag"
                                                   "snapshot/staff"
-                                                  "reportables/order"
                                                   { "snapshot/next" [ "reportable/title"
                                                                       :db/id
                                                                       "reportable/reporter"
+                                                                      "reportable/order"
                                                                       "reportable/isExcluded" ] } 
                                                   { "snapshot/decision" [ "reportable/title"
                                                                           :db/id
                                                                           "reportable/reporter"
+                                                                          "reportable/order"
                                                                           "reportable/isExcluded" ] }
                                                   { "snapshot/achievement" [ "reportable/title"
                                                                              :db/id
                                                                              "reportable/reporter"
+                                                                             "reportable/order"
                                                                              "reportable/isExcluded" ] }
                                                   { "snapshot/risk" [ "reportable/title"
                                                                       :db/id
                                                                       "reportable/reporter"
+                                                                      "reportable/order"
                                                                       "reportable/isExcluded" ] }
                                                   { "snapshot/issue" [ "reportable/title"
                                                                        :db/id
                                                                        "reportable/reporter"
+                                                                       "reportable/order"
                                                                        "reportable/isExcluded" ] } ] }
                   { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/next" [ "reportable/title"
                                                                                            :db/id
                                                                                            "reportable/reporter"
+                                                                                           "reportable/order"
                                                                                            "reportable/isExcluded" ] } 
                                                                        { "snapshot/decision" [ "reportable/title"
                                                                                                :db/id
                                                                                                "reportable/reporter"
+                                                                                               "reportable/order"
                                                                                                "reportable/isExcluded" ] }
                                                                        { "snapshot/achievement" [ "reportable/title"
                                                                                                   :db/id
                                                                                                   "reportable/reporter"
+                                                                                                  "reportable/order"
                                                                                                   "reportable/isExcluded" ] }
                                                                        { "snapshot/risk" [ "reportable/title"
                                                                                            :db/id
                                                                                            "reportable/reporter"
+                                                                                           "reportable/order"
                                                                                            "reportable/isExcluded" ] }
                                                                        { "snapshot/issue" [ "reportable/title"
                                                                                             :db/id
                                                                                             "reportable/reporter"
+                                                                                            "reportable/order"
                                                                                             "reportable/isExcluded" ] } ] } ] } ]`
 
 class AchievementsView extends UI {
@@ -531,11 +546,11 @@ class AchievementsView extends UI {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.ACHIEVEMENT }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                toggleAddItem = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                           this.setState({isAddingItem: !this.state.isAddingItem});
                                                         }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
-                                reconciler = { this.getReconciler() } />
+                                reconciler = { this.getReconciler() }/>
     }
 }
 
@@ -555,11 +570,11 @@ class DecisionsView extends UI {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.DECISION }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                toggleAddItem = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                           this.setState({isAddingItem: !this.state.isAddingItem});
                                                         }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
-                                reconciler = { this.getReconciler() } />
+                                reconciler = { this.getReconciler() }/>
     }
 }
 
@@ -578,11 +593,11 @@ class NextView extends UI {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.NEXT }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                toggleAddItem = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                           this.setState({isAddingItem: !this.state.isAddingItem});
                                                         }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
-                                reconciler = { this.getReconciler() } />
+                                reconciler = { this.getReconciler() }/>
     }
 }
 
@@ -601,11 +616,11 @@ class RisksView extends UI {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.RISK }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                toggleAddItem = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                           this.setState({isAddingItem: !this.state.isAddingItem});
                                                         }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
-                                reconciler = { this.getReconciler() } />
+                                reconciler = { this.getReconciler() }/>
     }
 }
 
@@ -624,11 +639,11 @@ class IssuesView extends UI {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.ISSUE }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                toggleAddItem = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                           this.setState({isAddingItem: !this.state.isAddingItem});
                                                         }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
-                                reconciler = { this.getReconciler() } />
+                                reconciler = { this.getReconciler() }/>
     }
 }
 
@@ -661,7 +676,7 @@ const RouteConfig = {
 const TabNavigatorConfig = {
     initialRouteName: "Achievements",
     activeTintColor: Colors.accent,
-    swipeEnabled: true,
+    // swipeEnabled: true, //clashes with drag drop
     tabBarOptions: {
         // labelStyle: {fontSize: 14},
     }

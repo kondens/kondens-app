@@ -47,6 +47,7 @@ export const Mutations = {
     EXCLUDE_REPORTABLE: "!report/exclude-reportable",
     SHOW_EXCLUDED_REPORTABLES: "!report/show-reportables",
     HIDE_EXCLUDED_REPORTABLES: "!report/hide-reportables",
+    UPDATE_REPORTABLE_ORDER: "!report/update-reportable-order",
 
     ADD_SNAP: "!status/add-snap",
 

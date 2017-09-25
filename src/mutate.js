@@ -81,6 +81,14 @@ mutate[Mutations.SHOW_EXCLUDED_REPORTABLES] = target => d.transact(target.conn, 
 
 mutate[Mutations.HIDE_EXCLUDED_REPORTABLES] = target => d.transact(target.conn, [[":db.fn/retractAttribute", d.vector("db/ident", ":ui"), "ui/showExcludedReportables"]]);
 
+mutate[Mutations.UPDATE_REPORTABLE_ORDER] = (target, from, to, order) => {
+    let newOrder = order;
+    newOrder.splice(to, 0, newOrder.splice(from, 1)[0]);
+
+
+    newOrder.forEach((id, idx) => { d.transact(target.conn, [[":db/add", id, "reportable/order", idx]]) });
+}
+
 const dispatchNavigation = (db, action) => {
     const ui = d.vector("db/ident", ":ui")
     const navigationState = d.get(d.entity(db, ui), "ui/navigationState")
