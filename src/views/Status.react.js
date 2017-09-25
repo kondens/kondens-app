@@ -173,12 +173,11 @@ const ragStyles = StyleSheet.create({
         marginTop: 6,
         flexDirection: "row",
         justifyContent: "space-between",
-        marginHorizontal: 12,
     },
     button: {
         borderRadius: 50,
         paddingVertical: 6,
-        paddingHorizontal: 12,
+        paddingHorizontal: 6,
         flex: 1,
         // width: 80,
         height: 36,
