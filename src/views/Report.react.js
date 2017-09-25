@@ -299,19 +299,21 @@ class Reportable extends UI {
         })
 
         return (
-            <Animated.View style = { {opacity: this.state.fadeValue} }>
-                <View style = { [styles.editorItem, { backgroundColor: color }] }>
-                    <View style={ styles.textWrap }>
-                        <Text style = { styles.editorItemLabel }>{ title }</Text>
-                    </View>
-                    <TouchableOpacity style   = { styles.editorItemHide }
-                                      onPress = { (e) => { this.handleExclusion() } }>
-                        <AnimatedExcluder name = "remove"
-                                          ref  = { ref => { this.excluderRef = ref } }
-                                          isExcluded = { isExcluded }/>
-                    </TouchableOpacity>
-                </View> 
-            </Animated.View>
+            <TouchableOpacity onPress = { isExcluded && (e => { this.handleExclusion() }) /*later add drag drop case*/ }>
+                <Animated.View style = { {opacity: this.state.fadeValue} }>
+                    <View style = { [styles.editorItem, { backgroundColor: color }] }>
+                        <View style={ styles.textWrap }>
+                            <Text style = { styles.editorItemLabel }>{ title }</Text>
+                        </View>
+                        <TouchableOpacity style   = { styles.editorItemHide }
+                                          onPress = { (e) => { this.handleExclusion() } }>
+                            <AnimatedExcluder name = "remove"
+                                              ref  = { ref => { this.excluderRef = ref } }
+                                              isExcluded = { isExcluded }/>
+                        </TouchableOpacity>
+                    </View> 
+                </Animated.View>
+            </TouchableOpacity>        
         )
     }
 }
