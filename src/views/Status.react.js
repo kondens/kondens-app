@@ -23,7 +23,7 @@ import Moment           from "moment";
 
 import Icon             from "react-native-vector-icons/FontAwesome";
 
-import Swipeout         from "react-native-swipeout";
+// import Swipeout         from "react-native-swipeout";
 
 import Ripple           from "../components/Ripple";
 import ActionButton     from "react-native-action-button";
@@ -375,19 +375,19 @@ class Task extends UI {
 
         const showRag = start < Moment().format("x");
 
-        const swipeRight = [{
-            backgroundColor: Colors.risk,
-            component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                            <Icon name="trash-o" size={38} color="#FFF" />
-                        </View>
-        }]
+        // const swipeRight = [{
+        //     backgroundColor: Colors.risk,
+        //     component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+        //                     <Icon name="trash-o" size={38} color="#FFF" />
+        //                 </View>
+        // }]
 
-        const swipeLeft = [{
-            backgroundColor: Colors.achievement,
-            component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
-                            <Icon name="check" size={38} color="#FFF" />
-                        </View>
-        }]
+        // const swipeLeft = [{
+        //     backgroundColor: Colors.achievement,
+        //     component:  <View style = {{flex: 1, alignItems: "center", justifyContent: "center"}}>
+        //                     <Icon name="check" size={38} color="#FFF" />
+        //                 </View>
+        // }]
 
         //@TODO: swipe/scroll etc. https://github.com/dancormier/react-native-swipeout/wiki
         return (
