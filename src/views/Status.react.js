@@ -363,11 +363,11 @@ class Task extends UI {
         }
     }
 
-    onRagSelect = (rag) => this.getReconciler().put(Mutations.UPDATE_STATUS, this.props.snapId, ["snapshot/rag", rag])
+    onRagSelect = rag => this.getReconciler().put(Mutations.UPDATE_STATUS, this.props.snapId, ["snapshot/rag", rag])
     
     onRagReset = () => this.getReconciler().put(Mutations.RESET_STATUS, this.props.snapId, "snapshot/rag")
 
-    onBackgroundColorChange = (color) => this.setState({backgroundColor: color})
+    onBackgroundColorChange = color => this.setState({backgroundColor: color})
 
     render () {
         const { backgroundColor } = this.state
