@@ -10,7 +10,7 @@ import { View,
          TouchableWithoutFeedback,
          Platform,
          Animated,
-         // LayoutAnimation,
+         LayoutAnimation,
          TextInput,
          KeyboardAvoidingView,
          ScrollView, } from "react-native";
@@ -290,7 +290,7 @@ class Reportable extends UI {
            if (showExcluded) { 
                this.startFade(0.5); 
            } else { 
-               // LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+               LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                this.startFade(0); 
            }
        } 
@@ -407,13 +407,13 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
             <View style = { styles.editorFooter }>
                 { showExcludedReportables ? 
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
-                                        onPress = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                        onPress = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                             reconciler.put(Mutations.HIDE_EXCLUDED_REPORTABLES) } }>
                           <Icon name = "eye" color = { Colors.accent } size = {32} />
                       </TouchableOpacity> 
                   :
                       <TouchableOpacity style   = { styles.hiddenItemsButton }
-                                        onPress = { () => { //LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                        onPress = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                             reconciler.put(Mutations.SHOW_EXCLUDED_REPORTABLES) } }>
                           <Icon name = "eye-slash" color = { Colors.accent } size = {32} />
                       </TouchableOpacity> }
@@ -676,6 +676,7 @@ const RouteConfig = {
 const TabNavigatorConfig = {
     initialRouteName: "Achievements",
     activeTintColor: Colors.accent,
+    lazy: true, //Fix for https://github.com/facebook/react-native/issues/1831
     // swipeEnabled: true, //clashes with drag drop
     tabBarOptions: {
         // labelStyle: {fontSize: 14},
