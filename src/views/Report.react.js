@@ -401,16 +401,41 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
     )
 }
 
-const ReportViewMaker = ({task, type, title, titleColor, showExcludedReportables, reconciler, isAddingItem, toggleAddItem}) => {
+
+const ReportViewMaker = ({task, type, showExcludedReportables, reconciler, isAddingItem, toggleAddItem}) => {
+    const snapshotTypes = {
+        [ReportType.ACHIEVEMENT]: "snapshot/achievement",
+        [ReportType.DECISION]: "snapshot/decision",
+        [ReportType.RISK]: "snapshot/risk",
+        [ReportType.ISSUE]: "snapshot/issue",
+        [ReportType.NEXT]: "snapshot/next",
+    };
+
+    const titles = {
+        [ReportType.ACHIEVEMENT]: "Achievements",
+        [ReportType.DECISION]: "Decisions",
+        [ReportType.RISK]: "Risks",
+        [ReportType.ISSUE]: "Issues",
+        [ReportType.NEXT]: "Next Steps",
+    };
+
+    const titleColors = {
+        [ReportType.ACHIEVEMENT]: Colors.achievement,
+        [ReportType.DECISION]: Colors.decision,
+        [ReportType.RISK]: Colors.risk,
+        [ReportType.ISSUE]: Colors.issue,
+        [ReportType.NEXT]: Colors.next,
+    };
+
     const ownerPart = d.getIn(task, ["task/newestSnapshot", 0]);
     const taskOwner = d.getIn(ownerPart, ["snapshot/staff", d.DB_ID]);
     const taskTitle = d.get(ownerPart, "snapshot/title");
     const taskId    = d.get(ownerPart, d.DB_ID);
-    const highlevelItems = d.get(ownerPart, "snapshot/" + type);
+    const highlevelItems = d.get(ownerPart, snapshotTypes[type]);
 
     const workerPart = d.get(task, "task/children");
     const lowlevelItems = d.pipeline(workerPart,
-                                            tasks => d.map(task => d.getIn(task, ["task/newestSnapshot", 0, "snapshot/" + type]), tasks),
+                                            tasks => d.map(task => d.getIn(task, ["task/newestSnapshot", 0, snapshotTypes[type]]), tasks),
                                             d.flatten,
                                             tasks => d.filter(d.identity, tasks));
 
@@ -418,11 +443,15 @@ const ReportViewMaker = ({task, type, title, titleColor, showExcludedReportables
 
     const allItems = d.concat(highlevelItems, lowlevelItems);
 
+    const order = d.getIn(task, ["task/newestSnapshot", 0, "reportables/order"]);
+
+    console.log(d.toJs(order));
+
     return (
         <View style = { styles.container }>
-            <ReportHeader title      = { title }
+            <ReportHeader title      = { titles[type] }
                           taskTitle  = { taskTitle }
-                          titleColor = { titleColor }
+                          titleColor = { titleColors[type] }
                           rag        = { overallRag }
                           taskId     = { taskId }
                           reconciler = { reconciler } />
@@ -433,32 +462,64 @@ const ReportViewMaker = ({task, type, title, titleColor, showExcludedReportables
                     toggleAddItem           = { toggleAddItem }
                     reconciler              = { reconciler }
                     taskId                  = { taskId }
-                    taskOwner               = { taskOwner }/>
+                    taskOwner               = { taskOwner }
+                    order                   = { order }/>
             <AddButton onPress = { toggleAddItem }/>
         </View>
     )
 }
 
 
-class AchievementsView extends UI {
-    static query ({taskIdent}) {
-        return d.vector(
-            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
-            d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
-                                                               "snapshot/title"
-                                                               "snapshot/rag"
-                                                                "snapshot/staff"
-                                                                { "snapshot/achievement" [ "reportable/title"
+const query = `[ { (read "task/newestSnapshot") [ :db/id
+                                                  "snapshot/title"
+                                                  "snapshot/rag"
+                                                  "snapshot/staff"
+                                                  "reportables/order"
+                                                  { "snapshot/next" [ "reportable/title"
+                                                                      :db/id
+                                                                      "reportable/reporter"
+                                                                      "reportable/isExcluded" ] } 
+                                                  { "snapshot/decision" [ "reportable/title"
+                                                                          :db/id
+                                                                          "reportable/reporter"
+                                                                          "reportable/isExcluded" ] }
+                                                  { "snapshot/achievement" [ "reportable/title"
+                                                                             :db/id
+                                                                             "reportable/reporter"
+                                                                             "reportable/isExcluded" ] }
+                                                  { "snapshot/risk" [ "reportable/title"
+                                                                      :db/id
+                                                                      "reportable/reporter"
+                                                                      "reportable/isExcluded" ] }
+                                                  { "snapshot/issue" [ "reportable/title"
+                                                                       :db/id
+                                                                       "reportable/reporter"
+                                                                       "reportable/isExcluded" ] } ] }
+                  { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/next" [ "reportable/title"
                                                                                            :db/id
                                                                                            "reportable/reporter"
-                                                                                           "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/achievement" [ "reportable/title"
-                                                                                                              :db/id
-                                                                                                              "reportable/reporter"
-                                                                                                              "reportable/isExcluded" ] } ] }]}]`
-            )
-        )
+                                                                                           "reportable/isExcluded" ] } 
+                                                                       { "snapshot/decision" [ "reportable/title"
+                                                                                               :db/id
+                                                                                               "reportable/reporter"
+                                                                                               "reportable/isExcluded" ] }
+                                                                       { "snapshot/achievement" [ "reportable/title"
+                                                                                                  :db/id
+                                                                                                  "reportable/reporter"
+                                                                                                  "reportable/isExcluded" ] }
+                                                                       { "snapshot/risk" [ "reportable/title"
+                                                                                           :db/id
+                                                                                           "reportable/reporter"
+                                                                                           "reportable/isExcluded" ] }
+                                                                       { "snapshot/issue" [ "reportable/title"
+                                                                                            :db/id
+                                                                                            "reportable/reporter"
+                                                                                            "reportable/isExcluded" ] } ] } ] } ]`
+
+class AchievementsView extends UI {
+    static query ({taskIdent}) {
+        return d.vector( d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`), 
+                         d.hashMap( taskIdent, query ) )
     }
 
     constructor (props) {
@@ -469,8 +530,6 @@ class AchievementsView extends UI {
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.ACHIEVEMENT }
-                                title = { this.props.navigation.state.routeName }
-                                titleColor = { Colors.achievement }
                                 isAddingItem = { this.state.isAddingItem }
                                 toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
                                                           this.setState({isAddingItem: !this.state.isAddingItem});
@@ -483,37 +542,22 @@ class AchievementsView extends UI {
 
 class DecisionsView extends UI {
     static query ({taskIdent}) {
-        return d.vector(
-            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
-            d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
-                                                               "snapshot/title"
-                                                               "snapshot/rag"
-                                                                "snapshot/staff"
-                                                                { "snapshot/decision" [ "reportable/title"
-                                                                                        :db/id
-                                                                                        "reportable/reporter"
-                                                                                        "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/decision" [ "reportable/title"
-                                                                                                           :db/id
-                                                                                                           "reportable/reporter"
-                                                                                                           "reportable/isExcluded" ] } ] }]}]`
-            )
-        )
+        return d.vector( d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`), 
+                         d.hashMap( taskIdent, query ) )
     }
 
     constructor (props) {
-        super(props)
-        this.state = {isAddingItem: false}
+        super(props);
+        this.state = {isAddingItem: false};
     }
 
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.DECISION }
-                                title = { this.props.navigation.state.routeName }
-                                titleColor = { Colors.decision }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => {this.setState({isAddingItem: !this.state.isAddingItem})}}
+                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                          this.setState({isAddingItem: !this.state.isAddingItem});
+                                                        }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
@@ -521,23 +565,8 @@ class DecisionsView extends UI {
 
 class NextView extends UI {
     static query ({taskIdent}) {
-        return d.vector(
-            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
-            d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
-                                                               "snapshot/title"
-                                                               "snapshot/rag"
-                                                                "snapshot/staff"
-                                                                { "snapshot/next" [ "reportable/title"
-                                                                                    :db/id
-                                                                                    "reportable/reporter"
-                                                                                    "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/next" [ "reportable/title"
-                                                                                                           :db/id
-                                                                                                           "reportable/reporter"
-                                                                                                           "reportable/isExcluded" ] } ] }]}]`
-            )
-        )
+        return d.vector( d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`), 
+                         d.hashMap( taskIdent, query ) )
     }
 
     constructor (props) {
@@ -548,10 +577,10 @@ class NextView extends UI {
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.NEXT }
-                                title = { this.props.navigation.state.routeName }
-                                titleColor = { Colors.next }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => {this.setState({isAddingItem: !this.state.isAddingItem})}}
+                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                          this.setState({isAddingItem: !this.state.isAddingItem});
+                                                        }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
@@ -559,23 +588,8 @@ class NextView extends UI {
 
 class RisksView extends UI {
     static query ({taskIdent}) {
-        return d.vector(
-            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
-            d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
-                                                               "snapshot/title"
-                                                               "snapshot/rag"
-                                                                "snapshot/staff"
-                                                                { "snapshot/risk" [ "reportable/title"
-                                                                                    :db/id
-                                                                                    "reportable/reporter"
-                                                                                    "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/risk" [ "reportable/title"
-                                                                                                        :db/id
-                                                                                                        "reportable/reporter"
-                                                                                                        "reportable/isExcluded" ] } ] }]}]`
-            )
-        )
+        return d.vector( d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`), 
+                         d.hashMap( taskIdent, query ) )
     }
 
     constructor (props) {
@@ -586,10 +600,10 @@ class RisksView extends UI {
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.RISK }
-                                title = { this.props.navigation.state.routeName }
-                                titleColor = { Colors.risk }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => {this.setState({isAddingItem: !this.state.isAddingItem})}}
+                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                          this.setState({isAddingItem: !this.state.isAddingItem});
+                                                        }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
@@ -597,23 +611,8 @@ class RisksView extends UI {
 
 class IssuesView extends UI {
     static query ({taskIdent}) {
-        return d.vector(
-            d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`),
-            d.hashMap(
-                taskIdent, `[ { (read "task/newestSnapshot") [ :db/id
-                                                               "snapshot/title"
-                                                               "snapshot/rag"
-                                                                "snapshot/staff"
-                                                                { "snapshot/issue" [ "reportable/title"
-                                                                                     :db/id
-                                                                                     "reportable/reporter"
-                                                                                     "reportable/isExcluded" ] } ] } 
-                              { "task/children" [ { (read "task/newestSnapshot") [ { "snapshot/issue" [ "reportable/title"
-                                                                                                        :db/id
-                                                                                                        "reportable/reporter"
-                                                                                                        "reportable/isExcluded" ] } ] }]}]`
-            )
-        )
+        return d.vector( d.hashMap( d.vector("db/ident", ":ui"), `[ "ui/showExcludedReportables" ]`), 
+                         d.hashMap( taskIdent, query ) )
     }
 
     constructor (props) {
@@ -624,10 +623,10 @@ class IssuesView extends UI {
     render () {
         return <ReportViewMaker task  = { d.get(this.props.value, this.params.taskIdent) }
                                 type  = { ReportType.ISSUE }
-                                title = { this.props.navigation.state.routeName }
-                                titleColor = { Colors.issue }
                                 isAddingItem = { this.state.isAddingItem }
-                                toggleAddItem = { () => {this.setState({isAddingItem: !this.state.isAddingItem})}}
+                                toggleAddItem = { () => { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+                                                          this.setState({isAddingItem: !this.state.isAddingItem});
+                                                        }}
                                 showExcludedReportables = { d.getIn(this.props.value, [d.vector("db/ident", ":ui"), "ui/showExcludedReportables"], false) }
                                 reconciler = { this.getReconciler() } />
     }
@@ -648,7 +647,7 @@ const RouteConfig = {
     Decisions:      { screen: makeScreen(DecisionsView),
                       navigationOptions: { tabBarIcon: tabBarIcon("road", Colors.accentNeutral),
                                           tabBarLabel: tabBarLabel("Decisions", Colors.accentNeutral) } },
-    ["Next Steps"]: { screen: makeScreen(NextView),
+    Next:           { screen: makeScreen(NextView),
                       navigationOptions: { tabBarIcon: tabBarIcon("chevron-circle-right", Colors.accentNeutral),
                                           tabBarLabel: tabBarLabel("Next Steps", Colors.accentNeutral) } },
     Risks:          { screen: makeScreen(RisksView),
