@@ -55,7 +55,6 @@ export const schema = {
     "snapshot/isInCreation":      {":db/cardinality": ":db.cardinality/one"},
     "snapshot/title":             {":db/cardinality": ":db.cardinality/one"},
     // "snapshot/type":              {":db/cardinality": ":db.cardinality/one"},
-    "snapshot/completeness":      {":db/cardinality": ":db.cardinality/one"}, //Completeness.x
     "snapshot/rag":               {":db/cardinality": ":db.cardinality/one"}, //:red :amber :green
     "snapshot/achievement":       {":db/cardinality": ":db.cardinality/many",
                                    ":db/valueType": ":db.type/ref"},

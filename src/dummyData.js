@@ -4,8 +4,7 @@ import d                from "@clockworks/datascript";
 
 import moment       from "moment";
 
-import { Completeness,
-         RAGs }    from "./constants";
+import { RAGs }    from "./constants";
 
 export const dummyData = [
     {
@@ -28,7 +27,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-09-01").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2017-09-14").format("x")},
             "snapshot/staff":           -1,
-            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
@@ -39,7 +37,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-09-07").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2017-09-21").format("x")},
             "snapshot/staff":           -1,
-            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
@@ -50,7 +47,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-09-21").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2017-09-30").format("x")},
             "snapshot/staff":           -1,
-            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
@@ -61,7 +57,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-10-01").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2017-10-24").format("x")},
             "snapshot/staff":           -1,
-            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
@@ -72,7 +67,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-11-01").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2017-11-15").format("x")},
             "snapshot/staff":           -1,
-            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
@@ -83,7 +77,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-11-16").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2018-01-04").format("x")},
             "snapshot/staff":           -1,
-            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
@@ -94,7 +87,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-12-25").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2018-01-18").format("x")},
             "snapshot/staff":           -1,
-            "snapshot/completeness":    Completeness.WIP,
         }],
     },
     {
@@ -105,7 +97,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2018-01-18").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2018-02-01").format("x")},
             "snapshot/staff":           -1,
-            "snapshot/completeness":    Completeness.WIP,
         }],
     },
 
@@ -124,7 +115,6 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-09-01").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2018-02-01").format("x")},
             "snapshot/staff":           -2,
-            "snapshot/completeness":    Completeness.WIP,
             //These have been reported form lower levels->generelles!
             "snapshot/next": [
                 {"reportable/title": "Structural Completeness of Tasks", "reportable/reporter": -1},
@@ -215,7 +205,6 @@ export const dummyData2 = [
                 "snapshot/start": {"date/timestamp": moment("2017-08-11").format("x")},
                 "snapshot/end": {"date/timestamp": moment("2017-08-30").format("x")},
                 "snapshot/staff": -1,
-                "snapshot/completeness": Completeness.WIP,
             },
             {
                 "snapshot/date": {"date/timestamp": moment("2017-07-11").format("x")},
@@ -236,7 +225,6 @@ export const dummyData2 = [
             "snapshot/start": {"date/timestamp": moment("2017-06-25").format("x")},
             "snapshot/end": {"date/timestamp": moment("2017-10-01").format("x")},
             "snapshot/staff": -2,
-            "snapshot/completeness": Completeness.WIP,
             "snapshot/rag": RAGs.GREEN,
             "snapshot/risk": [{"reportable/title": "SAP-Vertragslage schwierig", "reportable/reporter": -2}],
             "snapshot/issue":[{"reportable/title": "Terminfindungsschwierigkeiten", "reportable/reporter": -2}],
@@ -279,7 +267,6 @@ export const dummyData2 = [
     //         "snapshot/start": {"date/timestamp": moment("2017-07-01").format("x")},
     //         "snapshot/end":   {"date/timestamp": moment("2017-08-01").format("x")},
     //         "snapshot/staff": d.hashMap(d.DB_ID, -2),
-    //         "snapshot/completeness": Completeness.WIP,
     // },
 ];
 */

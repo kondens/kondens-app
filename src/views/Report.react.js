@@ -20,7 +20,6 @@ import { TabNavigator,
 
 import { UI }                   from "../UI.react";
 import { Mutations,
-         Completeness,
          Colors,
          Fonts,
          RAGs,

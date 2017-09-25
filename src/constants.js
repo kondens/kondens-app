@@ -61,23 +61,18 @@ export const ReportType = {
     DECISION: "decision",
 }
 
-export const Completeness = {
-    WIP: "WIP",
-    DONE: "DONE",
-    CANCELLED: "CANCELLED",
-    // NOT_STARTED: "NOT_STARTED",
-}
-
 export const RAGs = {
     RED: "RED",
     AMBER: "AMBER",
     GREEN: "GREEN",
+    DONE: "DONE",
 }
 
 export const RagColor = {
     [RAGs.GREEN]: Colors.achievement,
     [RAGs.AMBER]: Colors.amber,
     [RAGs.RED]: Colors.issue,
+    [RAGs.DONE]: "#CCC",
 }
 
 export const RagSymbol = {

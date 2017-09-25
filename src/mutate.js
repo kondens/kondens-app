@@ -9,8 +9,7 @@
 import d             from "@clockworks/datascript";
 
 import { Mutations,
-         RAGs,
-         Completeness } from "./constants";
+         RAGs } from "./constants";
 
 import { Navigator } from "./route";
 
@@ -34,7 +33,6 @@ mutate[Mutations.ADD_SNAP] = (target, taskId, staff, snapshot) => {
                               "snapshot/staff": staff,
                               "snapshot/wip": snapshot.wip,
                               "snapshot/title": snapshot.title,
-                              "snapshot/completeness": snapshot.completeness,
                               "snapshot/rag": snapshot.rag,
                               //@TODO: further attributes
                               }])
@@ -48,8 +46,9 @@ mutate[Mutations.CREATE_STATUS] = (target) => {
                                             { "snapshot/date"  [ "date/timestamp" ] }
                                             * ]`, currentSnapIds);
 
+    //@TODO: add check to prevent not yet started snaps form being copied
     const snapsToCopy = d.pipeline(currentSnaps,
-                                   snaps => d.filter(snap => d.get(snap, "snapshot/completeness") == Completeness.WIP, snaps),
+                                   snaps => d.filter(snap => d.get(snap, "snapshot/rag") !== RAGs.DONE, snaps),
                                    snaps => d.filter(snap => !d.hasKey(snap, "snapshot/isInCreation"), snaps),
                                    snaps => d.map(snap => d.assoc(snap, "snapshot/date", d.hashMap("date/timestamp", Moment().format("x")), 
                                                                         "task/_snapshot", d.getIn(snap, ["task/_snapshot", 0, d.DB_ID]),

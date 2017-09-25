@@ -12,7 +12,6 @@ import { View,
 
 import { UI }           from "../UI.react";
 import { Mutations,
-         Completeness,
          Colors,
          Fonts,
          RAGs,
@@ -232,7 +231,6 @@ const addSnap = (reconciler) => {
                    end: Moment("2017-07-30").format("x"),
                    wip: true,
                    title: "Creational Snap",
-                   completeness: Completeness.WIP,
                    rag: RAGs.GREEN,
                   //@TODO: further attributes
                   };
@@ -331,6 +329,10 @@ const RAG = ({onRagSelect, onRagReset, reconciler, snapId, rag}) => {
                 <TouchableOpacity style = { ragStyles.button }
                                 onPress = { e => onRagSelect(RAGs.RED) }>
                     <Text style={ [styles.ragLabel, {color: Colors.issue}] }>{RAGs.RED}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style = { ragStyles.button }
+                                onPress = { e => onRagSelect(RAGs.DONE) }>
+                    <Text style={ [styles.ragLabel, {color: "#CCC"}] }>{RAGs.DONE}</Text>
                 </TouchableOpacity>
             </View>
         )
@@ -434,7 +436,7 @@ export class Status extends UI {
         const staffId = d.getIn(value, [userIdent, "user/staff", d.DB_ID]);
 
         const snaps = d.getIn(value, [userIdent, "user/currentSnaps"]);
-        const wipSnaps = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.WIP), snaps);
+        const wipSnaps = d.filter((task) => (d.get(task, "snapshot/RAG") !== RAGs.DONE), snaps);
         // const doneSnaps = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.DONE), snaps);
         // const cancelledSnaps = d.filter((task) => (d.get(task, "snapshot/completeness") == Completeness.CANCELLED), snaps);
 
