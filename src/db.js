@@ -67,6 +67,7 @@ export const schema = {
     "snapshot/decision":          {":db/cardinality": ":db.cardinality/many",
                                    ":db/valueType": ":db.type/ref"},
 
+    "reportable/order":           {":db/cardinality": ":db.cardinality/one"},
     "reportable/isExcluded":      {":db/cardinality": ":db.cardinality/one"},
     "reportable/title":           {":db/cardinality": ":db.cardinality/one"},
     "reportable/reporter":        {":db/cardinality": ":db.cardinality/one",

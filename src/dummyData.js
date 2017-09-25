@@ -106,6 +106,7 @@ export const dummyData = [
         ":db/id": -2,
         "staff/name": "Malte Managerio",
     },
+
     {
         "task/id": 10,
         "task/children": [-10, -11, -12],
@@ -115,51 +116,93 @@ export const dummyData = [
             "snapshot/start":           {"date/timestamp": moment("2017-09-01").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2018-02-01").format("x")},
             "snapshot/staff":           -2,
+
             //These have been reported form lower levels->generelles!
-            "snapshot/next": [
-                {"reportable/title": "Structural Completeness of Tasks", "reportable/reporter": -1},
-            ],
-            "snapshot/risk": [
-                {"reportable/title": "Drei MA gehen in den Urlaub", "reportable/reporter": -1}
-            ],
-            "snapshot/achievement": [
-                {"reportable/title": "Wichtige Sicherheitslücke geschlossen", "reportable/reporter": -1}
-            ],
+            //Still, this is also the place were reportables on a higher level (e.g. PM) are put
+            "snapshot/next": [ -100 ],
+            "snapshot/risk": [ -101 ],
+            "snapshot/achievement": [ -102 ],
         }],
     },
+    {   
+        ":db/id": -100,
+        "reportable/order": 0,
+        "reportable/title": "Structural Completeness of Tasks", 
+        "reportable/reporter": -1
+    },
+    {   
+        ":db/id": -101,
+        "reportable/order": 3,
+        "reportable/title": "Drei MA gehen in den Urlaub", 
+        "reportable/reporter": -1
+    },
+    {   
+        ":db/id": -102,
+        "reportable/order": 0,
+        "reportable/title": "Wichtige Sicherheitslücke geschlossen", 
+        "reportable/reporter": -1
+    },
+
     {
         ":db/id": -10,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/achievement": [
-                {"reportable/title": "Done: Projektgovernance definieren", "reportable/reporter": -1}
-            ],
+            "snapshot/achievement": [ -103 ],
         }],
     },
+    {   
+        ":db/id": -103,
+        "reportable/order": 1,
+        "reportable/title": "Done: Projektgovernance definieren", 
+        "reportable/reporter": -1
+    },
+
     {
         ":db/id": -11,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/risk": [
-                {"reportable/title": "SAP-Vertragslage schwierig", "reportable/reporter": -1}
-            ],
-            "snapshot/issue":[
-                {"reportable/title": "Terminfindungsschwierigkeiten", "reportable/reporter": -1}
-            ],
+            "snapshot/risk": [ -104 ],
+            "snapshot/issue":[ -105 ],
         }],
     },
+    {   
+        ":db/id": -104,
+        "reportable/order": 1,
+        "reportable/title": "SAP-Vertragslage schwierig", 
+        "reportable/reporter": -1
+    },
+    {   
+        ":db/id": -105,
+        "reportable/order": 0,
+        "reportable/title": "Terminfindungsschwierigkeiten", 
+        "reportable/reporter": -1
+    },
+
     {
         ":db/id": -12,
         "task/snapshot": [{
             "snapshot/date": {"date/timestamp": moment("2017-07-31").format("x")},
-            "snapshot/risk": [
-                {"reportable/title": "Stakeholder alle krank", "reportable/reporter": -1},
-                {"reportable/title": "CEO von Lobby beeinflusst", "reportable/reporter": -1}
-            ],
-            "snapshot/issue": [
-                {"reportable/title": "CFO verweigert Kooperation", "reportable/reporter": -1}
-            ],
+            "snapshot/risk": [ -106, -107 ],
+            "snapshot/issue": [ -108 ],
         }],
+    },
+    {   
+        ":db/id": -106,
+        "reportable/order": 0,
+        "reportable/title": "Stakeholder alle krank", 
+        "reportable/reporter": -1
+    },
+    {   
+        ":db/id": -107,
+        "reportable/order": 2,
+        "reportable/title": "CEO von Lobby beeinflusst", 
+        "reportable/reporter": -1
+    },
+    {   
+        ":db/id": -108,
+        "reportable/order": 1,
+        "reportable/title": "CFO verweigert Kooperation", 
+        "reportable/reporter": -1
     },
 ]
 
