@@ -33,7 +33,6 @@ export const Fonts = {
 export const Routes = {
     STATUS: "routes/status",
     REPORT: "routes/report",
-    ADD_REPORTABLE: "routes/add_reportable",
 }
 
 export const Mutations = {
@@ -41,6 +40,8 @@ export const Mutations = {
     UPDATE_STATUS: "!status/update",
     RESET_STATUS:  "!status/reset",
     SUBMIT_STATUS: "!status/submit",
+    ADD_REPORTABLE: "!status/add-reportable",
+    CANCEL_ADD_REPORTABLE: "!status/cancel-add-reportable",
 
     UPDATE_REPORTABLE: "!reportable/update",
 
@@ -56,11 +57,11 @@ export const Mutations = {
 }
 
 export const ReportType = {
-    ACHIEVEMENT: "achievement",
-    RISK: "risk",
-    ISSUE: "issue",
-    NEXT: "next",
-    DECISION: "decision",
+    ACHIEVEMENT: "Achievement",
+    RISK: "Risk",
+    ISSUE: "Issue",
+    NEXT: "Next",
+    DECISION: "Decision",
 }
 
 export const RAGs = {
@@ -86,7 +87,10 @@ export const RagSymbol = {
 export const STR = {
     VIEW: {
         STATUS: {
-            TITLE: "Task Status"
+            TITLE: "Task Status",
+            NEW_ACHIEVEMENT: "Neues Achievement",
+            NEW_RISK: "Neues Risk",
+            NEW_ISSUE: "Neues Issue",
         },
         REPORT: {
             TITLE: "Report",

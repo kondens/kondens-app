@@ -60,6 +60,11 @@ mutate[Mutations.CREATE_STATUS] = (target) => {
     }
 }
 
+mutate[Mutations.ADD_REPORTABLE] = (target, type) => d.transact(target.conn, [[":db/add", d.vector("db/ident", ":ui"), "ui/addingReportable", type]]);
+
+mutate[Mutations.CANCEL_ADD_REPORTABLE] = (target, type) => d.transact(target.conn, [[":db.fn/retractAttribute", d.vector("db/ident", ":ui"), "ui/addingReportable"]]);
+
+
 mutate[Mutations.UPDATE_STATUS] = (target, snapId, [field, value]) => {
     d.transact(target.conn, [{ ":db/id": snapId,
                                [field]: value}])
@@ -72,6 +77,8 @@ mutate[Mutations.RESET_STATUS] = (target, snapId, field) => {
 mutate[Mutations.SUBMIT_STATUS] = (target, user) => {
 
 }
+
+
 
 mutate[Mutations.INCLUDE_REPORTABLE] = (target, reportableId) => d.transact(target.conn, [[":db.fn/retractAttribute", reportableId, "reportable/isExcluded"]]);
 

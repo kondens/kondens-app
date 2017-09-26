@@ -13,6 +13,7 @@ export const schema = {
 
     "ui/navigationState":         {":db/cardinality": ":db.cardinality/one"},
     "ui/showExcludedReportables": {":db/cardinality": ":db.cardinality/one"},
+    "ui/addingReportable":        {":db/cardinality": ":db.cardinality/one"},
 
     "user/staff":                 {
         ":db/cardinality": ":db.cardinality/one",
