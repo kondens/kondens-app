@@ -251,7 +251,10 @@ const ActionBtn = ({reconciler}) => (
         <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
                            buttonColor = { Colors.risk }
                            title       = "Weitere Risks" 
-                           onPress     = {() => {addSnap(reconciler)}}>
+                           onPress     = {() => {reconciler.put(Mutations.NAVIGATION_DISPATCH, {
+                                                                        routeName: Routes.ADD_REPORTABLE,
+                                                                        // params: {taskIdent: d.vector("task/id", 10)} 
+                                                                    })}}>
             <Icon color = "#FFF" name = "exclamation-circle" size = {20} />
         </ActionButton.Item>
         <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 

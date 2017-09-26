@@ -33,6 +33,7 @@ export const Fonts = {
 export const Routes = {
     STATUS: "routes/status",
     REPORT: "routes/report",
+    ADD_REPORTABLE: "routes/add_reportable",
 }
 
 export const Mutations = {
@@ -89,6 +90,9 @@ export const STR = {
         },
         REPORT: {
             TITLE: "Report",
+        },
+        ADD_REPORTABLE: {
+            TITLE: "Hinzufügen",
         },
     }
 }

@@ -350,13 +350,13 @@ class AddingView extends UI {
     }
 
     addReportable () {
-        const { reconciler, taskId, taskOwner, toggleAddItem, type, newItemOrder } = this.props;
+        const { reconciler, taskId, taskOwner, toggleAddItem, type, newItemPosition } = this.props;
 
         toggleAddItem();
 
         if (this.state.text.trim() !== "") {
             reconciler.put(Mutations.UPDATE_STATUS, taskId, 
-                [snapshotTypes[type], {"reportable/title": this.state.text, "reportable/reporter": taskOwner, "reportable/order": newItemOrder}]);
+                [snapshotTypes[type], {"reportable/title": this.state.text, "reportable/reporter": taskOwner, "reportable/order": newItemPosition }]);
         }
     }
 
@@ -376,7 +376,7 @@ class AddingView extends UI {
 }
 
 
-const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem, toggleAddItem, taskId, taskOwner, order}) => {
+const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem, toggleAddItem, taskId, taskOwner, order, newItemPosition}) => {
     let itemMap = {}
     d.each(items, item => {
         itemMap[d.get(item, d.DB_ID)] = item;
@@ -402,7 +402,7 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
                                           taskOwner     = { taskOwner }
                                           type          = { type }
                                           toggleAddItem = { toggleAddItem }
-                                          newItemOrder  = { order.length } />}
+                                          newItemPosition  = { newItemPosition } />}
 
             <View style = { styles.editorFooter }>
                 { showExcludedReportables ? 
@@ -453,6 +453,16 @@ const ReportViewMaker = ({task, type, showExcludedReportables, reconciler, isAdd
     const orderedItems = d.sort((x, y) => d.get(x, "reportable/order") < d.get(y, "reportable/order"), shownItems);
     const order = d.intoArray(d.map(item => d.get(item, d.DB_ID), orderedItems));
 
+    //TODO!!!!
+    // const newItemPosition = d.q(`[:find ?order
+    //                               :in $ ?type
+    //                               :where [?reportable "" ?reportable
+    //                                      [?reportable "reportable/order" ?order]]`,
+    //                                d.db(reconciler.conn), type);
+    // console.log(d.toJs(newItemPosition));
+
+    const newItemPosition = 10;
+
     return (
         <View style = { styles.container }>
             <ReportHeader title      = { titles[type] }
@@ -469,7 +479,8 @@ const ReportViewMaker = ({task, type, showExcludedReportables, reconciler, isAdd
                     reconciler              = { reconciler }
                     taskId                  = { taskId }
                     taskOwner               = { taskOwner }
-                    order                   = { order }/>
+                    order                   = { order }
+                    newItemPosition         = {100 }/>
             <AddButton onPress = { toggleAddItem }/>
         </View>
     )
