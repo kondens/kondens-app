@@ -453,15 +453,7 @@ const ReportViewMaker = ({task, type, showExcludedReportables, reconciler, isAdd
     const orderedItems = d.sort((x, y) => d.get(x, "reportable/order") < d.get(y, "reportable/order"), shownItems);
     const order = d.intoArray(d.map(item => d.get(item, d.DB_ID), orderedItems));
 
-    //TODO!!!!
-    // const newItemPosition = d.q(`[:find ?order
-    //                               :in $ ?type
-    //                               :where [?reportable "" ?reportable
-    //                                      [?reportable "reportable/order" ?order]]`,
-    //                                d.db(reconciler.conn), type);
-    // console.log(d.toJs(newItemPosition));
-
-    const newItemPosition = 10;
+    const newItemPosition = d.count(allItems);
 
     return (
         <View style = { styles.container }>
@@ -480,7 +472,7 @@ const ReportViewMaker = ({task, type, showExcludedReportables, reconciler, isAdd
                     taskId                  = { taskId }
                     taskOwner               = { taskOwner }
                     order                   = { order }
-                    newItemPosition         = {100 }/>
+                    newItemPosition         = { newItemPosition }/>
             <AddButton onPress = { toggleAddItem }/>
         </View>
     )
