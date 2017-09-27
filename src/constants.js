@@ -12,7 +12,7 @@ export const Colors = {
     primaryText:        "rgba(0,0,0,0.87)",
     inverseText:        "#FFFFFF",
 
-    risk: "#FF8A65",
+    risk: "#FFC107",
     issue: "#EF5350",
     amber: "#FFC107",
     next: "#607D8B",
