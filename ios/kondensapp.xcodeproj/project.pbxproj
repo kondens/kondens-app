@@ -48,9 +48,6 @@
 		C4CEB55C3F3642C4B65221B0 /* Ionicons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = BB51580B409146FEA5C2ADFA /* Ionicons.ttf */; };
 		C584EBB71E464921B557A0D6 /* Foundation.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 5D51555CF0BC44D080064F1B /* Foundation.ttf */; };
 		E989618C1F7BC29600D35D38 /* whitney.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E989616D1F7BC28800D35D38 /* whitney.ttf */; };
-		E989618D1F7BC29700D35D38 /* whitney.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E989616D1F7BC28800D35D38 /* whitney.ttf */; };
-		E989618E1F7BC29900D35D38 /* whitney.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E989616D1F7BC28800D35D38 /* whitney.ttf */; };
-		E989618F1F7BC29900D35D38 /* whitney.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E989616D1F7BC28800D35D38 /* whitney.ttf */; };
 		FCB3D12222214466ADB04F0E /* Entypo.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8C77666FC03A49B9923E49BC /* Entypo.ttf */; };
 /* End PBXBuildFile section */
 
@@ -985,7 +982,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E989618D1F7BC29700D35D38 /* whitney.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1015,7 +1011,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				2D02E4BD1E0B4A84006451C7 /* Images.xcassets in Resources */,
-				E989618E1F7BC29900D35D38 /* whitney.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1023,7 +1018,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E989618F1F7BC29900D35D38 /* whitney.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
