@@ -13,7 +13,9 @@ import { View,
          LayoutAnimation,
          TextInput,
          KeyboardAvoidingView,
-         ScrollView, } from "react-native";
+         ScrollView,
+         Alert,
+         Modal, } from "react-native";
 
 import { makeScreen }           from "../makeScreen";
 
@@ -29,10 +31,12 @@ import { Mutations,
 
 import Moment                   from "moment";
 
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 import Icon from "react-native-vector-icons/FontAwesome";
 import SortableListView from "../components/SortableListView";
+    
+import { AddReportableInReport } from "../components/AddReportable"; 
 
 const styles = StyleSheet.create({
     container: {
@@ -51,6 +55,13 @@ const styles = StyleSheet.create({
         marginBottom: 6,
     },
     taskTitle: {
+        fontSize: Fonts.h3Size,
+        color: Colors.body,
+    },
+    ragTitle: {
+        textAlign: "center",
+        paddingLeft: 8,
+        marginBottom: 6,
         fontSize: Fonts.h3Size,
         color: Colors.body,
     },
@@ -116,10 +127,14 @@ const styles = StyleSheet.create({
         color: "#FFF",
         backgroundColor: "transparent",
         fontSize: Fonts.bodySize,
+        paddingRight: 24
         // textAlign: 'left',
         // flexWrap: 'wrap',
     },
     editorItemHide: {
+        position: "absolute",
+        right: 0,
+        padding: 12,
     },
     addingView : {
         height: 32.5,
@@ -173,9 +188,6 @@ const styles = StyleSheet.create({
         lineHeight: 24,
     },
     ragContainer : {
-        position: "absolute",
-        right: 12,
-        top: 18,
         flexDirection: "row",
         height: 36,
     },
@@ -188,7 +200,35 @@ const styles = StyleSheet.create({
         borderRadius: 4,
         marginLeft: 6,
     },
+    exportText: {
+        color: Colors.accent,
+        fontSize: Fonts.bodySize,
+        margin: 12,
+    },
 })
+
+
+export class Export extends UI {
+    static query () {
+        return d.vector()
+    }
+
+    constructor (props) {
+        super(props)
+    }
+
+    render () {
+        const { value, params } = this.props;
+
+        return (
+            <TouchableOpacity onPress  = { e => {Alert.alert("Report-Export", "Report wurde per E-Mail verschickt.",
+                                                              [{text: "OK", onPress: () => {}}]) } }>
+                <Text style = { styles.exportText }>Export</Text>
+            </TouchableOpacity>
+        )
+    }
+}
+
 
 const RAG = ({rag, reconciler, taskId}) => (
     <View style = { styles.ragContainer }>
@@ -214,9 +254,12 @@ const ReportHeader = ({title, taskTitle, titleColor, rag, reconciler, taskId}) =
             <Text style = { styles.taskTitle }>{ taskTitle }</Text>
         </View>
         <Text style = { [styles.title, {color: titleColor}] }>{title}</Text>
-        <RAG rag        = { rag }
-             taskId     = { taskId }
-             reconciler = { reconciler } />
+        <View style = { {position: "absolute", right: 12, top: 18,} }>
+            <Text style = { styles.ragTitle }>Gesamtstatus</Text>
+            <RAG rag        = { rag }
+                 taskId     = { taskId }
+                 reconciler = { reconciler } />
+        </View>
     </View>
 )
 
@@ -317,7 +360,10 @@ class Reportable extends UI {
        })
 
        return (
-           <TouchableOpacity {...this.props.sortHandlers} /* onPress = { isExcluded && (e => { this.handleExclusion() }) /*later add drag drop case*/ >
+           <TouchableOpacity
+                {...this.props.sortHandlers}
+                onPress = { isExcluded && (e => { this.handleExclusion() }) }
+                delayLongPress = { 250 }>
                <Animated.View style = { {opacity: this.state.fadeValue} }>
                    <View style = { [styles.editorItem, { backgroundColor: color }] }>
                        <View style={ styles.textWrap }>
@@ -352,40 +398,6 @@ const snapshotTypes = {
     [ReportType.DECISION]: "snapshot/next",
 };
 
-class AddingView extends UI {
-    constructor (props) {
-        super(props);
-
-        this.state = {text: ""};
-    }
-
-    addReportable () {
-        const { reconciler, taskId, taskOwner, toggleAddItem, type, newItemPosition } = this.props;
-
-        toggleAddItem();
-
-        if (this.state.text.trim() !== "") {
-            reconciler.put(Mutations.UPDATE_STATUS, taskId, 
-                [snapshotTypes[type], {"reportable/title": this.state.text, "reportable/reporter": taskOwner, "reportable/order": newItemPosition }]);
-        }
-    }
-
-    render () {
-        const { type } = this.props
-
-        return (
-            <TextInput style            = { [styles.addingView, {borderColor: titleColors[type]}] }
-                       autoFocus        = { true }
-                       onChangeText     = { text => this.setState({text}) }
-                       value            = { this.state.text }
-                       placeholder      = "Neues Item..."
-                       onSubmitEditing  = { () => { this.addReportable(); } }
-                       returnKeyType    = "done" />  
-        )
-    }
-}
-
-
 const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem, toggleAddItem, taskId, taskOwner, order, newItemPosition}) => {
     let itemMap = {}
     d.each(items, item => {
@@ -408,7 +420,7 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
                                                     // } else { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); /*@TODO: better place while still guaranteeing first anim */ }
                                             } } />
             }
-            { isAddingItem && <AddingView reconciler    = { reconciler }
+            { isAddingItem && <AddReportableInReport reconciler    = { reconciler }
                                           taskId        = { taskId }
                                           taskOwner     = { taskOwner }
                                           type          = { type }
@@ -700,7 +712,7 @@ const TabNavigatorConfig = {
 const ReportNavigator = TabNavigator(RouteConfig, TabNavigatorConfig);
 
 // Swallows controlled navigation state, so ReportNavigator can control itself
-class Report extends React.Component {
+export class Report extends React.Component {
     constructor (props) {
         super(props)
         this.state = {

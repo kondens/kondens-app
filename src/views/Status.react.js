@@ -29,8 +29,10 @@ import Icon             from "react-native-vector-icons/FontAwesome";
 
 // import Swipeout         from "react-native-swipeout";
 
-import Ripple           from "../components/Ripple";
-import ActionButton     from "react-native-action-button";
+import Ripple                       from "../components/Ripple";
+import ActionButton                 from "react-native-action-button";
+
+import { AddReportableInStatus }    from "../components/AddReportable";
 
 
 const styles = StyleSheet.create({
@@ -199,85 +201,6 @@ const ragStyles = StyleSheet.create({
     }
 })
 
-const addReportableStyle = StyleSheet.create({
-    overlay: {
-        flex: 1,
-        flexDirection: "column",
-        backgroundColor: "rgba(0, 0, 0, 0.649)",
-        alignItems: "center",
-        justifyContent: "flex-start",
-    },
-    bubble: {
-        marginTop: 72,
-        padding: 12,
-        backgroundColor: "#FFFFFF",
-        borderLeftWidth: 1,
-        borderTopWidth: 1,
-        borderRadius: 8,
-        borderColor: "#EEEEEE",
-        elevation: 2,
-        borderWidth: 1,
-
-        shadowColor: "#000000",
-        shadowOpacity: (Platform.OS == "ios") ? 0.11 : 0,
-        shadowRadius: 1,
-        shadowOffset: {
-            height: 2,
-            width: 2
-        },
-    },
-    title: {
-        fontSize: Fonts.h3Size,
-        fontWeight: "bold",
-        textAlign: "center",
-        marginBottom: 12,
-    },
-    editor: {
-        fontSize: Fonts.bodySize,
-        marginBottom: 12,
-    },
-    OKButton: {
-        // flex: 1,
-        maxHeight: 48,
-        alignItems: "center",
-        justifyContent: "center",
-        marginHorizontal: 6,
-        paddingVertical: 12,
-        paddingHorizontal: 18,
-        borderRadius: 25,
-        backgroundColor: Colors.achievement,
-        width: 200,
-    },
-    cancelButton: {
-        borderRadius: 25,
-        borderWidth: 1,
-        borderColor: "#EEE", 
-        position: "absolute", 
-        top: -22, 
-        right: -22, 
-        width: 44, 
-        height: 44, 
-        padding: 6,
-        backgroundColor: "#FFF",
-
-        elevation: 2,
-        shadowColor: "#000000",
-        shadowOpacity: (Platform.OS == "ios") ? 0.11 : 0,
-        shadowRadius: 1,
-        shadowOffset: {
-            height: 2,
-            width: 2
-        },
-
-        justifyContent: "center",
-        alignItems: "center",
-    },
-    buttonLabel: {
-        color: "#FFF",
-        fontSize: Fonts.bodySize,
-    },
-})
-
 export class Submit extends UI {
     static query () {
         return d.vector(
@@ -298,8 +221,10 @@ export class Submit extends UI {
         return (
             <TouchableOpacity disabled = { !isEnabled }
                               style    = { isEnabled && styles.submitButton }
-                              onPress  = { e => { Alert.alert("Demo-Ende", "Hier gehts bald weiter!",
-                                                              [{text: "Cool!", onPress: () => {}}]) } }>
+                              onPress  = { e => { this.getReconciler().put(Mutations.NAVIGATION_DISPATCH, {
+                                                                            routeName: Routes.REPORT,
+                                                                            params: {taskIdent: d.vector("task/id", 10)} 
+                                                                        })} }>
                 <Text style = { [styles.submitText, !isEnabled && {color: Colors.disabled}] }>Fertig</Text>
             </TouchableOpacity>
         )
@@ -325,22 +250,19 @@ const ActionBtn = ({reconciler}) => (
     <ActionButton buttonColor={Colors.accent} title="Weitere Achievements" bgColor="rgba(0,0,0,0.3)" degrees={135}>
         <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
                            buttonColor = { Colors.achievement }
-                           onPress     = {() => {reconciler.put(Mutations.NAVIGATION_DISPATCH, {
-                                                                        routeName: Routes.REPORT,
-                                                                        params: {taskIdent: d.vector("task/id", 10)} 
-                                                                    })}}>
+                           onPress     = {e => {reconciler.put(Mutations.ADD_REPORTABLE, ReportType.ACHIEVEMENT)}}>
             <Icon color = "#FFF" name = "trophy" size = {20} />
         </ActionButton.Item>
         <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
                            buttonColor = { Colors.risk }
                            title       = "Weitere Risks" 
-                           onPress     = {() => {reconciler.put(Mutations.ADD_REPORTABLE, ReportType.RISK)}}>
+                           onPress     = {e => {reconciler.put(Mutations.ADD_REPORTABLE, ReportType.RISK)}}>
             <Icon color = "#FFF" name = "exclamation-circle" size = {20} />
         </ActionButton.Item>
         <ActionButton.Item textStyle   = { {color: Colors.body, fontSize: Fonts.bodySize} } 
                            buttonColor = { Colors.issue } 
                            title       = "Weitere Issues" 
-                           onPress     = {() => {reconciler.put(Mutations.CREATE_STATUS)}}>
+                           onPress     = {e => {reconciler.put(Mutations.ADD_REPORTABLE, ReportType.ISSUE)}}>
             <Icon color = "#FFF" name = "exclamation-triangle" size = {20} />
         </ActionButton.Item>
     </ActionButton>
@@ -425,10 +347,12 @@ const RAG = ({onRagSelect, onRagReset, reconciler, snapId, rag}) => {
                                 onPress = { e => onRagReset() }>
                     <Text style={ [styles.ragLabel, {color: "#FFF"}] }>RESET</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style = { ragStyles.button }>
+                <TouchableOpacity style = { ragStyles.button }
+                                onPress = { e => { reconciler.put(Mutations.ADD_REPORTABLE, ReportType.RISK) } }>
                     <Text style={ [styles.ragLabel, {color: "#FFF"}] }>RISK?</Text>
                 </TouchableOpacity>
-                <TouchableOpacity style = { ragStyles.button }>
+                <TouchableOpacity style = { ragStyles.button }
+                                onPress = { e => { reconciler.put(Mutations.ADD_REPORTABLE, ReportType.ISSUE) } }>
                     <Text style={ [styles.ragLabel, {color: "#FFF"}] }>ISSUE?</Text>
                 </TouchableOpacity>
             </View>
@@ -494,59 +418,6 @@ class Task extends UI {
     }
 }
 
-const ReportableColors = {
-    [ReportType.ACHIEVEMENT]: Colors.achievement,
-    [ReportType.DECISION]: Colors.decision,
-    [ReportType.RISK]: Colors.risk,
-    [ReportType.ISSUE]: Colors.issue,
-    [ReportType.NEXT]: Colors.next,
-};
-
-class AddReportable extends UI {
-    constructor (props) {
-        super(props);
-        this.state = {text: ""};
-    }
-
-    render () {
-        const { reconciler, type } = this.props;
-
-        return (
-            <Modal  animationType   = { "slide" }
-                    transparent     = { true }
-                    visible         = { true }
-                    onRequestClose  = { () => { console.log ("do something")} }>
-                <View style = { addReportableStyle.overlay }>
-                    <View style = { {flexDirection: "row", paddingHorizontal: 36} }>
-                        <View style = { [addReportableStyle.bubble, {flex: 1, flexDirection: "column", marginBottom: 18}] }>
-                            <Text style = { [ addReportableStyle.title, {color: ReportableColors[type]} ] }>Neues {type}</Text>
-
-                            <TextInput style            = { [addReportableStyle.editor] }
-                                       autoFocus        = { true }
-                                       onChangeText     = { text => this.setState({text}) }
-                                       value            = { this.state.text }
-                                       placeholder      = ""
-                                       multiline        = { true }
-                                       onSubmitEditing  = { () => { } } />  
-
-                            <View style= { {flexDirection: "row", alignItems: "center", justifyContent: "center"} }>
-                                <TouchableOpacity style   = { addReportableStyle.OKButton }
-                                                  onPress = { e => { } }>
-                                    <Text style = { addReportableStyle.buttonLabel }>Hinzufügen</Text>
-                                </TouchableOpacity>
-                            </View>
-                            <TouchableOpacity style = { addReportableStyle.cancelButton }
-                                            onPress = { e => { reconciler.put(Mutations.CANCEL_ADD_REPORTABLE) } }>
-                                <Icon name = "remove" color = { Colors.issue } size = {28} />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-                </View>
-            </Modal>
-        )
-    }
-
-}
 
 export class Status extends UI {
     static query () {
@@ -598,7 +469,7 @@ export class Status extends UI {
                     </View>
                 </ScrollView>
                 <ActionBtn reconciler = { this.getReconciler() } />
-                { addingReportable && <AddReportable type = { addingReportable } reconciler = { this.getReconciler() } /> }
+                { addingReportable && <AddReportableInStatus type = { addingReportable } reconciler = { this.getReconciler() } /> }
             </View>
         )
     }

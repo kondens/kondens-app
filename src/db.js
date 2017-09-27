@@ -86,10 +86,10 @@ export const initialState = () => d.db_with(d.empty_db(schema), [
     { 
         "db/ident": ":ui",
         "ui/navigationState": Navigator.router.getStateForAction(Navigator.router.getActionForPathAndParams(Routes.STATUS)),
-        "ui/navigationState": Navigator.router.getStateForAction(
-            Object.assign(Navigator.router.getActionForPathAndParams(Routes.REPORT), {
-                params: {taskIdent: d.vector("task/id", 10)}
-            })
-        ),
+        // "ui/navigationState": Navigator.router.getStateForAction(
+        //     Object.assign(Navigator.router.getActionForPathAndParams(Routes.REPORT), {
+        //         params: {taskIdent: d.vector("task/id", 10)}
+        //     })
+        // ),
     }
 ])
