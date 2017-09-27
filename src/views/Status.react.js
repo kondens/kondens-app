@@ -438,7 +438,6 @@ export class Status extends UI {
         const { value, params } = this.props;
 
         const addingReportable = d.getIn(value, [d.vector("db/ident", ":ui"), "ui/addingReportable"]);
-        console.log(addingReportable)
 
         const userIdent = d.vector("db/ident", ":user-data")
         const name = d.getIn(value, [userIdent, "user/staff", "staff/name"]);
