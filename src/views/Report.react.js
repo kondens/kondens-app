@@ -261,6 +261,13 @@ class AnimatedExcluder extends UI {
     }
 }
 
+const typePrefixes = {
+    [ReportType.ACHIEVEMENT]: 1,
+    [ReportType.NEXT]: 2,
+    [ReportType.RISK]: 3,
+    [ReportType.ISSUE]: 4,
+    [ReportType.DECISION]: 5,
+}
 
 class Reportable extends UI {
    constructor(props) {
@@ -297,9 +304,12 @@ class Reportable extends UI {
    }
 
    render () {
-       const { data, color, reconciler } = this.props
+       const { data, type, reconciler, order } = this.props
        const title = d.get(data, "reportable/title");
        const isExcluded = d.get(data, "reportable/isExcluded");
+       const color = titleColors[type];
+
+       const identifier = typePrefixes[type] + "." + (order.indexOf(d.get(data, d.DB_ID)) + 1);
 
        const fade = this.state.fadeValue.interpolate({
            inputRange: [0, 1],
@@ -311,7 +321,7 @@ class Reportable extends UI {
                <Animated.View style = { {opacity: this.state.fadeValue} }>
                    <View style = { [styles.editorItem, { backgroundColor: color }] }>
                        <View style={ styles.textWrap }>
-                           <Text style = { styles.editorItemLabel }>{ title }</Text>
+                           <Text style = { styles.editorItemLabel }>{identifier + " " + title }</Text>
                        </View>
                        <TouchableOpacity style   = { styles.editorItemHide }
                                          onPress = { (e) => { this.handleExclusion() } }>
@@ -328,18 +338,18 @@ class Reportable extends UI {
 
 const titleColors = {
     [ReportType.ACHIEVEMENT]: Colors.achievement,
-    [ReportType.DECISION]: Colors.decision,
+    [ReportType.NEXT]: Colors.decision,
     [ReportType.RISK]: Colors.risk,
     [ReportType.ISSUE]: Colors.issue,
-    [ReportType.NEXT]: Colors.next,
+    [ReportType.DECISION]: Colors.next,
 };
 
 const snapshotTypes = {
     [ReportType.ACHIEVEMENT]: "snapshot/achievement",
-    [ReportType.DECISION]: "snapshot/decision",
+    [ReportType.NEXT]: "snapshot/decision",
     [ReportType.RISK]: "snapshot/risk",
     [ReportType.ISSUE]: "snapshot/issue",
-    [ReportType.NEXT]: "snapshot/next",
+    [ReportType.DECISION]: "snapshot/next",
 };
 
 class AddingView extends UI {
@@ -391,8 +401,9 @@ const Editor = ({type, items, showExcludedReportables, reconciler, isAddingItem,
                              onRowMoved = { e => { reconciler.put(Mutations.UPDATE_REPORTABLE_ORDER, e.from, e.to, e.order);} }
                               renderRow = { row => { if (showExcludedReportables || !d.get(row, "reportable/isExcluded")) {
                                                         return <Reportable data = { row }
+                                                                          order = { order }
                                                                    showExcluded = { showExcludedReportables }
-                                                                          color = { titleColors[type] }
+                                                                          type = { type }
                                                                      reconciler = { reconciler } /> }
                                                     // } else { LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut); /*@TODO: better place while still guaranteeing first anim */ }
                                             } } />
@@ -662,9 +673,6 @@ const RouteConfig = {
     Achievements:   { screen: makeScreen(AchievementsView),
                       navigationOptions: { tabBarIcon: tabBarIcon("trophy", Colors.achievement),
                                           tabBarLabel: tabBarLabel("Achievements", Colors.achievement) } },
-    Decisions:      { screen: makeScreen(DecisionsView),
-                      navigationOptions: { tabBarIcon: tabBarIcon("road", Colors.accentNeutral),
-                                          tabBarLabel: tabBarLabel("Decisions", Colors.accentNeutral) } },
     Next:           { screen: makeScreen(NextView),
                       navigationOptions: { tabBarIcon: tabBarIcon("chevron-circle-right", Colors.accentNeutral),
                                           tabBarLabel: tabBarLabel("Next Steps", Colors.accentNeutral) } },
@@ -674,6 +682,9 @@ const RouteConfig = {
     Issues:         { screen: makeScreen(IssuesView),
                       navigationOptions: { tabBarIcon: tabBarIcon("exclamation-circle", Colors.issue),
                                           tabBarLabel: tabBarLabel("Issues", Colors.issue) } },
+    Decisions:      { screen: makeScreen(DecisionsView),
+                      navigationOptions: { tabBarIcon: tabBarIcon("road", Colors.accentNeutral),
+                                           tabBarLabel: tabBarLabel("Decisions", Colors.accentNeutral) } },
 }
 
 const TabNavigatorConfig = {

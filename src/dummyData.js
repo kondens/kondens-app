@@ -139,7 +139,7 @@ export const dummyData = [
     {   
         ":db/id": -102,
         "reportable/order": 0,
-        "reportable/title": "Wichtige Sicherheitslücke geschlossen", 
+        "reportable/title": "Wichtige Sicherheitslücke gefixt", 
         "reportable/reporter": -1
     },
 
