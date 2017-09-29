@@ -32,7 +32,7 @@ export const dummyData = [
     {
         "task/id": 2,
         "task/snapshot": [{
-            "snapshot/title":           "Structural Completeness of Tasks",
+            "snapshot/title":           "Strukturelle Vollständigkeit der Tasks",
             "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
             "snapshot/start":           {"date/timestamp": moment("2017-09-07").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2017-09-21").format("x")},
@@ -82,7 +82,7 @@ export const dummyData = [
     {
         "task/id": 7,
         "task/snapshot": [{
-            "snapshot/title":           "Testing",
+            "snapshot/title":           "Test",
             "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
             "snapshot/start":           {"date/timestamp": moment("2017-12-25").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2018-01-18").format("x")},
@@ -92,7 +92,7 @@ export const dummyData = [
     {
         "task/id": 8,
         "task/snapshot": [{
-            "snapshot/title":           "Golive",
+            "snapshot/title":           "Go Live",
             "snapshot/date":            {"date/timestamp": moment("2017-09-01").format("x")},
             "snapshot/start":           {"date/timestamp": moment("2018-01-18").format("x")},
             "snapshot/end":             {"date/timestamp": moment("2018-02-01").format("x")},
