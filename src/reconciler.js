@@ -1,11 +1,9 @@
 // @flow
 "use strict"
 
-import d                        from "@clockworks/datascript"
-import React                    from "react"
-import { InteractionManager }   from "react-native"
-
-import { DEFAULT }              from "./constants"
+import d from "@clockworks/datascript"
+import React from "react"
+import { DEFAULT } from "./constants"
 
 
 // Returns a components query expression.
@@ -57,9 +55,7 @@ export class Reconciler {
 
     // Sets up the listener for state changes
     startListening () {
-        // [EXPERIMENTAL] In order to not interfere with reacts animations, we reconcile only after them.
-        this._listener = d.listen(this.conn, () => InteractionManager.runAfterInteractions(() => this.reconcile()))
-        // this._listener = d.listen(this.conn, () => this.reconcile())
+        this._listener = d.listen(this.conn, () => this.reconcile())
     }
 
     stopListening () {
