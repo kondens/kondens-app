@@ -94,7 +94,7 @@ android {
     buildToolsVersion "23.0.1"
 
     defaultConfig {
-        applicationId "com.kondensapp"
+        applicationId "com.kondens"
         minSdkVersion 16
         targetSdkVersion 22
         versionCode 1
@@ -102,6 +102,14 @@ android {
         ndk {
             abiFilters "armeabi-v7a", "x86"
         }
+    }
+    signingConfigs {
+        release {
+		storeFile file(KONDENS_RELEASE_STORE_FILE)
+		storePassword KONDENS_RELEASE_STORE_PASSWORD
+		keyAlias KONDENS_RELEASE_KEY_ALIAS
+		keyPassword KONDENS_RELEASE_KEY_PASSWORD
+	}
     }
     splits {
         abi {
@@ -115,6 +123,7 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
+	    signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
