@@ -102,6 +102,7 @@ export default class Ripple extends PureComponent {
   }
 
   startRipple (color, inverse) {
+    console.log(`[${Date.now()}] start ripple`)
     const { layout } = this.state
     if (layout) {
       const { rippleDuration, rippleCentered, rippleSize } = this.props

@@ -55,16 +55,7 @@ export class UI extends React.Component {
 
 export class PureUI extends UI {
     shouldComponentUpdate (nextProps, nextState) {
-        const isActive = (this.props.isActive === false) ? false : true
-        const willBeActive = (nextProps.isActive === false) ? false : true
-        
-        if (isActive === false && willBeActive === true) {
-            // this component just became active again, we have to re-render
-            // to be on the safe side (state might have changed in the meantime)
-            return true
-        } else {
-            return willBeActive && !d.equals(this.value, this.nextValue(nextProps))
-        }
+      return !d.equals(this.value, this.nextValue(nextProps))
     }
 }
 
